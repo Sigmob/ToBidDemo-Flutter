@@ -1,4 +1,4 @@
-# windmill_ad_plugin_example
+# ToBid Flutter example
 
 Demonstrates how to use the windmill_ad_plugin plugin.
 
