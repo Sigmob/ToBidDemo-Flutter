@@ -1,0 +1,52 @@
+group 'com.windmill.windmill_ad_plugin'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.2'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdk 31
+    }
+}
+
+dependencies {
+    compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    compileOnly fileTree(include: ["*.jar",'*.aar'], dir: 'libs')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/Core')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/csj')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/gdt')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/kuaishou')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/baidu')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/mintegral-cn')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/vungle')
+    compileOnly fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/adscope')
+    compileOnly fileTree(include: ["*.jar",'*.aar'], dir: 'libs/AdNetworks/unity')
+    compileOnly fileTree(include: ["*.jar",'*.aar'], dir: 'libs/AdNetworks/klevin')
+}
