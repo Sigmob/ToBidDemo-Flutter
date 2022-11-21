@@ -45,9 +45,10 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
         ad = new WindmillAd<>();
     }
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest) {
-        super.setup(channel, adRequest);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
+        super.setup(channel, adRequest,activity);
         this.channel = channel;
+        this.activity = activity;
         this.interstitialAd = new WMInterstitialAd(activity,new WMInterstitialAdRequest(adRequest.getPlacementId(),adRequest.getUserId(),adRequest.getOptions()));
         this.interstitialAd.setInterstitialAdListener(new IWMIntersititialAdListener(this,channel));
     }
@@ -75,8 +76,7 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
 
         WindmillBaseAd interstitialAd = this.ad.getAdInstance(uniqId);
         if (interstitialAd == null) {
-            interstitialAd = this.ad.createAdInstance(InterstitialAd.class, getArguments(call.arguments), flutterPluginBinding,  WindmillAd.AdType.Interstitial);
-            ((InterstitialAd)interstitialAd).activity = activity;
+            interstitialAd = this.ad.createAdInstance(InterstitialAd.class, getArguments(call.arguments), flutterPluginBinding,  WindmillAd.AdType.Interstitial,activity);
         }
         interstitialAd.excuted(call, result);
     }

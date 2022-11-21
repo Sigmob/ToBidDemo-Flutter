@@ -60,16 +60,15 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest) {
-        super.setup(channel, adRequest);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
+        super.setup(channel, adRequest,activity);
         this.bannerAdRequest= (WMBannerAdRequest) adRequest;
         this.channel  = channel;
-    }
-
-    public void initAdView(Activity activity){
+        this.activity = activity;
         this.bannerAdView = new WMBannerView(activity);
         this.bannerAdView.setAdListener(new IWMBannerAdListener(channel,this));
     }
+
 
     public void onAttachedToEngine() {
         Log.d("Codi", "onAttachedToEngine");
@@ -97,8 +96,7 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
         if (bannerAd == null) {
 
-            bannerAd = this.ad.createAdInstance(BannerAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Banner);
-            ((BannerAd)bannerAd).initAdView(activity);
+            bannerAd = this.ad.createAdInstance(BannerAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Banner,activity);
         }
         bannerAd.excuted(call, result);
     }

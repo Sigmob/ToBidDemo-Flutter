@@ -49,9 +49,10 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest) {
-        super.setup(channel, adRequest);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
+        super.setup(channel, adRequest,activity);
         this.channel = channel;
+        this.activity = activity;
         this.rewardAd = new WMRewardAd(activity, WMRewardAdRequest.getWindVideoAdRequest(adRequest));
         this.rewardAd.setRewardedAdListener(new IWMRewardAdListener(this,channel));
     }
@@ -75,8 +76,7 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
 
         WindmillBaseAd rewardVideoAd = this.ad.getAdInstance(uniqId);
         if (rewardVideoAd == null) {
-            rewardVideoAd = this.ad.createAdInstance(RewardVideoAd.class,getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Reward);
-            ((RewardVideoAd)rewardVideoAd).activity = activity;
+            rewardVideoAd = this.ad.createAdInstance(RewardVideoAd.class,getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Reward,activity);
         }
         rewardVideoAd.excuted(call, result);
     }

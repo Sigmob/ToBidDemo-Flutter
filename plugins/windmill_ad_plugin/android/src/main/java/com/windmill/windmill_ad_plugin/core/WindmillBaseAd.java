@@ -2,6 +2,8 @@ package com.windmill.windmill_ad_plugin.core;
 
 
 
+import android.app.Activity;
+
 import com.windmill.sdk.WindMillAdRequest;
 
 import org.json.JSONArray;
@@ -21,7 +23,7 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class WindmillBaseAd {
 
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest) {
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest, Activity activity) {
         // TODO document why this method is empty
     }
 

@@ -1,5 +1,6 @@
 package com.windmill.windmill_ad_plugin.core;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
 import com.windmill.sdk.WMConstants;
@@ -37,7 +38,7 @@ public class WindmillAd<T> {
         return null;
     }
 
-    public T createAdInstance(Class<? extends T> cls, Map<String, Object> arguments, FlutterPlugin.FlutterPluginBinding binding, WindmillAd.AdType adType)  {
+    public T createAdInstance(Class<? extends T> cls, Map<String, Object> arguments, FlutterPlugin.FlutterPluginBinding binding, WindmillAd.AdType adType , Activity activity)  {
         String uniqId = (String) arguments.get("uniqId");
         Map<String, Object> requestMap = (Map<String, Object>)arguments.get("request");
         String placementId = (String) requestMap.get("placementId");
@@ -108,7 +109,7 @@ public class WindmillAd<T> {
         try {
             T t = cls.newInstance();
             WindmillBaseAd windmillBaseAd = (WindmillBaseAd)t;
-            windmillBaseAd.setup(channel, adRequest);
+            windmillBaseAd.setup(channel, adRequest,activity);
             map.put(uniqId, windmillBaseAd);
             return t;
         } catch (IllegalAccessException | InstantiationException e) {

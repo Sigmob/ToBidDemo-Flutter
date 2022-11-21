@@ -51,16 +51,15 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest) {
-        super.setup(channel, adRequest);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
+        super.setup(channel, adRequest,activity);
         this.splashAdRequest= (WMSplashAdRequest) adRequest;
         this.channel  = channel;
-    }
-
-    public void initAdView(Activity activity){
+        this.activity = activity;
         this.splashAdView = new WMSplashAd(activity,this.splashAdRequest,new IWMSplashAdListener(this,channel));
 
     }
+
     public void onAttachedToEngine() {
         Log.d("Codi", "onAttachedToEngine");
         MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/splash");
@@ -80,8 +79,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
         if (splashAd == null) {
 
-            splashAd = this.ad.createAdInstance(SplashAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Splash);
-            ((SplashAd)splashAd).initAdView(activity) ;
+            splashAd = this.ad.createAdInstance(SplashAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Splash,activity);
         }
         splashAd.excuted(call, result);
     }

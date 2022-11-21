@@ -68,17 +68,14 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest) {
-        super.setup(channel, adRequest);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
+        super.setup(channel, adRequest,activity);
         this.channel = channel;
         this.nativeAdRequest = (WMNativeAdRequest) adRequest;
-
-    }
-
-    public void initAdView(Activity activity) {
         this.activity = activity;
         this.nativeAd = new WMNativeAd(activity, nativeAdRequest);
     }
+
 
 
     public void onAttachedToEngine() {
@@ -107,8 +104,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
         WindmillBaseAd nativeAd = this.ad.getAdInstance(uniqId);
         if (nativeAd == null) {
-            nativeAd = this.ad.createAdInstance(NativeAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Native);
-            ((NativeAd) nativeAd).initAdView(activity);
+            nativeAd = this.ad.createAdInstance(NativeAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Native,activity);
         }
         nativeAd.excuted(call, result);
     }
