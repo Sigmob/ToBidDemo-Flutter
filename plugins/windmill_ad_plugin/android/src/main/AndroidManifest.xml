@@ -3,7 +3,7 @@
 
     <application>
         //穿山甲
-        <provider
+        <!-- <provider
             android:name="com.bytedance.sdk.openadsdk.TTFileProvider"
             android:authorities="${applicationId}.TTFileProvider"
             android:exported="false"
@@ -16,7 +16,7 @@
         <provider
             android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
             android:authorities="${applicationId}.TTMultiProvider"
-            android:exported="false" />
+            android:exported="false" /> -->
 
     </application>
 </manifest>

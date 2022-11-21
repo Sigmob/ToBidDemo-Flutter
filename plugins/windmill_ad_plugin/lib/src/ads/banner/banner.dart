@@ -88,7 +88,9 @@ class BannerAdWidget extends StatefulWidget {
   }
 
   void updateAdSize(Size size) {
-    sizeNotify.value = size;
+      if(size.height>0 && size.width>0){
+        sizeNotify.value = size;
+      } 
   }
 }
 

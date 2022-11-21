@@ -43,13 +43,16 @@ class IWindmillNativeListener with WindmillAdEvent {
       double width = arguments!['width'].toDouble();
       double height = arguments['height'].toDouble();
       
-      var size = Size(width, height);
 
-      if(Platform.isAndroid && width >0 && height >0){
+      if(width >0 && height >0){
+        var size = Size(width, height);
+        if(Platform.isAndroid){
           size = Size(width/window.devicePixelRatio, height/window.devicePixelRatio);
+        }
+          nativeAd.adSize = size;
+
       }
-      
-      nativeAd.adSize = size;
+
     }
    
     listener.onAdRenderSuccess(nativeAd);

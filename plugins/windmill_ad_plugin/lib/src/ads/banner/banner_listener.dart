@@ -25,17 +25,19 @@ class IWindmillBannerListener with WindmillAdEvent {
 
     if(arguments?.containsKey('width') == true){
 
-          double width = arguments!['width'];
-          double height = arguments['height'];
+        double width = arguments!['width'];
+        double height = arguments['height'];
           
-          var size = Size(width, height);
+        if(width >0 && height >0){
+            var size = Size(width, height);
 
-          if(Platform.isAndroid && width >0 && height >0){
+            if(Platform.isAndroid && width >0 && height >0){
                 size = Size(width/window.devicePixelRatio, height/window.devicePixelRatio);
-          } 
-
-          bannerAd?.adSize = size;
+            } 
+            bannerAd?.adSize = size;
+        }
     }
+
     listener.onAdLoaded(bannerAd!);
   }
 

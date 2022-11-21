@@ -285,19 +285,25 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
         view.post(new Runnable() {
             @Override
             public void run() {
+                int view_width = view.getWidth();
+                int view_height = view.getHeight();
+
                 HashMap<String, Integer> args = new HashMap<>() {{
-                    put("width", view.getWidth());
-                    put("height", view.getHeight());
+                    put("width", view_width);
+                    put("height", view_height);
                 }};
 
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)nativeAd.wmNativeContainer.getLayoutParams();
-                layoutParams.width = view.getWidth();
-                layoutParams.height = view.getHeight();
-                layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+                if(view_width>0 && view_height>0){
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)nativeAd.wmNativeContainer.getLayoutParams();
+                    layoutParams.width = view.getWidth();
+                    layoutParams.height = view.getHeight();
+                    layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
 
 
-                nativeAd.wmNativeContainer.setLayoutParams(layoutParams);
-                nativeAd.wmNativeContainer.setBackgroundColor(Color.GREEN);
+                    nativeAd.wmNativeContainer.setLayoutParams(layoutParams);
+                }
+
+
                 nativeAd.adInfo = adInfo;
 
                 channel.invokeMethod(kWindmillEventAdRenderSuccess, args);
