@@ -73,13 +73,10 @@ class BannerPage extends StatelessWidget {
 
     if(isReady){
 
-      double height = 50;
-      double width = 320;
+      double height =ad.adSize?.height??50;
+      double width = ad.adSize?.width??320;
 
-      if(ad.adSize!.width >0){
-        width = ad.adSize!.width;
-        height = ad.adSize!.height;
-      }
+    
       BannerAdWidget bannerAdWidget = BannerAdWidget(
         windmillBannerAd: ad,
         height: height,
