@@ -39,7 +39,26 @@ class AdSetting {
       var json = convert.jsonDecode(contents);
       return AdSetting.fromJson(json);
     } catch (err) {
-       return   AdSetting(appId: 16991,slotIds: [SlotId(adSlotId: "3431532395562379",adType: 2)],otherSetting:  OtherSetting());
+
+      // adType: 1 :激励广告，2 开屏广告，4：插屏广告, 5：原生信息流广告， 7 横幅广告
+        if(Platform.isIOS){
+                return  AdSetting(appId: 16990,slotIds: [
+                  SlotId(adSlotId: "8373387208687695",adType: 1), // 激励广告位
+                  SlotId(adSlotId: "8374774642581842",adType: 2), // 开屏广告位 
+                  SlotId(adSlotId: "9690693976929807",adType: 4), // 插屏广告位
+                  SlotId(adSlotId: "5756789376418096",adType: 5), // 原生信息流广告位 
+                  SlotId(adSlotId: "9828667573411889",adType: 7), // 横幅广告位
+                ],otherSetting:  OtherSetting());
+
+        }else{
+              return  AdSetting(appId: 16991,slotIds: [
+                SlotId(adSlotId: "9387595158051935",adType: 1), // 激励广告位
+                SlotId(adSlotId: "2009470615832232",adType: 2), // 开屏广告位 
+                SlotId(adSlotId: "4753286031006593",adType: 4), // 插屏广告位
+                SlotId(adSlotId: "9224761251541712",adType: 5), // 原生信息流广告位 
+                SlotId(adSlotId: "6426940313333654",adType: 7), // 横幅广告位
+              ],otherSetting:  OtherSetting());
+                }
     }
   }
 

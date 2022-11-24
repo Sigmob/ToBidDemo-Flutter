@@ -8,7 +8,7 @@ import 'test_id.dart';
 class SettingPage extends StatelessWidget {
 
   final List _items = [
-    {'icon': Icons.ad_units, 'title': 'Test Id'},
+    {'icon': Icons.ad_units, 'title': '广告位参数'},
     {'icon': Icons.settings, 'title': 'SDK参数设置'},
   ];
 

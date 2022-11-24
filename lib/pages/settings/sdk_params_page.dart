@@ -37,22 +37,7 @@ class SDKPages extends StatelessWidget {
     Controller c = Get.find();
     return ListView(
       children: [
-        // Obx(() => _leftTitleAndRightSwitch(title: 'Enable-Playing-Load', value: c.adSetting.value.otherSetting!.enablePlayingLoad, onChanged: (value){
-        //   c.adSetting.update((val) {
-        //     val?.otherSetting?.enablePlayingLoad = value;
-        //   });
-        // })),
-        // Obx(() => _leftTitleAndRightSwitch(title: 'Use-New-Instance', value: c.adSetting.value.otherSetting!.useNewInstance, onChanged: (value){
-        //   c.adSetting.update((val) {
-        //     val?.otherSetting?.useNewInstance = value;
-        //   });
-        // })),
-        // const SizedBox(height: 15,),
-        // Obx(() => _leftTitleAndRightSubTitle(title: 'Load-Count：', text: c.adSetting.value.otherSetting!.loadCount.toString(), onSubmit: (text){
-        //   c.adSetting.update((val) {
-        //     val?.otherSetting?.loadCount = int.parse(text);
-        //   });
-        // })),
+
         Obx(() => _leftTitleAndRightSubTitle(title: '场景描述：', text: c.adSetting.value.otherSetting!.adSceneDesc, keyboardType: TextInputType.text,onSubmit: (text){
           c.adSetting.update((val) {
             val?.otherSetting?.adSceneDesc = text;
