@@ -117,41 +117,40 @@ class IWMSplashAdListener implements WMSplashAdListener {
     private MethodChannel channel;
     private SplashAd splashAd;
 
-    public IWMSplashAdListener(SplashAd splashAd,MethodChannel channel) {
+    public IWMSplashAdListener(final SplashAd splashAd,final MethodChannel channel) {
         this.channel = channel;
         this.splashAd = splashAd;
     }
 
 
     @Override
-    public void onSplashAdSuccessPresent(AdInfo adInfo) {
+    public void onSplashAdSuccessPresent(final AdInfo adInfo) {
         this.splashAd.adInfo = adInfo;
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdOpened, null);
 
     }
 
     @Override
-    public void onSplashAdSuccessLoad(String s) {
+    public void onSplashAdSuccessLoad(final String placementId) {
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdLoaded, null);
     }
 
     @Override
-    public void onSplashAdFailToLoad(WindMillError windMillError, String s) {
-        Map<String, Object> args = new HashMap<>(){{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+    public void onSplashAdFailToLoad(final WindMillError windMillError,final String placementId) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdFailedToLoad, args);
     }
 
     @Override
-    public void onSplashAdClicked(AdInfo adInfo) {
+    public void onSplashAdClicked(final AdInfo adInfo) {
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdClicked, null);
 
     }
 
     @Override
-    public void onSplashClosed(AdInfo adInfo, IWMSplashEyeAd iwmSplashEyeAd) {
+    public void onSplashClosed(final AdInfo adInfo, final IWMSplashEyeAd iwmSplashEyeAd) {
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdClosed, null);
 
     }

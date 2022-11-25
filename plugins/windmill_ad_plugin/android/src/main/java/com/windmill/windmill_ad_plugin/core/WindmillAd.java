@@ -29,7 +29,7 @@ public class WindmillAd<T> {
 
     }
 
-    private Map<String, WindmillBaseAd> map =  new HashMap<>();
+    private Map<String, WindmillBaseAd> map =  new HashMap<String, WindmillBaseAd>();
 
     public  WindmillBaseAd getAdInstance(String uniqId) {
         if(map.containsKey(uniqId)) {
@@ -47,7 +47,7 @@ public class WindmillAd<T> {
         if (TextUtils.isEmpty(userId)){
             userId = WindMillAd.getUserId();
         }
-        Map<String, Object> options = new HashMap<>();
+        Map<String, Object> options = new HashMap<String, Object>();
 
         if (requestMap.get("options") != null) {
             Map<String, String> options1 = (Map<String, String>) requestMap.get("options");

@@ -201,7 +201,7 @@ class IWMNativeDislikeListener implements WMNativeAdData.DislikeInteractionCallb
 
     private MethodChannel channel;
 
-    public IWMNativeDislikeListener(MethodChannel channel) {
+    public IWMNativeDislikeListener(final MethodChannel channel) {
         this.channel = channel;
     }
 
@@ -211,10 +211,9 @@ class IWMNativeDislikeListener implements WMNativeAdData.DislikeInteractionCallb
     }
 
     @Override
-    public void onSelected(int i, String s, boolean b) {
-        Map<String, Object> args = new HashMap<>() {{
-            put("reason", s);
-        }};
+    public void onSelected(final int i,final String reason,final boolean b) {
+        Map<String, Object> args = new HashMap<String, Object>();
+            args.put("reason", reason);
         channel.invokeMethod(kWindmillEventAdDidDislike, args);
 
     }
@@ -261,13 +260,13 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     private MethodChannel channel;
     private NativeAd nativeAd;
 
-    public IWMNativeAdListener(NativeAd nativeAd, MethodChannel channel) {
+    public IWMNativeAdListener(final NativeAd nativeAd,final MethodChannel channel) {
         this.channel = channel;
         this.nativeAd = nativeAd;
     }
 
     @Override
-    public void onADExposed(AdInfo adInfo) {
+    public void onADExposed(final AdInfo adInfo) {
 
         this.nativeAd.adInfo = adInfo;
         channel.invokeMethod(kWindmillEventAdOpened, null);
@@ -275,23 +274,22 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     }
 
     @Override
-    public void onADClicked(AdInfo adInfo) {
+    public void onADClicked(final AdInfo adInfo) {
         channel.invokeMethod(kWindmillEventAdClicked, null);
 
     }
 
     @Override
-    public void onADRenderSuccess(AdInfo adInfo, View view, float width, float height) {
+    public void onADRenderSuccess(final AdInfo adInfo,final View view,final float width,final float height) {
         view.post(new Runnable() {
             @Override
             public void run() {
-                int view_width = view.getWidth();
-                int view_height = view.getHeight();
+               final int view_width = view.getWidth();
+               final int view_height = view.getHeight();
 
-                HashMap<String, Integer> args = new HashMap<>() {{
-                    put("width", view_width);
-                    put("height", view_height);
-                }};
+                Map<String, Object> args = new HashMap<String, Object>();
+                args.put("width", view_width);
+                args.put("height", view_height);
 
                 if(view_width>0 && view_height>0){
                     FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)nativeAd.wmNativeContainer.getLayoutParams();
@@ -316,12 +314,12 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     }
 
     @Override
-    public void onADError(AdInfo adInfo, WindMillError windMillError) {
+    public void onADError(final AdInfo adInfo,final WindMillError windMillError) {
 
-        Map<String, Object> args = new HashMap<>() {{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
+
         channel.invokeMethod(kWindmillEventAdRenderFail, args);
 
     }
@@ -334,23 +332,22 @@ class IWMNativeAdLoadListener implements WMNativeAd.NativeAdLoadListener {
     private MethodChannel channel;
     private NativeAd nativeAd;
 
-    public IWMNativeAdLoadListener(MethodChannel channel, NativeAd nativeAd) {
+    public IWMNativeAdLoadListener(final MethodChannel channel,final NativeAd nativeAd) {
         this.channel = channel;
         this.nativeAd = nativeAd;
     }
 
     @Override
-    public void onError(WindMillError windMillError, String s) {
-        Map<String, Object> args = new HashMap<>() {{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+    public void onError(final WindMillError windMillError,final String placementId) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
         channel.invokeMethod(kWindmillEventAdFailedToLoad, args);
     }
 
 
     @Override
-    public void onFeedAdLoad(String s) {
+    public void onFeedAdLoad(final String placementId) {
 
         if (this.nativeAd != null && this.nativeAd.nativeAd != null) {
             List<WMNativeAdData> nativeADDataList = this.nativeAd.nativeAd.getNativeADDataList();

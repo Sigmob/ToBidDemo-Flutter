@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
     package="com.example.windmill_ad_plugin_example">
+
+    <uses-sdk tools:overrideLibrary="com.bun.miitmdid"/>
    <application
         android:label="windmill_ad_plugin_example"
-        android:name="${applicationName}"
+        tools:replace="android:label"
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -59,15 +62,15 @@
         <!-- android:exported="false" /> -->
 
         <!-- MTG -->
-        <!-- <provider -->
-        <!-- android:name="com.mbridge.msdk.foundation.tools.MBFileProvider" -->
-        <!-- android:authorities="${applicationId}.mbFileProvider" -->
-        <!-- android:exported="false" -->
-        <!-- android:grantUriPermissions="true"> -->
-        <!-- <meta-data -->
-        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
-        <!-- android:resource="@xml/mb_provider_paths" /> -->
-        <!-- </provider> -->
+         <provider
+            android:name="com.mbridge.msdk.foundation.tools.MBFileProvider"
+             android:authorities="${applicationId}.mbFileProvider"
+             android:exported="false"
+             android:grantUriPermissions="true">
+             <meta-data
+             android:name="android.support.FILE_PROVIDER_PATHS"
+             android:resource="@xml/mb_provider_paths" />
+         </provider>
 
         <provider
             android:name="com.qq.e.comm.GDTFileProvider"

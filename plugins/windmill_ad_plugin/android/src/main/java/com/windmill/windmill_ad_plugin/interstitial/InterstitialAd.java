@@ -103,7 +103,7 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
 
         String scene_desc = options.get("AD_SCENE_DESC");
         String scene_id = options.get("AD_SCENE_ID");
-        HashMap<String,String> opt =new HashMap<>();
+        HashMap<String,String> opt =new HashMap<String,String>();
         opt.put(WMConstants.AD_SCENE_ID,scene_desc);
         opt.put(WMConstants.AD_SCENE_DESC,scene_id);
         this.interstitialAd.show(this.activity, options);
@@ -126,48 +126,48 @@ class IWMIntersititialAdListener implements WMInterstitialAdListener {
 
 
     @Override
-    public void onInterstitialAdLoadSuccess(String s) {
+    public void onInterstitialAdLoadSuccess(final String s) {
         android.util.Log.d(TAG, "onInterstitialAdLoadSuccess: "+ channel);
         channel.invokeMethod(kWindmillEventAdLoaded, null);
     }
 
     @Override
-    public void onInterstitialAdPlayStart(AdInfo adInfo) {
+    public void onInterstitialAdPlayStart(final AdInfo adInfo) {
         interstitialAd.adInfo = adInfo;
         android.util.Log.d(TAG, "onInterstitialAdPlayStart: ");
         channel.invokeMethod(kWindmillEventAdOpened, null);
     }
 
     @Override
-    public void onInterstitialAdPlayEnd(AdInfo adInfo) {
+    public void onInterstitialAdPlayEnd(final AdInfo adInfo) {
         android.util.Log.d(TAG, "onInterstitialAdPlayEnd: ");
         channel.invokeMethod(kWindmillEventAdVideoPlayFinished, null);
     }
 
     @Override
-    public void onInterstitialAdClicked(AdInfo adInfo) {
+    public void onInterstitialAdClicked(final AdInfo adInfo) {
         android.util.Log.d(TAG, "onInterstitialAdClicked: ");
         channel.invokeMethod(kWindmillEventAdClicked, null);
     }
 
     @Override
-    public void onInterstitialAdClosed(AdInfo adInfo) {
+    public void onInterstitialAdClosed(final AdInfo adInfo) {
         android.util.Log.d(TAG, "onInterstitialAdClosed: ");
         channel.invokeMethod(kWindmillEventAdClosed, null);
        }
 
     @Override
-    public void onInterstitialAdLoadError(WindMillError windMillError, String s) {
+    public void onInterstitialAdLoadError(final WindMillError windMillError, final String s) {
         android.util.Log.d(TAG, "onInterstitialAdLoadError: ");
-        Map<String, Object> args = new HashMap<>(){{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
+
         channel.invokeMethod(kWindmillEventAdFailedToLoad, args);
     }
 
     @Override
-    public void onInterstitialAdPlayError(WindMillError windMillError, String s) {
+    public void onInterstitialAdPlayError(final WindMillError windMillError, final String s) {
         android.util.Log.d(TAG, "onInterstitialAdPlayError: ");
 
     }

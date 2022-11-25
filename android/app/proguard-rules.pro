@@ -253,6 +253,61 @@ public static final ** CREATOR;
 -dontwarn com.ksad.**
 -dontwarn aegon.chrome.**
 
+#oppo
+-keep class com.opos.** { *;}
+-keep class com.heytap.msp.mobad.** { *;}
+-keep class com.heytap.openid.** {*;}
+
+-keep class okio.**{ *; }
+
+-keeppackagenames com.heytap.nearx.tapplugin
+
+-keep class com.bytedance.sdk.openadsdk.** { *; }
+-keep public interface com.bytedance.sdk.openadsdk.downloadnew.** {*;}
+-keep class com.pgl.sys.ces.* {*;}
+
+-keep class com.qq.e.** {
+    public protected
+*; }
+
+#mimo
+# Mediation SDK
+-keep class com.xiaomi.ad.mediation.** { *; }
+#tencent sdk
+-keep class com.qq.e.** {public *;}
+#Ad SDK
+-keep class com.miui.zeus.mimo.sdk.** { *; }
+-keep class com.google.gson.examples.android.model.** { <fields>; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+-keep class * extends android.os.IInterface{
+    *;
+}
+
+
+#vivo
+-keepattributes SourceFile,LineNumberTable
+-dontwarn com.squareup.okhttp.**
+-dontwarn okhttp3.**
+-keep class com.vivo.*.** { *; }
+-dontwarn com.bytedance.article.common.nativecrash.NativeCrashInit
+-keep class com.bytedance.sdk.openadsdk.** {*;}
+-keep public interface com.bytedance.sdk.openadsdk.downloadnew.** {*;}
+-keep class com.pgl.sys.ces.* {*;}
+-keep class com.qq.e.** {
+public protected *;
+}-keep class android.support.v4.**{
+public *;
+}-keep class android.support.v7.widget.** {*;}
+-dontwarn com.vivo.secboxsdk.**
+-keep class com.vivo.secboxsdk.SecBoxCipherException { *; }
+-keep class com.vivo.secboxsdk.jni.SecBoxNative { *; }
+-keep class com.vivo.secboxsdk.BuildConfig { *; }
+-keep class com.kwad.sdk.** { *;}
+-keep class com.ksad.download.** { *;}
+-keep class com.kwai.filedownloader.** { *;}
+
 #mtg
 -keepattributes Signature
 -keepattributes *Annotation*

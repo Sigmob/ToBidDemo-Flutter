@@ -89,7 +89,7 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public void onMethodCall( MethodCall call, MethodChannel.Result result) {
+    public void onMethodCall(final MethodCall call,final MethodChannel.Result result) {
         Log.d("Codi", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
         WindmillBaseAd bannerAd=this.ad.getAdInstance(uniqId);
@@ -137,69 +137,65 @@ class IWMBannerAdListener implements WMBannerAdListener {
         this.bannerAd = bannerAd;
     }
     @Override
-    public void onAdLoadSuccess(String s) {
-        android.util.Log.d(TAG, "onAdLoadSuccess: ");
-        Map<String, Object> args = new HashMap<>(){{
-            put("width", bannerAd.bannerAdView.getWidth()*1.0f);
-            put("height", bannerAd.bannerAdView.getHeight()*1.0f);
-        }};
+    public void onAdLoadSuccess(String placmentId) {
+        Log.d(TAG, "onAdLoadSuccess: ");
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("width", bannerAd.bannerAdView.getWidth()*1.0f);
+        args.put("height", bannerAd.bannerAdView.getHeight()*1.0f);
         channel.invokeMethod(kWindmillEventAdLoaded, args);
     }
 
     @Override
-    public void onAdLoadError(WindMillError windMillError, String s) {
-        android.util.Log.d(TAG, "onAdLoadError: ");
-        Map<String, Object> args = new HashMap<>(){{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+    public void onAdLoadError(final WindMillError windMillError,final String placementId) {
+        Log.d(TAG, "onAdLoadError: ");
+        Map<String, Object> args = new HashMap<String, Object>();
+            args.put("code", windMillError.getErrorCode());
+            args.put("message", windMillError.getMessage());
         channel.invokeMethod(kWindmillEventAdFailedToLoad, args);
     }
 
     @Override
-    public void onAdShown(AdInfo adInfo) {
-        android.util.Log.d(TAG, "onAdShown: ");
+    public void onAdShown(final AdInfo adInfo) {
+        Log.d(TAG, "onAdShown: ");
 
         this.bannerAd.adInfo = adInfo;
 
-        Map<String, Object> args = new HashMap<>(){{
-            put("width", bannerAd.bannerAdView.getWidth()*1.0f);
-            put("height", bannerAd.bannerAdView.getHeight()*1.0f);
-        }};
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("width", bannerAd.bannerAdView.getWidth()*1.0f);
+        args.put("height", bannerAd.bannerAdView.getHeight()*1.0f);
 
         channel.invokeMethod(kWindmillEventAdOpened, null);
 
     }
 
     @Override
-    public void onAdClicked(AdInfo adInfo) {
-        android.util.Log.d(TAG, "kWindmillEventAdClicked: ");
+    public void onAdClicked(final AdInfo adInfo) {
+        Log.d(TAG, "kWindmillEventAdClicked: ");
         channel.invokeMethod(kWindmillEventAdClicked, null);
 
     }
 
     @Override
-    public void onAdClosed(AdInfo adInfo) {
-        android.util.Log.d(TAG, "onAdClosed: ");
+    public void onAdClosed(final AdInfo adInfo) {
+        Log.d(TAG, "onAdClosed: ");
         channel.invokeMethod(kWindmillEventAdClosed, null);
 
     }
 
     @Override
-    public void onAdAutoRefreshed(AdInfo adInfo) {
-        android.util.Log.d(TAG, "onAdAutoRefreshed: ");
+    public void onAdAutoRefreshed(final AdInfo adInfo) {
+        Log.d(TAG, "onAdAutoRefreshed: ");
         channel.invokeMethod(kWindmillEventAdAutoRefreshed, null);
 
     }
 
     @Override
-    public void onAdAutoRefreshFail(WindMillError windMillError, String s) {
+    public void onAdAutoRefreshFail(final WindMillError windMillError, final String placementId) {
 
-        android.util.Log.d(TAG, "onAdAutoRefreshFail: ");
-        Map<String, Object> args = new HashMap<>(){{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+        Log.d(TAG, "onAdAutoRefreshFail: ");
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
         channel.invokeMethod(kWindmillEventAdAutoRefreshFail, args);
 
     }

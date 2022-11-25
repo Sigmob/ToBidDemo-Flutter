@@ -26,18 +26,21 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 30
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.windmill_ad_plugin_example"
-        minSdk 19
+        applicationId "com.viva.moto.androidcn"
+        minSdkVersion 19
         // You can update the following values to match your application needs. 
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         targetSdkVersion 30
@@ -53,6 +56,7 @@ android {
             signingConfig signingConfigs.debug
             multiDexEnabled true
             minifyEnabled true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -67,16 +71,23 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/Core')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/csj')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/gdt')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/kuaishou')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/baidu')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/mintegral-cn')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/vungle')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/adscope')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/unity')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/klevin')
- 
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/csj')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/gdt')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/kuaishou')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/baidu')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/mintegral-cn')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/vungle')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: 'libs/AdNetworks/adscope')
+    implementation fileTree(include: ["*.jar",'*.aar'], dir: 'libs/AdNetworks/unity')
+    implementation fileTree(include: ["*.jar",'*.aar'], dir: 'libs/AdNetworks/klevin')
+
+    //  implementation 'com.squareup.okio:okio:2.5.0'
+    implementation 'org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.3.72'
+    implementation 'android.arch.persistence:db-framework:1.1.1'//410版本新增
+
+    //  implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
 
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.recyclerview:recyclerview:1.2.0" 

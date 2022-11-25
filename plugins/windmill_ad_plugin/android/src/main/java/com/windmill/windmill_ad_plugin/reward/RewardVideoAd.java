@@ -104,7 +104,7 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
 
         String scene_desc = options.get("AD_SCENE_DESC");
         String scene_id = options.get("AD_SCENE_ID");
-        HashMap<String,String> opt =new HashMap<>();
+        HashMap<String,String> opt =new HashMap<String,String>();
         opt.put(WMConstants.AD_SCENE_ID,scene_desc);
         opt.put(WMConstants.AD_SCENE_DESC,scene_id);
 
@@ -120,53 +120,53 @@ class IWMRewardAdListener implements WMRewardAdListener {
 
     private MethodChannel channel;
     private RewardVideoAd rewardVideoAd;
-    public IWMRewardAdListener(RewardVideoAd rewardVideoAd,MethodChannel channel) {
+    public IWMRewardAdListener(final RewardVideoAd rewardVideoAd,final MethodChannel channel) {
         this.channel = channel;
         this.rewardVideoAd = rewardVideoAd;
     }
 
     @Override
-    public void onVideoAdLoadSuccess(String s) {
+    public void onVideoAdLoadSuccess(final String placemnetId) {
         channel.invokeMethod(kWindmillEventAdLoaded, null);
     }
 
     @Override
-    public void onVideoAdLoadError(WindMillError windMillError, String s) {
-        Map<String, Object> args = new HashMap<>(){{
-            put("code", windMillError.getErrorCode());
-            put("message", windMillError.getMessage());
-        }};
+    public void onVideoAdLoadError(final WindMillError windMillError,final String placemnetId) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
+
         channel.invokeMethod(kWindmillEventAdFailedToLoad, args);
     }
 
     @Override
-    public void onVideoAdPlayStart(AdInfo adInfo) {
+    public void onVideoAdPlayStart(final AdInfo adInfo) {
 
         rewardVideoAd.adInfo = adInfo;
         channel.invokeMethod(kWindmillEventAdOpened, null);
     }
 
     @Override
-    public void onVideoAdPlayError(WindMillError windMillError, String s) {
+    public void onVideoAdPlayError(final WindMillError windMillError,final String placemnetId) {
     }
 
     @Override
-    public void onVideoAdPlayEnd(AdInfo adInfo) {
+    public void onVideoAdPlayEnd(final AdInfo adInfo) {
         channel.invokeMethod(kWindmillEventAdVideoPlayFinished, null);
     }
 
     @Override
-    public void onVideoAdClicked(AdInfo adInfo) {
+    public void onVideoAdClicked(final AdInfo adInfo) {
         channel.invokeMethod(kWindmillEventAdClicked, null);
     }
 
     @Override
-    public void onVideoAdClosed(AdInfo adInfo) {
+    public void onVideoAdClosed(final AdInfo adInfo) {
         channel.invokeMethod(kWindmillEventAdClosed, null);
     }
 
     @Override
-    public void onVideoRewarded(AdInfo adInfo, WMRewardInfo wmRewardInfo) {
+    public void onVideoRewarded(final AdInfo adInfo,final  WMRewardInfo wmRewardInfo) {
         channel.invokeMethod(kWindmillEventAdReward, null);
     }
 }
