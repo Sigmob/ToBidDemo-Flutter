@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -75,7 +75,7 @@ dependencies {
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/gdt')
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/kuaishou')
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/baidu')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/miniegral-cn')
+    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/mintegral-cn')
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/vungle')
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/adscope')
     implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/unity')

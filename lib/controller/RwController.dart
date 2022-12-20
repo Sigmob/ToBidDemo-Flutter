@@ -16,10 +16,10 @@ class RwController extends GetxController {
   }
 
   ///  获取WindmillRewardAd，若不存在，则创建WindmillRewardAd
-  WindmillRewardAd getOrCreateWindmillRewardAd({required String placementId, required WindmillRewardListener<WindmillRewardAd> listener}) {
+  WindmillRewardAd getOrCreateWindmillRewardAd({required String placementId, String? userId, required WindmillRewardListener<WindmillRewardAd> listener}) {
     WindmillRewardAd? rewardAd = getWindmillRewardAd(placementId);
     if (rewardAd != null) return rewardAd;
-    AdRequest request = AdRequest(placementId: placementId);
+    AdRequest request = AdRequest(placementId: placementId,userId: userId);
     rewardAd = WindmillRewardAd(
         request: request,
         listener: listener

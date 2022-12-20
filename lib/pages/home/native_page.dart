@@ -106,7 +106,7 @@ class NativePage extends StatelessWidget {
                         290, 200,
                         x: 5, y: 5, backgroundColor: '#FFFFFF'),
                     CustomNativeAdConfig.adLogoView(): CustomNativeAdConfig.createNativeSubViewAttribute(
-                        20, 10,
+                        20, 20,
                         x: 10,
                         y: 10,
                         backgroundColor: '#FFFFFF'),
@@ -128,8 +128,9 @@ class NativePage extends StatelessWidget {
 
   void _adLoad(String placementId) {
     final c = Get.find<NativeController>();
+    final adcontroller = Get.find<Controller>();
 
-    WindmillNativeAd ad = c.getOrCreateWindmillNativeAd(placementId: placementId,size: Size(300, 350), listener: IWindmillNativeListener());
+    WindmillNativeAd ad = c.getOrCreateWindmillNativeAd(placementId: placementId,userId:adcontroller.adSetting.value.otherSetting?.userId,size: Size(300, 350), listener: IWindmillNativeListener());
 
     ad.loadAd();
    

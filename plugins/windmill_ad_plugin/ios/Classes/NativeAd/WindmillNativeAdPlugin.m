@@ -13,6 +13,8 @@
 #import "WindmillFeedAdViewStyle.h"
 #import <Flutter/Flutter.h>
 #import <WindMillSDK/WindMillSDK.h>
+#import <WindSDK/WindSDK.h>
+
 #import <WindFoundation/WindFoundation.h>
 
 @interface WindmillNativeAdPlugin()<WindMillNativeAdsManagerDelegate,WindMillNativeAdViewDelegate>
@@ -112,7 +114,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     NSNumber *height = [(NSDictionary *)call.arguments objectForKey:@"height"];
     self.nativeAdManager.adSize = CGSizeMake(width.doubleValue, height.doubleValue);
     [self.nativeAdManager loadAdDataWithCount:1];
-
+    _adView = nil;
     self.adinfo = nil;
     result(nil);
 }
@@ -136,13 +138,13 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 - (void)showAd:(UIView *)adContainer args:(NSDictionary *)args{
     
 //    (WindMillNativeAd *)nativeAd
+    UIViewController *rootViewController = [WindmillUtil getCurrentController];
     [adContainer addSubview:self.adView];
     self.adView.frame = adContainer.bounds;
     self.adView.delegate = self;
-    [self.adView refreshData:self.nativeAd];
-    UIViewController *rootViewController = [WindmillUtil getCurrentController];
     self.adView.viewController = rootViewController;
-    
+    [self.adView refreshData:self.nativeAd];
+
     CGSize adSize = [WindmillFeedAdViewStyle layoutWithNativeAd:_nativeAd adView:self.adView args:args];
     if (_nativeAd.feedADMode != WindMillFeedADModeNativeExpress) {
         self.adView.frame = CGRectMake(0, 0, adSize.width, adSize.height);
@@ -242,6 +244,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     self.nativeAdManager.delegate = nil;
     self.nativeAdManager = nil;
     self.nativeAd = nil;
+    _adView = nil;
     self.channel = nil;
 }
 @end

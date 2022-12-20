@@ -14,10 +14,10 @@ class SplashController extends GetxController {
     print('SplashController onInit...');
   }
 
-  WindmillSplashAd getOrCreateWindmillSplashAd({required String placementId,required Size size, String? title, String? desc, required WindmillSplashListener<WindmillSplashAd> listener}) {
+  WindmillSplashAd getOrCreateWindmillSplashAd({required String placementId,String? userId,required Size size, String? title, String? desc, required WindmillSplashListener<WindmillSplashAd> listener}) {
     WindmillSplashAd? splashAd = getWindmillSplashAd(placementId);
     if (splashAd != null) return splashAd;
-    AdRequest request = AdRequest(placementId: placementId);
+    AdRequest request = AdRequest(placementId: placementId,userId: userId);
     splashAd = WindmillSplashAd(
       request: request,
       listener: listener,

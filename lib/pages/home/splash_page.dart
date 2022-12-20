@@ -72,6 +72,7 @@ class SplashPage extends StatelessWidget {
 
   void _adLoad(String placementId) {
     final c = Get.find<SplashController>();
+    final adcontroller = Get.find<Controller>();
 
     Size size = Size(window.physicalSize.width, window.physicalSize.height);
     if(Platform.isIOS){
@@ -79,6 +80,7 @@ class SplashPage extends StatelessWidget {
     }
     WindmillSplashAd ad = c.getOrCreateWindmillSplashAd(
         placementId: placementId,
+        userId: adcontroller.adSetting.value.otherSetting?.userId,
         size: size,
         title: "开心消消乐",
         desc: "测试开始",

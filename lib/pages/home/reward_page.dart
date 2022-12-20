@@ -50,7 +50,9 @@ class RewardPage extends StatelessWidget {
 
   void _adLoad(String placementId) {
     final c = Get.find<RwController>();
-    WindmillRewardAd ad = c.getOrCreateWindmillRewardAd(placementId: placementId, listener: IWindMillRewardListener());
+    final adcontroller = Get.find<Controller>();
+
+    WindmillRewardAd ad = c.getOrCreateWindmillRewardAd(placementId: placementId,userId: adcontroller.adSetting.value.otherSetting?.userId, listener: IWindMillRewardListener());
     ad.loadAdData();
   }
 
@@ -109,9 +111,9 @@ class IWindMillRewardListener extends WindmillRewardListener<WindmillRewardAd> {
   }
 
   @override
-  void onAdReward(WindmillRewardAd ad) {
-    print('onAdReward -- ${ad.request.placementId}');
-    c.rwCallbacks.add('onAdReward -- ${ad.request.placementId}');
+  void onAdReward(WindmillRewardAd ad, RewardInfo rewardInfo) {
+    print('onAdReward -- ${ad.request.placementId} -- IsReward -- ${rewardInfo.isReward} --- TransId -- ${rewardInfo.transId} -- UserId -- ${rewardInfo.userId} ');
+    c.rwCallbacks.add('onAdReward -- ${ad.request.placementId} -- IsReward -- ${rewardInfo.isReward} --- TransId -- ${rewardInfo.transId} -- UserId -- ${rewardInfo.userId} ');
   }
 
   @override
@@ -134,3 +136,4 @@ class IWindMillRewardListener extends WindmillRewardListener<WindmillRewardAd> {
   }
 
 }
+

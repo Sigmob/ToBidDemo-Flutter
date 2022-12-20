@@ -5,7 +5,7 @@ import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
 
 abstract class WindmillRewardListener<T> extends WindmillInterface<T> {
   void onAdSkiped(T ad);
-  void onAdReward(T ad);
+  void onAdReward(T ad,RewardInfo rewardInfo);
   void onAdVideoPlayFinished(T ad, WMError? error);
   void onAdClosed(T ad);
 }
@@ -44,7 +44,16 @@ class IWindmillRewardListener with WindmillAdEvent {
 
   @override
   void onAdReward(Map<String, dynamic>? arguments) {
-    listener.onAdReward(rewardAd!);
+
+    RewardInfo rewardInfo = RewardInfo();
+    rewardInfo.isReward = true;
+    if(arguments != null){
+      rewardInfo.userId  = arguments['user_id'] as String;
+      rewardInfo.transId = arguments['trans_id'] as String;
+    }
+
+
+    listener.onAdReward(rewardAd!,rewardInfo);
   }
 
   @override

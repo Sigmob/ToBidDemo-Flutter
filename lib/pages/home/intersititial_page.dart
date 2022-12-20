@@ -52,7 +52,9 @@ class IntersititialPage extends StatelessWidget {
 
   void _adLoad(String placementId) {
     final c = Get.find<IntersititialController>();
-    WindmillInterstitialAd ad = c.getOrCreateWindmillInterstitialAd(placementId: placementId, listener: IWindMillInterstitialListener());
+    final adcontroller = Get.find<Controller>();
+
+    WindmillInterstitialAd ad = c.getOrCreateWindmillInterstitialAd(placementId: placementId,userId:  adcontroller.adSetting.value.otherSetting?.userId, listener: IWindMillInterstitialListener());
     ad.loadAdData();
   }
 

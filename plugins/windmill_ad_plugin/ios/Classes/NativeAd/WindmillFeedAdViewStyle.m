@@ -48,7 +48,6 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
         
         if (nativeAd.feedADMode == WindMillFeedADModeLargeImage) {
             [clickViewSet addObject:adView.mainImageView];
-
             [WindmillFeedAdViewStyle updateViewProperty:adView.mainImageView ViewConfig:rootView  ];
         }else if (nativeAd.feedADMode == WindMillFeedADModeVideo ||
                   nativeAd.feedADMode == WindMillFeedADModeVideoPortrait ||
@@ -57,8 +56,21 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
             [WindmillFeedAdViewStyle updateViewProperty:adView.mediaView ViewConfig:rootView];
             [clickViewSet addObject:adView.mediaView];
 
-        }
 
+        }else  if (nativeAd.feedADMode == WindMillFeedADModeGroupImage){
+            CGFloat imgW = adView.frame.size.width/adView.imageViewList.count;
+            CGFloat imgHeight = 9.0/16.0*imgW;
+
+            CGFloat x =adView.frame.origin.x;
+            CGFloat y =adView.frame.origin.y;
+
+            for(int i=0; i< adView.imageViewList.count ; i++){
+               UIImageView* imageView = adView.imageViewList[i];
+               imageView.frame = CGRectMake(x+i*imgW, y, imgW, imgHeight);
+            }
+        }
+        
+        [[adView.logoView superview] bringSubviewToFront:adView.logoView];
     }
     
     
@@ -264,13 +276,16 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
         adView.descLabel.frame = CGRectMake(x, y, contentWidth, descSize.height+5);
         y = y+descSize.height+10;
         CGFloat imgHeight = height - 80;
-        CGFloat imgW = (contentWidth - 2*margin)/3.0;
+
+
+        CGFloat imgW = (contentWidth - 2*margin)/adView.imageViewList.count;
         if (height == 0) {
             imgHeight = 9.0/16.0*imgW;
         }
-        adView.mainImageView.frame = CGRectMake(x, y, imgW, imgHeight);
-        adView.midImageView.frame = CGRectMake(CGRectGetMaxX(adView.mainImageView.frame)+margin, y, imgW, imgHeight);
-        adView.rightImageView.frame = CGRectMake(CGRectGetMaxX(adView.midImageView.frame)+margin, y, imgW, imgHeight);
+
+        adView.imageViewList[0].frame = CGRectMake(x, y, imgW, imgHeight);
+        adView.imageViewList[1].frame = CGRectMake(CGRectGetMaxX(adView.imageViewList[0].frame)+margin, y, imgW, imgHeight);
+        adView.imageViewList[2].frame = CGRectMake(CGRectGetMaxX(adView.imageViewList[1].frame)+margin, y, imgW, imgHeight);
         CGSize logoSize = adView.logoView.frame.size;
         if (CGSizeEqualToSize(logoSize, CGSizeZero)) {
             logoSize = CGSizeMake(25, 25);

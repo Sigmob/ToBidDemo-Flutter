@@ -320,7 +320,7 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
 
         //clickViews数量必须大于等于1
         //可以被点击的view, 也可以把convertView放进来意味item可被点击
-//        clickableViews.add(view);
+        clickableViews.add(view);
         ////触发创意广告的view（点击下载或拨打电话）
         List<View> creativeViewList = new ArrayList<>();
         // 所有广告类型，注册mDownloadButton的点击事件

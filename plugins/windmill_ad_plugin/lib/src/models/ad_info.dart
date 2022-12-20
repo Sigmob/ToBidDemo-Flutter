@@ -40,7 +40,7 @@ class AdInfo {
         abFlag: json["abFlag"], 
         loadPriority: json["loadPriority"], 
         playPriority: json["playPriority"], 
-        eCPM: json["eCPM"], 
+        eCPM: json["eCPM"] is int? json["eCPM"]:int.parse(json["eCPM"]), 
         currency: json["currency"], 
         isHeaderBidding: json["isHeaderBidding"], 
         loadId: json["loadId"], 

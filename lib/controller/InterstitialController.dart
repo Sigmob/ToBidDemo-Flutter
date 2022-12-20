@@ -21,10 +21,10 @@ class IntersititialController extends GetxController {
   }
 
   ///  获取WindmillIntersititialAd，若不存在，则创建WindmillRewardAd
-  WindmillInterstitialAd getOrCreateWindmillInterstitialAd({required String placementId, required WindmillInterstitialListener<WindmillInterstitialAd> listener}) {
+  WindmillInterstitialAd getOrCreateWindmillInterstitialAd({required String placementId,String? userId ,required WindmillInterstitialListener<WindmillInterstitialAd> listener}) {
     WindmillInterstitialAd? ad = getWindmillInterstitialAd(placementId);
     if (ad != null) return ad;
-    AdRequest request = AdRequest(placementId: placementId);
+    AdRequest request = AdRequest(placementId: placementId,userId: userId);
     ad = WindmillInterstitialAd(
         request: request,
         listener: listener

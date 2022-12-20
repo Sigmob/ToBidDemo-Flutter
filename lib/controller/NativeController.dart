@@ -15,10 +15,10 @@ class NativeController extends GetxController {
     print('NativeController onInit...');
   }
 
-  WindmillNativeAd getOrCreateWindmillNativeAd({required String placementId,required Size size, required WindmillNativeListener<WindmillNativeAd> listener}) {
+  WindmillNativeAd getOrCreateWindmillNativeAd({required String placementId,String? userId,required Size size, required WindmillNativeListener<WindmillNativeAd> listener}) {
     WindmillNativeAd? nativeAd = getWindmillNativeAd(placementId);
     if (nativeAd != null) return nativeAd;
-    AdRequest request = AdRequest(placementId: placementId);
+    AdRequest request = AdRequest(placementId: placementId,userId: userId);
     nativeAd = WindmillNativeAd(
       request: request,
       listener: listener,

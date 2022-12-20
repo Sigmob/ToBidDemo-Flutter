@@ -6,6 +6,13 @@ import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/models/ad_request.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
+
+class RewardInfo {
+   late bool isReward;
+   late String transId;
+   late String userId;
+}
+
 class WindmillRewardAd with WindmillEventHandler {
 
   static const MethodChannel _channel =  MethodChannel('com.windmill/reward');

@@ -147,7 +147,7 @@ class IWMRewardAdListener implements WMRewardAdListener {
     }
 
     @Override
-    public void onVideoAdPlayError(final WindMillError windMillError,final String placemnetId) {
+public void onVideoAdPlayError(final WindMillError windMillError,final String placemnetId) {
     }
 
     @Override
@@ -167,7 +167,14 @@ class IWMRewardAdListener implements WMRewardAdListener {
 
     @Override
     public void onVideoRewarded(final AdInfo adInfo,final  WMRewardInfo wmRewardInfo) {
-        channel.invokeMethod(kWindmillEventAdReward, null);
+
+
+
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("trans_id", wmRewardInfo.getTrans_id());
+        args.put("user_id", wmRewardInfo.getUser_id());
+
+        channel.invokeMethod(kWindmillEventAdReward, args);
     }
 }
 

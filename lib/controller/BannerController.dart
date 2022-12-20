@@ -15,10 +15,10 @@ class BannerController extends GetxController {
     print('BannerController onInit...');
   }
 
-  WindmillBannerAd getOrCreateWindmillBannerAd({required String placementId, required WindmillBannerListener<WindmillBannerAd> listener}) {
+  WindmillBannerAd getOrCreateWindmillBannerAd({required String placementId,String? userId, required WindmillBannerListener<WindmillBannerAd> listener}) {
     WindmillBannerAd? bannerAd = getWindmillBannerAd(placementId);
     if (bannerAd != null) return bannerAd;
-    AdRequest request = AdRequest(placementId: placementId);
+    AdRequest request = AdRequest(placementId: placementId,userId: userId);
     bannerAd = WindmillBannerAd(
         request: request,
         listener: listener,

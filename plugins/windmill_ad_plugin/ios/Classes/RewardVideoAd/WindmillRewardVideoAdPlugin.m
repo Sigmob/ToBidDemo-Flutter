@@ -154,7 +154,12 @@
 
 - (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd reward:(WindMillRewardInfo *)reward {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    [self.channel invokeMethod:kWindmillEventAdReward arguments:@{}];
+
+
+    [self.channel invokeMethod:kWindmillEventAdReward arguments:@{
+          @"user_id":reward.userId,
+          @"trans_id":reward.transId
+    }];
 }
 
 - (void)rewardVideoAdDidClose:(WindMillRewardVideoAd *)rewardVideoAd {
