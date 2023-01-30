@@ -1,9 +1,15 @@
 package com.windmill.windmill_ad_plugin;
 
 import android.app.Activity;
+import android.location.Location;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
+import com.windmill.sdk.WMAdConfig;
+import com.windmill.sdk.WMCustomController;
 import com.windmill.sdk.WindMillAd;
 import com.windmill.sdk.WindMillConsentStatus;
 import com.windmill.sdk.WindMillUserAgeStatus;
@@ -12,6 +18,9 @@ import com.windmill.windmill_ad_plugin.feedAd.NativeAd;
 import com.windmill.windmill_ad_plugin.reward.RewardVideoAd;
 import com.windmill.windmill_ad_plugin.interstitial.InterstitialAd;
 import com.windmill.windmill_ad_plugin.splashAd.SplashAd;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -29,6 +38,7 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
     private RewardVideoAd rewardVideoAd;
     private InterstitialAd interstitialAd;
+    private WMCustomController wmCustomController;
     private BannerAd bannerAd;
     private NativeAd nativeAd;
     private SplashAd splashAd;
@@ -54,6 +64,86 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
         } else if(call.method.equals("setPersonalizedStatus")){
             int state = call.argument("state");
             WindMillAd.sharedAds().setPersonalizedAdvertisingOn(state == 0);
+        } else if(call.method.equals("customDevice")){
+            final Boolean isCanUseAndroidId = call.argument("isCanUseAndroidId");
+            final Boolean isCanUseLocation = call.argument("isCanUseLocation");
+            final Boolean isCanUsePhoneState = call.argument("isCanUsePhoneState");
+            final String customAndoidId = call.argument("customAndoidId");
+            final String customIMEI = call.argument("customIMEI");
+            final String customOAID = call.argument("customOAID");
+            HashMap customLocation = call.argument("customLocation");
+            try {
+                final Location location = new Location("");
+
+                if(customLocation != null){
+                    double longitude = customLocation.get("longitude") == null?0:(Double) customLocation.get("longitude");
+                    double latitude = customLocation.get("latitude") == null?0:(Double) customLocation.get("latitude");
+                    location.setLongitude(longitude);
+                    location.setLatitude(latitude);
+                }
+
+
+                wmCustomController = new WMCustomController() {
+                    @Override
+                    public boolean isCanUseLocation() {
+                       return isCanUseLocation == null?true:isCanUseLocation;
+                    }
+
+                    @Override
+                    public Location getLocation() {
+                        return location;
+                    }
+
+                    @Override
+                    public boolean isCanUsePhoneState() {
+                        return isCanUsePhoneState == null?true:isCanUsePhoneState;
+                     }
+
+                    @Override
+                    public String getDevImei() {
+                        return customIMEI;
+                    }
+
+                    @Override
+                    public boolean isCanUseAndroidId() {
+                        return isCanUseAndroidId == null?true:isCanUseAndroidId;
+
+                     }
+
+                    @Override
+                    public String getAndroidId() {
+                        return customAndoidId; 
+                   }
+
+                    @Override
+                    public String getDevOaid() {
+                        return customOAID;
+                    }
+                };
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else if(call.method.equals("initCustomGroup")){
+
+            String customGroup = call.argument("customGroup");
+            try {
+                JSONObject jsonObject = new JSONObject(customGroup);
+                HashMap map = new HashMap();
+                Iterator<String> keys = jsonObject.keys();
+                while (keys.hasNext()){
+                    String next = keys.next();
+                    map.put(next,jsonObject.getString(next));
+                }
+
+                WindMillAd.sharedAds().initCustomMap(map);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         } else if(call.method.equals("setAge")){
             int age = call.argument("age");
             WindMillAd.sharedAds().setUserAge(age);
@@ -157,7 +247,15 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
     private void setupSdkWithAppId(MethodCall call, MethodChannel.Result result) {
         String appId = call.argument("appId");
-        WindMillAd.sharedAds().startWithAppId(this.activity.getApplicationContext(), appId);
+        if (wmCustomController != null){
+
+            WMAdConfig wmAdConfig = new  WMAdConfig.Builder().customController(wmCustomController).build();
+            WindMillAd.sharedAds().startWithAppId(this.activity.getApplicationContext(), appId,wmAdConfig);
+
+        } else {
+            WindMillAd.sharedAds().startWithAppId(this.activity.getApplicationContext(), appId);
+        }
+
         result.success(null);
     }
 

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
@@ -51,9 +54,43 @@ class HomePage extends StatelessWidget {
         default:
       }
 
+       var locationStr = adSetting.otherSetting?.customLocation;
+       var location;
+       if(locationStr != null){
 
-       WindmillAd.age( adSetting.otherSetting!.age);
+          var list = locationStr.split(',');
+          if(list.length == 2){
+             location = Location(longitude: double.parse(list[0]),latitude:double.parse(list[1]));
+          }
+       }
 
+      var customDevice = CustomDevice(isCanUseAndroidId: adSetting.otherSetting?.isCanUseAndroidId,
+      isCanUseIdfa: adSetting.otherSetting?.isCanUseIdfa,
+      isCanUseLocation: adSetting.otherSetting?.isCanUseLocation,
+      isCanUsePhoneState: adSetting.otherSetting?.isCanUsePhoneState,
+      customAndoidId: adSetting.otherSetting?.customAndoidId,
+      customIDFA: adSetting.otherSetting?.customIDFA,
+      customIMEI: adSetting.otherSetting?.customIMEI,
+      customOAID: adSetting.otherSetting?.customOAID,
+      customLocation: location);
+      WindmillAd.setCustomDevice(customDevice);
+
+      WindmillAd.age( adSetting.otherSetting!.age);
+
+      var customGroupStr = adSetting.otherSetting?.customGroup;
+      Map customGroup = Map();
+      if(customGroupStr != null){
+
+         var list = customGroupStr.split(',');
+         for (var custom in list) {
+            var group = custom.split('-');
+            if(group.length == 2){
+             customGroup[group[0]]= group[1];
+            }
+         }
+      }
+
+      WindmillAd.initCustomGroup(json.encode(customGroup));
 
       await WindmillAd.init(adSetting.appId!.toString());
       

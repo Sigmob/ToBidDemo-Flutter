@@ -1,5 +1,6 @@
 package com.windmill.windmill_ad_plugin.feedAd;
 
+
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -10,14 +11,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.czhj.sdk.common.utils.ImageManager;
-import com.czhj.sdk.common.utils.ResourceUtil;
 import com.windmill.sdk.natives.WMNativeAdData;
 import com.windmill.sdk.natives.WMNativeAdDataType;
 import com.windmill.sdk.natives.WMNativeAdRender;
+import com.czhj.sdk.common.utils.ResourceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +41,10 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
 
     private FrameLayout mMediaViewLayout;
     private ImageView mMainImageView;
+    private ImageView mImageView1;
+    private ImageView mImageView2;
+    private ImageView mImageView3;
+
     private TextView text_title;
     private JSONObject mCustomViewConfig;
     private Button mCTAButton;
@@ -256,6 +262,58 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }else if(patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD){
+            try {
+                LinearLayout  linearLayout = new LinearLayout(context);
+                JSONObject config = mCustomViewConfig.getJSONObject("mainAdView");
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.setWeightSum(3);
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout
+                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.weight = 1;
+                layoutParams.setMargins(3,3,3,3);
+
+
+                LinearLayout.LayoutParams layoutParams2 = new LinearLayout
+                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams2.weight = 1;
+                layoutParams2.setMargins(3,3,3,3);
+
+                LinearLayout.LayoutParams layoutParams3 = new LinearLayout
+                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams3.weight = 1;
+                layoutParams3.setMargins(3,3,3,3);
+
+                mImageView1 = new ImageView(context);
+                mImageView1.setScaleType(ImageView.ScaleType.FIT_XY);
+                mImageView1.setAdjustViewBounds(true);
+                linearLayout.addView(mImageView1, layoutParams);
+
+                mImageView2 = new ImageView(context);
+                linearLayout.addView(mImageView2, layoutParams2);
+                mImageView2.setAdjustViewBounds(true);
+                mImageView2.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+                mImageView3 = new ImageView(context);
+                linearLayout.addView(mImageView3, layoutParams3);
+                mImageView3.setAdjustViewBounds(true);
+                mImageView3.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                if(config != null){
+                    ViewConfigItem item = new ViewConfigItem(config);
+                    updateViewProperty(linearLayout,item);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
+                    lp.setMargins(item.getX(),item.getY(),0,0);
+                    rootView.addView(linearLayout,lp);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -333,7 +391,13 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
         if (patternType == WMNativeAdDataType.NATIVE_SMALL_IMAGE_AD || patternType == WMNativeAdDataType.NATIVE_BIG_IMAGE_AD) {
             // 双图双文、单图双文：注册mImagePoster的点击事件
             imageViews.add(mMainImageView);
+        }else  if (patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD) {
+
+            imageViews.add(mImageView1);
+            imageViews.add(mImageView2);
+            imageViews.add(mImageView3);
         }
+
 
         //重要! 这个涉及到广告计费，必须正确调用。convertView必须使用ViewGroup。
         //作为creativeViewList传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效

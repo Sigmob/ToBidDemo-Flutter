@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_enum.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 class WindmillAd {
   static const _channel = MethodChannel('com.windmill.ad');
@@ -11,6 +12,27 @@ class WindmillAd {
   static Future<void> init(String appId) {
     return _channel.invokeMethod('setupSdkWithAppId', {
       'appId': appId
+    });
+  }
+
+  static Future<void> initCustomGroup(String customGroup) {
+    return _channel.invokeMethod('initCustomGroup', {
+      'customGroup': customGroup
+    });
+  }
+
+  static Future<void> setCustomDevice(CustomDevice customDevice) {
+    return _channel.invokeMethod('customDevice', {
+      'isCanUseIdfa': customDevice.isCanUseIdfa,
+      'isCanUseAndroidId':customDevice.isCanUseAndroidId,
+      'isCanUseLocation':customDevice.isCanUseLocation,
+      'isCanUsePhoneState':customDevice.isCanUsePhoneState, 
+      'customAndoidId':customDevice.customAndoidId, 
+      'customIDFA':customDevice.customIDFA, 
+      'customIMEI':customDevice.customIMEI, 
+      'customIDFA':customDevice.customIDFA, 
+      'customOAID':customDevice.customOAID, 
+      'customLocation':{'latitude':customDevice.customLocation?.latitude,'longitude':customDevice.customLocation?.longitude}, 
     });
   }
   /// 场景曝光，sceneId由平台生成

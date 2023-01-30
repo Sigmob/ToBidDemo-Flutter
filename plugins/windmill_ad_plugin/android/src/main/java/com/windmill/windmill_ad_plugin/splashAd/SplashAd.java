@@ -3,7 +3,11 @@ package com.windmill.windmill_ad_plugin.splashAd;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import android.app.Activity;
+import android.os.Build;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.windmill.sdk.WindMillAdRequest;
@@ -35,6 +39,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     private WMSplashAd splashAdView;
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
+    private WindowManager.LayoutParams layoutParams;
 
     public SplashAd() {}
     public SplashAd(Activity activity, FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
@@ -83,7 +88,18 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         }
         splashAd.excuted(call, result);
     }
-    
+
+
+    void restoreNavigationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window _window = this.activity.getWindow();
+            if((layoutParams.flags&WindowManager.LayoutParams.FLAG_FULLSCREEN) != WindowManager.LayoutParams.FLAG_FULLSCREEN){
+                _window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+            _window.setAttributes(layoutParams);
+        }
+    }
+
     public Object getAdInfo(MethodCall call) {
         if(this.adInfo != null){
             return this.adInfo.toString();
@@ -98,6 +114,12 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     public Object showAd(MethodCall call){
+
+        Window _window = this.activity.getWindow();
+        layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(_window.getAttributes());
+
+
         this.splashAdView.showAd(null);
         return null;
     }
@@ -152,6 +174,7 @@ class IWMSplashAdListener implements WMSplashAdListener {
     @Override
     public void onSplashClosed(final AdInfo adInfo, final IWMSplashEyeAd iwmSplashEyeAd) {
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdClosed, null);
+        splashAd.restoreNavigationBar();
 
     }
 }

@@ -142,11 +142,35 @@ class OtherSetting {
       this.adultState = 0,
       this.personalizedAdvertisingState = 0,
       this.enablePlayingLoad = false,
-      this.useNewInstance = false});
+      this.isCanUseAndroidId = true,
+      this.isCanUseIdfa = true,
+      this.isCanUseLocation = true,
+      this.isCanUsePhoneState = true,
+      this.customAndoidId = "",
+      this.customIDFA = "",
+      this.customIMEI = "",
+      this.customLocation = "",
+      this.customOAID = "",
+      this.useNewInstance = false,
+      this.customGroup = ""});
 
   String? userId;
+  String? customGroup;
+
+  bool isCanUseLocation;
+  bool isCanUseIdfa;
+  bool isCanUseAndroidId;
+  bool isCanUsePhoneState;
+  
+  String? customAndoidId;
+  String? customOAID;
+  String? customIMEI;
+  String? customIDFA;
+  String? customLocation;
+ 
   String? adSceneDesc;
   String? adSceneId;
+
   int age;
   int loadCount;
   int gdprIndex;
@@ -168,6 +192,17 @@ class OtherSetting {
         personalizedAdvertisingState: json["personalizedAdvertisingState"],
         enablePlayingLoad: json["enablePlayingLoad"],
         useNewInstance: json["useNewInstance"],
+        isCanUseAndroidId: json["isCanUseAndroidId"],
+        isCanUsePhoneState: json["isCanUsePhoneState"], 
+        isCanUseIdfa: json["isCanUseIdfa"],
+        isCanUseLocation: json["isCanUseLocation"],
+        customAndoidId: json["customAndoidId"],
+        customOAID: json["customOAID"],
+        customIMEI: json["customIMEI"],
+        customIDFA: json["customIDFA"],
+        customLocation: json["customLocation"],
+        customGroup: json["customGroup"],
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -182,5 +217,16 @@ class OtherSetting {
         "personalizedAdvertisingState": personalizedAdvertisingState,
         "enablePlayingLoad": enablePlayingLoad,
         "useNewInstance": useNewInstance,
+        "isCanUseAndroidId": isCanUseAndroidId,
+        "isCanUsePhoneState": isCanUsePhoneState,
+        "isCanUseLocation": isCanUseLocation,
+        "isCanUseIdfa": isCanUseIdfa,
+        "customAndoidId": customAndoidId,
+        "customOAID": customOAID,
+        "customIMEI": customIMEI,
+        "customIDFA": customIDFA,
+        "customLocation": customLocation,
+        "customGroup": customGroup,
+
       };
 }

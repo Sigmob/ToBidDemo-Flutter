@@ -58,16 +58,18 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
 
 
         }else  if (nativeAd.feedADMode == WindMillFeedADModeGroupImage){
-            CGFloat imgW = adView.frame.size.width/adView.imageViewList.count;
+            CGRect frame = [rootView getFrame];
+            CGFloat imgW = frame.size.width/adView.imageViewList.count;
             CGFloat imgHeight = 9.0/16.0*imgW;
 
-            CGFloat x =adView.frame.origin.x;
-            CGFloat y =adView.frame.origin.y;
+            CGFloat x =frame.origin.x;
+            CGFloat y =frame.origin.y;
 
             for(int i=0; i< adView.imageViewList.count ; i++){
                UIImageView* imageView = adView.imageViewList[i];
                imageView.frame = CGRectMake(x+i*imgW, y, imgW, imgHeight);
             }
+        
         }
         
         [[adView.logoView superview] bringSubviewToFront:adView.logoView];

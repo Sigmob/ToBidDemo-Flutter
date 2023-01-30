@@ -123,8 +123,17 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     NSNumber *width = [(NSDictionary *)call.arguments objectForKey:@"width"];
     NSNumber *height= [(NSDictionary *)call.arguments objectForKey:@"height"];
     CGSize size = CGSizeMake(width.doubleValue, height.doubleValue);
-     _title = [(NSDictionary *)call.arguments objectForKey:@"title"];
-     _desc = [(NSDictionary *)call.arguments objectForKey:@"desc"];
+    NSObject *object = [(NSDictionary *)call.arguments objectForKey:@"title"];
+    if(object != [NSNull null]){
+        _title = object;
+    }
+    
+    object = [(NSDictionary *)call.arguments objectForKey:@"desc"];
+    
+    if(object != [NSNull null]){
+        _desc = object;
+    }
+    
     
      NSDictionary *extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size)};
     if(_title != nil && _title.length>0){
@@ -147,7 +156,12 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     _splashWindow.rootViewController = _splashVC;
     [_splashWindow makeKeyAndVisible];
     
-    [_splashView showAdInWindow:_splashWindow title:_title desc:_desc];
+    if(_title != nil){
+        [_splashView showAdInWindow:_splashWindow title:_title desc:_desc];
+    }else{
+        [_splashView showAdInWindow:_splashWindow withBottomView:NULL];
+    }
+
     result(nil);
 
 }

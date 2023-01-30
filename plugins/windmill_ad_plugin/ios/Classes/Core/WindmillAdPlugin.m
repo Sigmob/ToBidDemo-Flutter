@@ -8,6 +8,7 @@
 #import "WindmillBannerAdPlugin.h"
 #import "WindmillRewardVideoAdPlugin.h"
 #import "WindmillSplashAdPlugin.h"
+#import "WindMillCustomDevInfo.h"
 
 @implementation WindmillAdPlugin
 
@@ -83,6 +84,57 @@ static NSString *userId;
     [WindMillAds sceneExposeWithSceneId:sceneId sceneName:sceneName];
     result(nil);
 }
+- (void)initCustomGroupMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    
+    NSString *customGroup = call.arguments[@"customGroup"];
+    
+    NSData *data = [customGroup dataUsingEncoding:NSUTF8StringEncoding];
+    
+    if(data != nil){
+        NSError *error;
+        NSDictionary * dic = [NSJSONSerialization  JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+
+        [WindMillAds initCustomGroup:dic];
+    }
+
+    result(nil);
+}
+- (void)customDeviceMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+
+    
+    WindMillCustomDevInfo *devInfo =  [[WindMillCustomDevInfo alloc] init];
+     
+    
+    NSNumber *isCanUseLocation = call.arguments[@"isCanUseLocation"];
+    NSNumber *isCanUseIdfa = call.arguments[@"isCanUseIdfa"];
+    NSString *customIDFA = call.arguments[@"customIDFA"];
+    NSDictionary *customLocation = call.arguments[@"customLocation"];
+
+    if(customLocation != nil){
+        
+        AWMLocation *location = [[AWMLocation alloc] init];
+        NSNumber *latitude = customLocation[@"latitude"];
+        NSNumber *longitude = customLocation[@"longitude"];
+        if(latitude != [NSNull null] && longitude !=  [NSNull null]){
+            location.latitude = latitude.doubleValue;
+            location.longitude = longitude.doubleValue;
+            devInfo.customLocation = location;
+        }
+    }
+
+    devInfo.canUseIdfa = [isCanUseIdfa boolValue];
+    if(customIDFA != NULL){
+        devInfo.customIDFA = customIDFA;
+    }
+    
+
+    devInfo.canUseLocation = [isCanUseLocation boolValue];
+
+    [WindMillAds setCustomDeviceController:devInfo];
+
+    result(nil);
+}
+
 - (void)getUidMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result([WindMillAds getUid]);
 }
