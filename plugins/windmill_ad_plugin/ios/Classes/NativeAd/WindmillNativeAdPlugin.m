@@ -124,7 +124,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     if (pluginMap != nil) {
        [pluginMap removeObjectForKey:uniqId];
     }
-
+    [self destory];
     result(nil);
 }
 
@@ -239,12 +239,21 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     }];
 }
 
-- (void)dealloc {
-    NSLog(@"--- dealloc -- %@", self);
-    self.nativeAdManager.delegate = nil;
+- (void) destory {
+    if(self.nativeAdManager != nil){
+        self.nativeAdManager.delegate = nil;
+    }
     self.nativeAdManager = nil;
     self.nativeAd = nil;
+    if(_adView != nil && [_adView superview] != nil){
+        [_adView removeFromSuperview];
+    }
     _adView = nil;
     self.channel = nil;
+}
+- (void)dealloc {
+    NSLog(@"--- dealloc -- %@", self);
+ 
+    [self destory];
 }
 @end

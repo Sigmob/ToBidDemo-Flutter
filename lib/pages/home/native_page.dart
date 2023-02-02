@@ -199,7 +199,9 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onAdDidDislike(WindmillNativeAd ad, String reason) {
     print('onAdDidDislike');
     c.callbacks.add('onAdDidDislike -- ${ad.request.placementId}');
+    ad.destory();
     c.adItems.removeLast();
+    c.update();
 
   }
   @override
