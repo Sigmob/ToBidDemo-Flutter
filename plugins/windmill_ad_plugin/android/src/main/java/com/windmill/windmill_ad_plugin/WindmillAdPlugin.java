@@ -47,7 +47,10 @@ public class WindmillAdPlugin implements FlutterPlugin, ActivityAware {
 
   @Override
   public void onDetachedFromEngine( FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
+    if(channel != null){
+      channel.setMethodCallHandler(null);
+    }
+
   }
 
   @Override

@@ -26,12 +26,20 @@
 
 static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
 
-- (instancetype)initWithChannel:(FlutterMethodChannel *)channel request:(WindMillAdRequest *)request {
+- (instancetype)initWithChannel:(FlutterMethodChannel *)channel request:(WindMillAdRequest *)request 
+    arguments:(NSDictionary*)arguments{
     self = [super init];
     if (self) {
-        _channel = channel;
+    _channel = channel;
+
+    NSNumber *width = [arguments objectForKey:@"width"];
+    NSNumber *height = [arguments objectForKey:@"height"];
+    if(width.doubleValue >0 && height.doubleValue >0){
+        _bannerView = [[WindMillBannerView alloc] initWithRequest:request expectSize:CGSizeMake(width.doubleValue, height.doubleValue)];
+    }else{
         _bannerView = [[WindMillBannerView alloc] initWithRequest:request];
-        _bannerView.delegate = self;
+    }
+    _bannerView.delegate = self;
     }
     return self;
 }
@@ -87,7 +95,7 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
         FlutterMethodChannel *channel = [FlutterMethodChannel
                                             methodChannelWithName:channelName
                                             binaryMessenger:[self.registrar messenger]];
-        plugin = [[WindmillBannerAdPlugin alloc] initWithChannel:channel request:adRequest];
+        plugin = [[WindmillBannerAdPlugin alloc] initWithChannel:channel request:adRequest arguments:arguments];
         if(pluginMap == nil){
             pluginMap = [[NSMutableDictionary alloc] init];
         }
@@ -101,7 +109,7 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
     result(@([self.bannerView isAdValid]));
 }
 - (void)loadMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    
+
     UIViewController *rootViewController = [WindmillUtil getCurrentController];
     BOOL animated = [[(NSDictionary *)call.arguments objectForKey:@"animated"] boolValue];
     _bannerView.animated = animated;
@@ -162,8 +170,6 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
     [self.channel invokeMethod:kWindmillEventAdAutoRefreshed arguments:@{
         @"width": @(adSize.width),
         @"height": @(adSize.height),
-        
-        
     }];
 }
 //bannerView自动刷新失败

@@ -15,11 +15,15 @@ class WindmillBannerAd with WindmillEventHandler{
   final bool animated; 
   late String _uniqId;
   late MethodChannel _adChannel;
+  final double? width; //广告宽度
+  final double? height; 
   late final WindmillBannerListener<WindmillBannerAd> _listener;
   Size? adSize;
   WindmillBannerAd({
     Key? key,
     required this.request,
+    this.width,
+    this.height,
     required WindmillBannerListener<WindmillBannerAd> listener,
         this.animated = true,
 
@@ -50,6 +54,8 @@ class WindmillBannerAd with WindmillEventHandler{
   Future<void> loadAd() async {
     await _channel.invokeMethod('load', {
       "uniqId": _uniqId,
+      "width":  width,
+      "height": height,
       'request': request.toJson()
     });
   }
@@ -81,8 +87,8 @@ class BannerAdWidget extends StatefulWidget {
   BannerAdWidget({
     Key? key,
     required this.windmillBannerAd, 
-    double width = 320,
-    double height = 0,
+    required double width,
+    required double height,
   }) : super(key: key) {
     sizeNotify = ValueNotifier<Size>(Size(width, height));
   }

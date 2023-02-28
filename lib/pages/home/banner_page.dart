@@ -8,6 +8,8 @@ import '../../controller/controller.dart';
 import '../../widgets/adslot_widget.dart';
 
 class BannerPage extends StatelessWidget {
+
+  Size? adSize;
   @override
   Widget build(BuildContext context) {
     print("banner_page --- build");
@@ -23,11 +25,12 @@ class BannerPage extends StatelessWidget {
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate([
+                      _customAdSize(),
             Obx(() => _buildAdSlotWidget()),
             SizedBox(
               height: 10.rpx,
             ),
-            Obx(() => _adWidget()),
+             Obx(() => _adWidget()),
             Obx(() => _logWidget()),
           ]),
         ),
@@ -35,6 +38,23 @@ class BannerPage extends StatelessWidget {
     );
   }
 
+  Widget _customAdSize(){
+      return  Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: TextField(
+            onChanged: (text) {
+              final list = text.split('x');
+              if(list.length>1){
+                  adSize = Size(double.parse(list[0]), double.parse(list[1]));
+              }
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: '自定义宽x高',
+            ),
+          ),
+        );
+  }
   Widget _adWidget() {
     final c = Get.find<BannerController>();
     return Column(
@@ -73,8 +93,8 @@ class BannerPage extends StatelessWidget {
 
     if(isReady){
 
-      double height =ad.adSize?.height??50;
-      double width = ad.adSize?.width??320;
+      double height = adSize?.height??ad.adSize?.height??100;
+      double width = adSize?.width??ad.adSize?.width??300;
 
     
       BannerAdWidget bannerAdWidget = BannerAdWidget(
@@ -89,7 +109,7 @@ class BannerPage extends StatelessWidget {
   void _adLoad(String placementId) {
     final BannerController c = Get.find<BannerController>();
 
-    WindmillBannerAd ad = c.getOrCreateWindmillBannerAd(placementId: placementId, listener: IWindmillBannerListener());
+    WindmillBannerAd ad = c.getOrCreateWindmillBannerAd(placementId: placementId, size:adSize,listener: IWindmillBannerListener());
 
     ad.loadAd();
   }

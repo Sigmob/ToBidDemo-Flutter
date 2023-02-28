@@ -62,6 +62,21 @@ public class WindmillAd<T> {
             case Banner:{
                 channelName = "com.windmill/banner."+uniqId;
 
+                if(arguments.containsKey("width")) {
+                    Double width = (Double) arguments.get("width");
+
+                    if(width.intValue()>0){
+                        options.put(WMConstants.AD_WIDTH, width.intValue());//针对于模版广告有效、单位dp
+                        if(arguments.containsKey("height")){
+                            Double height = (Double) arguments.get("height");
+                            options.put(WMConstants.AD_HEIGHT, height.intValue());//自适应高度
+                        }else {
+                            options.put(WMConstants.AD_HEIGHT, WMConstants.AUTO_SIZE);//自适应高度
+                        }
+                    }
+
+                }
+
                 adRequest = new WMBannerAdRequest(placementId,userId,options);
 
             }break;

@@ -66,7 +66,9 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
 
     public void onDetachedFromEngine() {
         Log.d("Codi", "onDetachedFromEngine");
-        channel.setMethodCallHandler(null);
+        if(channel != null){
+            channel.setMethodCallHandler(null);
+        }
     }
 
     @Override

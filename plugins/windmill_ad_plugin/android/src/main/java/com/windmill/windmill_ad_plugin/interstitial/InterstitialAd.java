@@ -60,7 +60,9 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
 
     public void onDetachedFromEngine() {
         Log.d("Codi", "onDetachedFromEngine");
-        channel.setMethodCallHandler(null);
+        if(channel != null){
+            channel.setMethodCallHandler(null);
+        }
     }
 
 

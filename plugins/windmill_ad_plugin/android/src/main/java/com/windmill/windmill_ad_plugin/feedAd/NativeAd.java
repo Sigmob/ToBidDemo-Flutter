@@ -94,7 +94,9 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     public void onDetachedFromEngine() {
         Log.d("Codi", "onDetachedFromEngine");
-        channel.setMethodCallHandler(null);
+        if(channel != null){
+            channel.setMethodCallHandler(null);
+        }
     }
 
     @Override
