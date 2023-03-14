@@ -80,7 +80,9 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
         if (interstitialAd == null) {
             interstitialAd = this.ad.createAdInstance(InterstitialAd.class, getArguments(call.arguments), flutterPluginBinding,  WindmillAd.AdType.Interstitial,activity);
         }
-        interstitialAd.excuted(call, result);
+        if(interstitialAd != null){
+            interstitialAd.excuted(call, result);
+        }
     }
 
     public Object isReady(MethodCall call) {

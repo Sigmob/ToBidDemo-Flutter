@@ -88,7 +88,9 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
             splashAd = this.ad.createAdInstance(SplashAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Splash,activity);
         }
-        splashAd.excuted(call, result);
+        if(splashAd != null){
+            splashAd.excuted(call, result);
+        }
     }
 
 

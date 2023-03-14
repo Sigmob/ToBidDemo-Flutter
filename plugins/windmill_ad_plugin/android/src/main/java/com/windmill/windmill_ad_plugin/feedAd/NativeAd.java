@@ -108,7 +108,9 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         if (nativeAd == null) {
             nativeAd = this.ad.createAdInstance(NativeAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Native,activity);
         }
-        nativeAd.excuted(call, result);
+        if(nativeAd != null){
+            nativeAd.excuted(call, result);
+        }
     }
 
 

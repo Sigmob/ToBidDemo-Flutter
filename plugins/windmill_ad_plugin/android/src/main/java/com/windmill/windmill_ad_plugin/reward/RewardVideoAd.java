@@ -80,7 +80,9 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         if (rewardVideoAd == null) {
             rewardVideoAd = this.ad.createAdInstance(RewardVideoAd.class,getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Reward,activity);
         }
-        rewardVideoAd.excuted(call, result);
+        if(rewardVideoAd != null){
+            rewardVideoAd.excuted(call, result);
+        }
     }
 
     public Object isReady(MethodCall call) {
