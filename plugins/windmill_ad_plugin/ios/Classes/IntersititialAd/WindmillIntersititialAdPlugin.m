@@ -113,7 +113,7 @@
     [self.intersititialAd showAdFromRootViewController:rootViewController options:opt];
     result(nil);
 }
-- (void)destoryMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [call.arguments objectForKey:@"uniqId"];
     [self.father.pluginMap removeObjectForKey:uniqId];
     result(nil);

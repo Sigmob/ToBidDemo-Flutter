@@ -15,7 +15,7 @@ class IntersititialController extends GetxController {
   void onClose() {
     super.onClose();
     _adMap.forEach((key, value) {
-      value.destory();
+      value.destroy();
     });
     _adMap.clear();
   }

@@ -172,62 +172,7 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
 
 
 
-        try {
-            text_title = new TextView(context);
 
-            JSONObject config = mCustomViewConfig.getJSONObject("titleView");
-            if(config != null){
-                ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(text_title,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(text_title,lp);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            text_desc = new TextView(context);
-
-            JSONObject config = mCustomViewConfig.getJSONObject("descriptView");
-            if(config != null){
-                ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(text_desc,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(text_desc,lp);
-                if(item.isCtaClick()){
-                    clickableViews.add(text_desc);
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            iv_dislike = new ImageView(context);
-
-
-            JSONObject config = mCustomViewConfig.getJSONObject("dislikeButton");
-            if(config != null){
-                ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(iv_dislike,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(iv_dislike,lp);
-                if(item.isCtaClick()){
-                    clickableViews.add(iv_dislike);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        iv_dislike.setImageResource(ResourceUtil.getDrawableId(view.getContext(),"sig_dislike"));
 
 
         try {
@@ -241,7 +186,6 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
                 lp.setMargins(item.getX(),item.getY(),0,0);
                 rootView.addView(mCTAButton,lp);
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -357,14 +301,51 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             iconView.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(adData.getTitle())) {
-            text_title.setText(adData.getTitle());
+        try {
+            text_title = new TextView(context);
+
+            JSONObject config = mCustomViewConfig.getJSONObject("titleView");
+            if(config != null){
+                ViewConfigItem item = new ViewConfigItem(config);
+                updateViewProperty(text_title,item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
+                lp.setMargins(item.getX(),item.getY(),0,0);
+                rootView.addView(text_title,lp);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            text_desc = new TextView(context);
+
+            JSONObject config = mCustomViewConfig.getJSONObject("descriptView");
+            if(config != null){
+                ViewConfigItem item = new ViewConfigItem(config);
+                updateViewProperty(text_desc,item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
+                lp.setMargins(item.getX(),item.getY(),0,0);
+                rootView.addView(text_desc,lp);
+                if(item.isCtaClick()){
+                    clickableViews.add(text_desc);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String title = adData.getTitle();
+        if (!TextUtils.isEmpty(title)) {
+            text_title.setText(title);
         } else {
             text_title.setText("点开有惊喜");
         }
 
-        if (!TextUtils.isEmpty(adData.getDesc())) {
-            text_desc.setText(adData.getDesc());
+        String desc = adData.getDesc();
+        if (!TextUtils.isEmpty(desc)) {
+            text_desc.setText(desc);
         } else {
             text_desc.setText("听说点开它的人都交了好运!");
         }
@@ -375,6 +356,29 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
         } else {
             ad_logo.setVisibility(View.GONE);
         }
+
+        try {
+            iv_dislike = new ImageView(context);
+
+
+            JSONObject config = mCustomViewConfig.getJSONObject("dislikeButton");
+            if(config != null){
+                ViewConfigItem item = new ViewConfigItem(config);
+                updateViewProperty(iv_dislike,item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
+                lp.setMargins(item.getX(),item.getY(),0,0);
+                rootView.addView(iv_dislike,lp);
+                if(item.isCtaClick()){
+                    clickableViews.add(iv_dislike);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        iv_dislike.setImageResource(ResourceUtil.getDrawableId(view.getContext(),"sig_dislike"));
+
 
         //clickViews数量必须大于等于1
         //可以被点击的view, 也可以把convertView放进来意味item可被点击

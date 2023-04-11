@@ -15,8 +15,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    DeviceUtil.initialize();
-    return GetMaterialApp(
+     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       getPages: AppPages.pages,

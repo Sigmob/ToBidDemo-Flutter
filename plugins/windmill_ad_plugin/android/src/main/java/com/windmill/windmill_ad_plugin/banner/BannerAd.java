@@ -40,6 +40,7 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private WMBannerAdRequest bannerAdRequest;
     private Map<String, Object> params;
+    private MethodChannel adChannel;
     protected WMBannerView bannerAdView;
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
@@ -63,7 +64,7 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
         super.setup(channel, adRequest,activity);
         this.bannerAdRequest= (WMBannerAdRequest) adRequest;
-        this.channel  = channel;
+        this.adChannel  = channel;
         this.activity = activity;
         this.bannerAdView = new WMBannerView(activity);
         this.bannerAdView.setAdListener(new IWMBannerAdListener(channel,this));
@@ -71,28 +72,29 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
 
     public void onAttachedToEngine() {
-        Log.d("Codi", "onAttachedToEngine");
-        MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/banner");
+        Log.d("ToBid", "onAttachedToEngine");
+        this.channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/banner");
         channel.setMethodCallHandler(this);
     }
 
     public void onDetachedFromEngine() {
-        Log.d("Codi", "onDetachedFromEngine");
+        Log.d("ToBid", "onDetachedFromEngine");
+
         if(channel != null){
             channel.setMethodCallHandler(null);
         }
+ 
     }
 
     public void showAd(ViewGroup adContainer){
         if (adContainer != null){
-    
             adContainer.addView(bannerAdView,new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         }
     }
 
     @Override
     public void onMethodCall(final MethodCall call,final MethodChannel.Result result) {
-        Log.d("Codi", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
+        Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
         WindmillBaseAd bannerAd=this.ad.getAdInstance(uniqId);
 
@@ -121,8 +123,11 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
         return this.bannerAdView.isReady();
     }
 
-    public Object destory(MethodCall call) {
-        this.bannerAdView.destroy();
+    public Object destroy(MethodCall call) {
+         this.bannerAdView.destroy();
+         if(this.adChannel != null){
+            this.adChannel.setMethodCallHandler(null);
+        }
         return null;
     }
 

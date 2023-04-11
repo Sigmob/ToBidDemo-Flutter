@@ -45,6 +45,8 @@ import io.flutter.plugin.common.MethodChannel;
 public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCallHandler {
     private MethodChannel channel;
 
+    private MethodChannel adChannel;
+
     private Activity activity;
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     protected WMNativeAd nativeAd;
@@ -70,7 +72,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     @Override
     public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
         super.setup(channel, adRequest,activity);
-        this.channel = channel;
+        this.adChannel = channel; 
         this.nativeAdRequest = (WMNativeAdRequest) adRequest;
         this.activity = activity;
         this.nativeAd = new WMNativeAd(activity, nativeAdRequest);
@@ -79,8 +81,8 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
 
     public void onAttachedToEngine() {
-        Log.d("Codi", "onAttachedToEngine");
-        MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/native");
+        Log.d("ToBid", "onAttachedToEngine");
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/native");
         channel.setMethodCallHandler(this);
     }
 
@@ -93,7 +95,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     public void onDetachedFromEngine() {
-        Log.d("Codi", "onDetachedFromEngine");
+        Log.d("ToBid", "onDetachedFromEngine");
         if(channel != null){
             channel.setMethodCallHandler(null);
         }
@@ -101,7 +103,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     @Override
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        Log.d("Codi", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
+        Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
 
         WindmillBaseAd nativeAd = this.ad.getAdInstance(uniqId);
@@ -114,10 +116,14 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
 
-    private Object destory(MethodCall call) {
+    private Object destroy(MethodCall call) {
         isShowAd = false;
-
-        this.nativeAd.destroy();
+        if(this.nativeAd != null){
+            this.nativeAd.destroy();
+        }
+        if(this.adChannel != null){
+            this.adChannel.setMethodCallHandler(null);
+        }
         return null;
     }
 
@@ -135,12 +141,11 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     public Object load(MethodCall call) {
         this.adInfo = null;
-        nativeAd.loadAd(new IWMNativeAdLoadListener(channel, this));
+        nativeAd.loadAd(new IWMNativeAdLoadListener(this.adChannel, this));
         return null;
     }
 
     public void fillAd(WMNativeAdData nativeAdData) {
-
         this.wmNativeAdData = nativeAdData;
     }
 
@@ -174,13 +179,12 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
             wmNativeContainer.setBackgroundColor(Color.parseColor(rootViewItem.getBackgroundColor()));
         }
 
-        wmNativeAdData.setInteractionListener(new IWMNativeAdListener(this, channel));
-        wmNativeAdData.setDislikeInteractionCallback(this.activity, new IWMNativeDislikeListener(channel));
-
+        wmNativeAdData.setInteractionListener(new IWMNativeAdListener(this, this.adChannel));
+        wmNativeAdData.setDislikeInteractionCallback(this.activity, new IWMNativeDislikeListener(this.adChannel));
         if (wmNativeAdData.isExpressAd()) {
             wmNativeAdData.render();
             View expressAdView = wmNativeAdData.getExpressAdView();
-            wmNativeContainer.addView(expressAdView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+            wmNativeContainer.addView(expressAdView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
         }else {
             WMNativeAdRender adRender;
             if (customViewConfig == null || !customViewConfig.has("mainAdView")) {

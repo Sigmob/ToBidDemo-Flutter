@@ -112,19 +112,21 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     
     NSNumber *width = [(NSDictionary *)call.arguments objectForKey:@"width"];
     NSNumber *height = [(NSDictionary *)call.arguments objectForKey:@"height"];
-    self.nativeAdManager.adSize = CGSizeMake(width.doubleValue, height.doubleValue);
+    if(width != [NSNull null] && height != [NSNull null]){
+        self.nativeAdManager.adSize = CGSizeMake(width.doubleValue, height.doubleValue);
+    }
     [self.nativeAdManager loadAdDataWithCount:1];
     _adView = nil;
     self.adinfo = nil;
     result(nil);
 }
 
-- (void)destoryMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [(NSDictionary *)call.arguments objectForKey:@"uniqId"];
     if (pluginMap != nil) {
        [pluginMap removeObjectForKey:uniqId];
     }
-    [self destory];
+    [self destroy];
     result(nil);
 }
 
@@ -239,7 +241,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     }];
 }
 
-- (void) destory {
+- (void) destroy {
     if(self.nativeAdManager != nil){
         self.nativeAdManager.delegate = nil;
     }
@@ -254,6 +256,6 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 - (void)dealloc {
     NSLog(@"--- dealloc -- %@", self);
  
-    [self destory];
+    [self destroy];
 }
 @end

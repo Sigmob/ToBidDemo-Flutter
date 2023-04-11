@@ -15,15 +15,15 @@ class WindmillBannerAd with WindmillEventHandler{
   final bool animated; 
   late String _uniqId;
   late MethodChannel _adChannel;
-  final double? width; //广告宽度
-  final double? height; 
+  final double width; //广告宽度
+  final double height; 
   late final WindmillBannerListener<WindmillBannerAd> _listener;
   Size? adSize;
   WindmillBannerAd({
     Key? key,
     required this.request,
-    this.width,
-    this.height,
+    required this.width,
+    required this.height,
     required WindmillBannerListener<WindmillBannerAd> listener,
         this.animated = true,
 
@@ -46,7 +46,7 @@ class WindmillBannerAd with WindmillEventHandler{
 
   Future<bool> isReady() async {
     bool isReady = await _channel.invokeMethod('isReady', {
-      "uniqId": _uniqId
+      "uniqId": _uniqId,
     });
     return isReady;
   }
@@ -69,8 +69,8 @@ class WindmillBannerAd with WindmillEventHandler{
   }
   
 
-  Future<void> destory() async {
-    await _channel.invokeMethod('destory', {
+  Future<void> destroy() async {
+    await _channel.invokeMethod('destroy', {
       "uniqId": _uniqId
     });
   }
@@ -185,5 +185,5 @@ class BannerAdWidgetState extends State<BannerAdWidget>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

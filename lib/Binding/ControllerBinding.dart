@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:windmill_ad_plugin_example/controller/BannerController.dart';
 import 'package:windmill_ad_plugin_example/controller/InterstitialController.dart';
 import 'package:windmill_ad_plugin_example/controller/NativeController.dart';
+import 'package:windmill_ad_plugin_example/controller/NativeDrawController.dart';
 import 'package:windmill_ad_plugin_example/controller/RwController.dart';
 import 'package:windmill_ad_plugin_example/controller/SplashController.dart';
 import 'package:windmill_ad_plugin_example/controller/controller.dart';
@@ -38,6 +39,13 @@ class NativeBinding implements Bindings {
   @override
   void dependencies() {
     Get.put(NativeController());
+  }
+
+}
+class NativeDrawBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.put(NativeDrawController());
   }
 
 }

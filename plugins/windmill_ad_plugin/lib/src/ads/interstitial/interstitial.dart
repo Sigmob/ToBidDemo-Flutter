@@ -58,8 +58,8 @@ class WindmillInterstitialAd with WindmillEventHandler {
     });
   }
 
-  Future<void> destory() async {
-    await _channel.invokeMethod('destory', {
+  Future<void> destroy() async {
+    await _channel.invokeMethod('destroy', {
       "uniqId": _uniqId
     });
   }

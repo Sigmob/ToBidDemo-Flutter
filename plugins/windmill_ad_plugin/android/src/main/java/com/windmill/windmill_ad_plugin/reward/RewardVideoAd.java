@@ -34,6 +34,8 @@ import io.flutter.plugin.common.MethodChannel;
 public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.MethodCallHandler {
 
     private MethodChannel channel;
+    private MethodChannel adChannel;
+
     private Activity activity;
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private WMRewardAd rewardAd;
@@ -51,7 +53,7 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
     @Override
     public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
         super.setup(channel, adRequest,activity);
-        this.channel = channel;
+        this.adChannel = channel;
         this.activity = activity;
         this.rewardAd = new WMRewardAd(activity, WMRewardAdRequest.getWindVideoAdRequest(adRequest));
         this.rewardAd.setRewardedAdListener(new IWMRewardAdListener(this,channel));
@@ -59,13 +61,13 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
 
 
     public void onAttachedToEngine() {
-        Log.d("Codi", "onAttachedToEngine");
-        MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/reward");
+        Log.d("ToBid", "onAttachedToEngine");
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/reward");
         channel.setMethodCallHandler(this);
     }
 
     public void onDetachedFromEngine() {
-        Log.d("Codi", "onDetachedFromEngine");
+        Log.d("ToBid", "onDetachedFromEngine");
         if(channel != null){
             channel.setMethodCallHandler(null);
         }
@@ -73,7 +75,7 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Log.d("Codi", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
+        Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
 
         WindmillBaseAd rewardVideoAd = this.ad.getAdInstance(uniqId);
@@ -115,7 +117,13 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         this.rewardAd.show(this.activity, opt);
         return null;
     }
-    private Object destory(MethodCall call) {
+    private Object destroy(MethodCall call) {
+        if(this.rewardAd != null){
+            this.rewardAd.destroy();
+        }
+        if(this.adChannel != null){
+            this.adChannel.setMethodCallHandler(null);
+        }
         return null;
     }
 }

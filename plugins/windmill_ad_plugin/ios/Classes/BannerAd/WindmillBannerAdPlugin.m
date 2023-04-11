@@ -34,7 +34,7 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
 
     NSNumber *width = [arguments objectForKey:@"width"];
     NSNumber *height = [arguments objectForKey:@"height"];
-    if(width.doubleValue >0 && height.doubleValue >0){
+    if(width != [NSNull null] && height != [NSNull null] && width.doubleValue >0 && height.doubleValue >0){
         _bannerView = [[WindMillBannerView alloc] initWithRequest:request expectSize:CGSizeMake(width.doubleValue, height.doubleValue)];
     }else{
         _bannerView = [[WindMillBannerView alloc] initWithRequest:request];
@@ -147,7 +147,7 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
     }
 }
 
-- (void)destoryMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [(NSDictionary *)call.arguments objectForKey:@"uniqId"];
     if (pluginMap != nil) {
        [pluginMap removeObjectForKey:uniqId];

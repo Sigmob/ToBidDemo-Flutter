@@ -32,6 +32,8 @@ import io.flutter.plugin.common.MethodChannel;
 
 public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCallHandler {
     private MethodChannel channel;
+    private MethodChannel adChannel;
+
     private Activity activity;
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private WMSplashAdRequest splashAdRequest;
@@ -59,20 +61,20 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
         super.setup(channel, adRequest,activity);
         this.splashAdRequest= (WMSplashAdRequest) adRequest;
-        this.channel  = channel;
+        this.adChannel  = channel;
         this.activity = activity;
         this.splashAdView = new WMSplashAd(activity,this.splashAdRequest,new IWMSplashAdListener(this,channel));
 
     }
 
     public void onAttachedToEngine() {
-        Log.d("Codi", "onAttachedToEngine");
-        MethodChannel channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/splash");
+        Log.d("ToBid", "onAttachedToEngine");
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/splash");
         channel.setMethodCallHandler(this);
     }
 
     public void onDetachedFromEngine() {
-        Log.d("Codi", "onDetachedFromEngine");
+        Log.d("ToBid", "onDetachedFromEngine");
         if(channel != null){
             channel.setMethodCallHandler(null);
         }
@@ -80,7 +82,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     @Override
     public void onMethodCall( MethodCall call, MethodChannel.Result result) {
-        Log.d("Codi", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
+        Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
         WindmillBaseAd splashAd=this.ad.getAdInstance(uniqId);
 
@@ -132,7 +134,10 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         return this.splashAdView.isReady();
     }
 
-    public Object destory(MethodCall call) {
+    public Object destroy(MethodCall call) {
+        if(this.adChannel != null){
+            this.adChannel.setMethodCallHandler(null);
+        }
         return null;
     }
 

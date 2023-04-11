@@ -11,5 +11,6 @@
 @interface WindmillNativeAdPlugin : NSObject<FlutterPlugin>
 + (WindmillNativeAdPlugin *)getPluginWithUniqId:(NSString *)uniqId;
 - (void)showAd:(UIView *)adContainer args:(NSDictionary *)args;
+
 @end
 

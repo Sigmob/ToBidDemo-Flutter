@@ -4,12 +4,14 @@ import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/NativeController.dart';
 import 'package:windmill_ad_plugin_example/controller/controller.dart';
 import 'package:windmill_ad_plugin_example/extension/num_extension.dart';
+import 'package:windmill_ad_plugin_example/utils/device_util.dart';
 import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 
 class NativePage extends StatelessWidget {
 
 
-  
+  Size adSize = Size(300, 350);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +27,7 @@ class NativePage extends StatelessWidget {
       slivers: [
         SliverList(
             delegate: SliverChildListDelegate([
+                                   _customAdSize(),
           Obx(() => _buildAdSlotWidget()),
           SizedBox(
             height: 10.rpx,
@@ -34,6 +37,26 @@ class NativePage extends StatelessWidget {
         ]))
       ],
     );
+  }
+    Widget _customAdSize(){
+
+      TextEditingController _controllter = new TextEditingController(text:"${adSize.width}x${adSize.height}");
+      return  Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: TextField(
+            controller:_controllter, 
+            onChanged: (text) {
+              final list = text.split('x');
+              if(list.length>1){
+                  adSize = Size(double.parse(list[0]), double.parse(list[1]));
+              }
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: '自定义宽x高',
+            ),
+          ),
+        );
   }
 
   Widget _adWidget() {
@@ -71,11 +94,11 @@ class NativePage extends StatelessWidget {
     if(isReady){
       NativeAdWidget nativeAdWidget = NativeAdWidget(
         nativeAd: ad,
-        height: 350,
-        width: 300,
+        height: adSize.height,
+        width: adSize.width,
         nativeCustomViewConfig: {
                     CustomNativeAdConfig.rootView(): CustomNativeAdConfig.createNativeSubViewAttribute(
-                      300, 350,
+                      adSize.width, adSize.height,
                       x: 50,
                       y: 350,
                       backgroundColor: '#FFFFFF'
@@ -130,7 +153,7 @@ class NativePage extends StatelessWidget {
     final c = Get.find<NativeController>();
     final adcontroller = Get.find<Controller>();
 
-    WindmillNativeAd ad = c.getOrCreateWindmillNativeAd(placementId: placementId,userId:adcontroller.adSetting.value.otherSetting?.userId,size: Size(300, 350), listener: IWindmillNativeListener());
+    WindmillNativeAd ad = c.getOrCreateWindmillNativeAd(placementId: placementId,userId:adcontroller.adSetting.value.otherSetting?.userId,size: adSize, listener: IWindmillNativeListener());
 
     ad.loadAd();
    
@@ -199,7 +222,7 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onAdDidDislike(WindmillNativeAd ad, String reason) {
     print('onAdDidDislike');
     c.callbacks.add('onAdDidDislike -- ${ad.request.placementId}');
-    ad.destory();
+    ad.destroy();
     c.adItems.removeLast();
     c.update();
 

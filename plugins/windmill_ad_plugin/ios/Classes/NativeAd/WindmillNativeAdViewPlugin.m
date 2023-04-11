@@ -32,6 +32,7 @@
         NSString *uniqId = [args objectForKey:@"uniqId"];
         NSDictionary *nativeCustomViewConfig = [args objectForKey:@"nativeCustomViewConfig"];
 
+
         WindmillNativeAdPlugin * plugin = [WindmillNativeAdPlugin getPluginWithUniqId:uniqId];
         
         [plugin showAd:_contentView args:nativeCustomViewConfig];

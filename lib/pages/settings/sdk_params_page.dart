@@ -9,6 +9,7 @@ class SDKPages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DeviceUtil.initialize();
     return Scaffold(
       appBar: AppBar(
         title: Text('参数设置'),

@@ -129,17 +129,19 @@ public class WindmillAd<T> {
                     break;
 
             }
-
-            MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), channelName);
-            T t = cls.newInstance();
-            WindmillBaseAd windmillBaseAd = (WindmillBaseAd) t;
-            windmillBaseAd.setup(channel, adRequest, activity);
-            map.put(uniqId, windmillBaseAd);
-            return t;
+            if(!TextUtils.isEmpty(channelName)) {
+                MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), channelName);
+                T t = cls.newInstance();
+                WindmillBaseAd windmillBaseAd = (WindmillBaseAd) t;
+                windmillBaseAd.setup(channel, adRequest, activity);
+                map.put(uniqId, windmillBaseAd);
+                return t;
+            }
+           
         } catch (Exception e) {
             // TODO: handle exception
-            return null;
         }
+        return null;
 
     }
 

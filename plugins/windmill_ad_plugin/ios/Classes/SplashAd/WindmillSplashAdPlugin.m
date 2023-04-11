@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSString *desc;
 @property (nonatomic,strong) UIWindow *splashWindow;
 @property (nonatomic,strong) UIViewController *splashVC;
+@property (nonatomic,strong) UIView *bottomView;
 @end
 
 @implementation WindmillSplashAdPlugin
@@ -135,9 +136,17 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     }
     
     
+
+    
      NSDictionary *extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size)};
     if(_title != nil && _title.length>0){
-        extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size),kWindMillSplashExtraBottomViewSize:NSStringFromCGSize(CGSizeMake(width.doubleValue, 100))};
+        _bottomView =  [self getLogoViewWithTitle:_title description:_desc];
+
+        
+        extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size),
+                  kWindMillSplashExtraBottomViewSize:NSStringFromCGSize(CGSizeMake(width.doubleValue, 100)),
+                  kWindMillSplashExtraBottomView:_bottomView
+        };
     }
     _splashView = [[WindMillSplashAd alloc] initWithRequest:self.request extra:extra];
     _splashView.delegate = self;
@@ -156,17 +165,13 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     _splashWindow.rootViewController = _splashVC;
     [_splashWindow makeKeyAndVisible];
     
-    if(_title != nil){
-        [_splashView showAdInWindow:_splashWindow title:_title desc:_desc];
-    }else{
-        [_splashView showAdInWindow:_splashWindow withBottomView:NULL];
-    }
+    [_splashView showAdInWindow:_splashWindow withBottomView:_bottomView];
 
     result(nil);
 
 }
 
-- (void)destoryMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [(NSDictionary *)call.arguments objectForKey:@"uniqId"];
     [pluginMap removeObjectForKey:uniqId];
     result(nil);
@@ -215,8 +220,81 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
 
 - (void)onSplashAdWillClosed:(WindMillSplashAd *)splashAd {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-   
+}
 
+//根据宽度求高度  content 计算的内容  width 计算的宽度 font字体大小
+- (CGSize)getLabelSizeWithText:(NSString *)text width:(CGFloat)width font: (UIFont *)font {
+    CGRect rect = [text boundingRectWithSize:CGSizeMake(width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
+    return rect.size;
+}
+
+- (UIView *)getLogoViewWithTitle:(NSString *)title description:(NSString *)description {
+    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(UIScreen.mainScreen.bounds), 100)];
+    bottomView.backgroundColor = [UIColor whiteColor];
+
+    UIView *backView = [[UIView alloc] init];
+    backView.backgroundColor = [UIColor clearColor];
+    [bottomView addSubview:backView];
+
+    //icon
+    UIImageView *iconImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [iconImgView.layer setMasksToBounds:YES];
+    [iconImgView.layer setCornerRadius:10];
+    NSDictionary *infoPlist = [[NSBundle mainBundle] infoDictionary];
+    NSString *icon = [[infoPlist valueForKeyPath:@"CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconFiles"] lastObject];
+    UIImage* image = [UIImage imageNamed:icon];
+    iconImgView.image = image;
+
+    //标题
+    UILabel *titleLabel = [[UILabel alloc] init];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.text = title;
+    UIFont *titleFont = [UIFont fontWithName:@"Helvetica-Bold" size:25];
+    titleLabel.font = titleFont;
+    titleLabel.textColor = [UIColor blackColor];
+
+    //描述
+    UILabel *descLabel = [[UILabel alloc] init];
+    descLabel.textAlignment = NSTextAlignmentCenter;
+    descLabel.text = description;
+    UIFont *descFont = [UIFont fontWithName:@"Helvetica" size:12];
+    descLabel.font = descFont;
+    descLabel.textColor = [UIColor grayColor];
+
+    [backView addSubview:iconImgView];
+    [backView addSubview:titleLabel];
+    [backView addSubview:descLabel];
+
+    CGSize titleSize = [self getLabelSizeWithText:title width:200 font:titleFont];
+    CGSize descSize = [self getLabelSizeWithText:description width:200 font:descFont];
+    float wid = MAX(titleSize.width, descSize.width);
+    wid = MIN(wid, 180);
+
+    [backView sms_remakeConstraints:^(SMSConstraintMaker *make) {
+        make.width.sms_equalTo(@(wid+60));
+        make.height.sms_equalTo(bottomView);
+        make.centerY.sms_equalTo(bottomView);
+        make.centerX.sms_equalTo(bottomView);
+    }];
+    [iconImgView sms_remakeConstraints:^(SMSConstraintMaker *make) {
+        make.left.sms_equalTo(backView).offset(0);
+        make.width.sms_equalTo(@60);
+        make.height.sms_equalTo(@60);
+        make.centerY.sms_equalTo(backView).offset(0);
+    }];
+    [titleLabel sms_remakeConstraints:^(SMSConstraintMaker *make) {
+        make.left.sms_equalTo(iconImgView.sms_right).offset(10);
+        make.top.sms_equalTo(iconImgView).offset(0);
+        make.height.sms_equalTo(iconImgView.sms_height).multipliedBy(0.6);
+        make.width.sms_equalTo(@(wid));
+    }];
+    [descLabel sms_remakeConstraints:^(SMSConstraintMaker *make) {
+        make.left.sms_equalTo(iconImgView.sms_right).offset(10);
+        make.bottom.sms_equalTo(iconImgView).offset(0);
+        make.height.sms_equalTo(iconImgView.sms_height).multipliedBy(0.4);
+        make.width.sms_equalTo(@(wid));
+    }];
+    return bottomView;
 }
 
 - (void)onSplashAdClosed:(WindMillSplashAd *)splashAd {

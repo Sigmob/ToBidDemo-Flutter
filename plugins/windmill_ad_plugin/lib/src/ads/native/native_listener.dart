@@ -7,7 +7,13 @@ import 'package:windmill_ad_plugin/src/models/error.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 
-abstract class WindmillNativeListener<T> extends WindmillInterface<T> {
+
+abstract class WindmillNativeListener<T>{
+  void onAdLoaded(T ad);
+  void onAdFailedToLoad(T ad, WMError error);
+  void onAdOpened(T ad);
+  void onAdShowError(T ad, WMError error);
+  void onAdClicked(T ad);
   void onAdRenderSuccess(T ad);//原生模板广告渲染成功，此时的ad.size.height根据width 完成了动态更新。（只针对模版渲染）
   void onAdRenderFail(T ad, WMError error);//原生模板广告渲染失败（只针对模版渲染）
   void onAdDidDislike(T ad, String reason);//点击dislike回调，开发者需要在这个回调中移除视图，否则，会出现用户点击叉无效的情况
