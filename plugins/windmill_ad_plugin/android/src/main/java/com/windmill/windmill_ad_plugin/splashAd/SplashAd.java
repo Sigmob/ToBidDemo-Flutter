@@ -22,7 +22,9 @@ import com.windmill.windmill_ad_plugin.WindmillAdPlugin;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.Log;
@@ -78,6 +80,21 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         if(channel != null){
             channel.setMethodCallHandler(null);
         }
+    }
+
+    public Object getCacheAdInfoList(MethodCall call){
+
+        List<AdInfo> adInfoList =  this.splashAdView.checkValidAdCaches();
+        if(adInfoList != null){
+            ArrayList<String> list = new ArrayList<>(adInfoList.size());
+
+            for (AdInfo info :adInfoList) {
+                list.add(info.toString());
+            }
+            return list;
+        }
+
+        return null;
     }
 
     @Override

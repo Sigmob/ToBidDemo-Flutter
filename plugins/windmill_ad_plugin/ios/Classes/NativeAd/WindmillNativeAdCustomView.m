@@ -13,24 +13,16 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.clipsToBounds = YES;
-        [self setupSubViews];
+        self.backgroundColor = UIColor.clearColor;
     }
     return self;
-}
-
-- (void)setupSubViews {
-    self.backgroundColor = UIColor.clearColor;
-    [self addSubview:self.titleLabel];
-    [self addSubview:self.descLabel];
-    [self addSubview:self.iconImageView];
-    [self addSubview:self.CTAButton];
-    [self addSubview:self.adLabel];
 }
 
 #pragma mark - proerty getter
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] init];
+        [self addSubview:_titleLabel];
     }
     return _titleLabel;
 }
@@ -42,6 +34,8 @@
         _descLabel.font = [UIFont systemFontOfSize:14];
         _descLabel.numberOfLines = 0;
         _descLabel.textAlignment = NSTextAlignmentLeft;
+        [self addSubview:_descLabel];
+
     }
     return _descLabel;
 }
@@ -59,6 +53,7 @@
         _adLabel.layer.masksToBounds = YES;
         _adLabel.layer.borderColor = color.CGColor;
         _adLabel.layer.borderWidth = 1;
+        [self addSubview:_adLabel];
     }
     return _adLabel;;
 }
@@ -66,6 +61,8 @@
 - (UIImageView *)iconImageView {
     if (!_iconImageView) {
         _iconImageView = [[UIImageView alloc] init];
+        [self addSubview:_iconImageView];
+
     }
     return _iconImageView;
 }
@@ -84,6 +81,8 @@
 
         [_CTAButton.layer setCornerRadius:6];
         [_CTAButton.layer setShadowRadius:3];
+        [self addSubview:_CTAButton];
+
     }
     return _CTAButton;
 }

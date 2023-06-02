@@ -72,7 +72,27 @@ class WindmillNativeAd with WindmillEventHandler{
     return AdInfo.fromJson(adInfoJson); 
   }
   
+  Future<List<AdInfo>?> getCacheAdInfoList() async{
 
+    List<Object?> listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
+      "uniqId": _uniqId,
+    });
+
+
+    if(listStr.isNotEmpty){
+
+        var cacheList = List.generate(listStr
+        .length
+        , (index){
+              var adInfoStr  = listStr[index] as String;
+              final adInfoJson = json.decode(adInfoStr);
+              return AdInfo.fromJson(adInfoJson);
+        });
+        return cacheList; 
+    } 
+   
+    return null;
+  }
 
 
   Future<void> destroy() async {
@@ -121,7 +141,7 @@ static String iconView() {
 static Map createNativeSubViewAttribute(double width, double height,
       {double x = 0,
       double y = 0,
-      String backgroundColor = '#FFFFFF',
+      String backgroundColor = '',
       String textColor = '#000000',
       int fontSize = 0,
       int scaleType = 0,

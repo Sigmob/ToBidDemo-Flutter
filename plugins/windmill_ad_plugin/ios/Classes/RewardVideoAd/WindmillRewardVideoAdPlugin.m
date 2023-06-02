@@ -116,6 +116,21 @@
     }
 }
 
+- (void)getCacheAdInfoListMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSArray<WindMillAdInfo *> * adInfoList = [self.reward  getCacheAdInfoList];
+    
+    if(adInfoList != nil && adInfoList.count>0){
+        NSMutableArray * list = [[NSMutableArray alloc] initWithCapacity:adInfoList.count];
+        for (WindMillAdInfo * ad in adInfoList) {
+            [list addObject:[ad toJson]];
+        }
+        result(list);
+    }
+    result(nil);
+
+}
+
+
 - (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [call.arguments objectForKey:@"uniqId"];
     [self.father.pluginMap removeObjectForKey:uniqId];

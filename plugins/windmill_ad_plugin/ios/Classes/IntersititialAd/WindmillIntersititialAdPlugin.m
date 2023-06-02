@@ -100,6 +100,21 @@
         result([self.adinfo toJson]);
     }
 }
+
+- (void)getCacheAdInfoListMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSArray<WindMillAdInfo *> * adInfoList = [self.intersititialAd  getCacheAdInfoList];
+    
+    if(adInfoList != nil && adInfoList.count>0){
+        NSMutableArray * list = [[NSMutableArray alloc] initWithCapacity:adInfoList.count];
+        for (WindMillAdInfo * ad in adInfoList) {
+            [list addObject:[ad toJson]];
+        }
+        result(list);
+    }
+    result(nil);
+
+}
+
 - (void)showAdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     UIViewController *rootViewController = [WindmillUtil getCurrentController];
     NSDictionary *options = [call.arguments objectForKey:@"options"];

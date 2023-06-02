@@ -75,7 +75,6 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
     }
 }
 
-
 + (WindmillBannerAdPlugin *)getPluginWithUniqId:(NSString *)uniqId{
     if(pluginMap != nil){
         return [pluginMap objectForKey:uniqId];
@@ -137,6 +136,21 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
     [adContainer addSubview:self.bannerView];
     
 }
+
+- (void)getCacheAdInfoListMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSArray<WindMillAdInfo *> * adInfoList = [self.bannerView  getCacheAdInfoList];
+    
+    if(adInfoList != nil && adInfoList.count>0){
+        NSMutableArray * list = [[NSMutableArray alloc] initWithCapacity:adInfoList.count];
+        for (WindMillAdInfo * ad in adInfoList) {
+            [list addObject:[ad toJson]];
+        }
+        result(list);
+    }
+    result(nil);
+
+}
+
 
 - (void)getAdInfoMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     

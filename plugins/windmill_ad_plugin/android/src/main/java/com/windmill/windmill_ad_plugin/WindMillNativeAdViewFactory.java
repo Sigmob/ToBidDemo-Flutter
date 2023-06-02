@@ -49,7 +49,7 @@ public class WindMillNativeAdViewFactory extends PlatformViewFactory {
         }else if(this.viewName.equals(WindmillAdPlugin.kWindmillFeedAdViewId)){
 
             Object nativeCustomConfig = WindmillBaseAd.getArgument(args,"nativeCustomViewConfig");
-
+          
             JSONObject config = null;
 
             if (nativeCustomConfig instanceof Map){

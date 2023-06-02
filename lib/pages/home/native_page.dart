@@ -117,29 +117,26 @@ class NativePage extends StatelessWidget {
                         230, 20,
                         x: 60, y:230, fontSize: 15),
                     CustomNativeAdConfig.ctaButton(): CustomNativeAdConfig.createNativeSubViewAttribute(
-                      100,
+                      adSize.width,
                       50,
-                      x:60,
+                      x:0,
                       y: 265,
                       fontSize: 15,
-                      textColor: "#000000",
-                      backgroundColor: "#FFFFFF"
+                      textColor: "#FFFFFF",
+                      backgroundColor: "#2576F6"
                     ),
                     CustomNativeAdConfig.mainAdView(): CustomNativeAdConfig.createNativeSubViewAttribute(
                         290, 200,
                         x: 5, y: 5, backgroundColor: '#FFFFFF'),
                     CustomNativeAdConfig.adLogoView(): CustomNativeAdConfig.createNativeSubViewAttribute(
                         20, 20,
-                        x: 10,
-                        y: 10,
-                        backgroundColor: '#FFFFFF'),
+                        x: 270,
+                        y: 180),
                     CustomNativeAdConfig.dislikeButton(): CustomNativeAdConfig.createNativeSubViewAttribute(
                       20,
                       20,
                       x:260,
                       y: 210,
-                      textColor: "#FFFFFF",
-                      backgroundColor: "#FFFFFF"
                     ),
               },
       );
@@ -173,6 +170,11 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onAdLoaded(WindmillNativeAd ad) {
     print('onAdLoaded');
     c.callbacks.add('onAdLoaded -- ${ad.request.placementId}');
+    ad.getCacheAdInfoList().then((adinfos) => 
+          adinfos?.forEach((element) {
+              c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+    })
+    );
   }
 
   @override
@@ -197,7 +199,7 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
 
     
     widget.updateAdSize(ad.adSize!);
-    c.callbacks.add('onAdRenderSuccess -- ${ad.request.placementId}');
+    c.callbacks.add('onAdRenderSuccess -- ${ad.request.placementId} - width : ${ad.adSize?.width} , height : ${ad.adSize?.height}');
   }
 
   @override

@@ -149,6 +149,11 @@ class IWindmillBannerListener extends WindmillBannerListener<WindmillBannerAd> {
     print('flu-banner --- onAdLoaded');
     
     c.callbacks.add('onAdLoaded -- ${ad.request.placementId}');
+    ad.getCacheAdInfoList().then((adinfos) => 
+          adinfos?.forEach((element) {
+              c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+          })
+    );
   }
 
   @override

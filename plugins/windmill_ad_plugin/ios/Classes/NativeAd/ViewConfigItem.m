@@ -120,7 +120,7 @@
     
 }
 -(UIColor*)getBackgroudColor{
-    NSString *str = [self getStringValueWithKey:@"backgroudColor"];
+    NSString *str = [self getStringValueWithKey:@"backgroundColor"];
     
     return [ViewConfigItem colorWithHexString:str];
 }

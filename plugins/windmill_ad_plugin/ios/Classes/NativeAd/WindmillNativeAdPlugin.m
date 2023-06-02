@@ -150,10 +150,10 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     CGSize adSize = [WindmillFeedAdViewStyle layoutWithNativeAd:_nativeAd adView:self.adView args:args];
     if (_nativeAd.feedADMode != WindMillFeedADModeNativeExpress) {
         self.adView.frame = CGRectMake(0, 0, adSize.width, adSize.height);
-        [self.channel invokeMethod:kWindmillEventAdRenderSuccess arguments:@{
-            @"width": @(adSize.width),
-            @"height": @(adSize.height),
-        }];
+//        [self.channel invokeMethod:kWindmillEventAdRenderSuccess arguments:@{
+//            @"width": @(adSize.width),
+//            @"height": @(adSize.height),
+//        }];
     }
 }
 
@@ -164,6 +164,20 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     }else{
         result([self.adinfo toJson]);
     }
+}
+
+- (void)getCacheAdInfoListMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSArray<WindMillAdInfo *> * adInfoList = [self.nativeAdManager  getCacheAdInfoList];
+    
+    if(adInfoList != nil && adInfoList.count>0){
+        NSMutableArray * list = [[NSMutableArray alloc] initWithCapacity:adInfoList.count];
+        for (WindMillAdInfo * ad in adInfoList) {
+            [list addObject:[ad toJson]];
+        }
+        result(list);
+    }
+    result(nil);
+
 }
 
 #pragma mark - ----- WindMillNativeAdsManagerDelegate -----

@@ -2,6 +2,7 @@ package com.windmill.windmill_ad_plugin;
 
 import android.app.Activity;
 import android.location.Location;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
@@ -50,7 +51,10 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+
         Log.d(TAG, "onMethodCall: " + call.method);
+
+        WebView.setWebContentsDebuggingEnabled(true);
         if (call.method.equals("setupSdkWithAppId")) {
             setupSdkWithAppId(call, result);
         }else if (call.method.equals("getSdkVersion")) {
@@ -107,7 +111,6 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
                     @Override
                     public boolean isCanUseAndroidId() {
                         return isCanUseAndroidId == null?true:isCanUseAndroidId;
-
                      }
 
                     @Override
@@ -258,7 +261,5 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
         result.success(null);
     }
-
-
 
 }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/models/ad_setting.dart';
 import 'package:windmill_ad_plugin_example/router/index.dart';
+import 'package:windmill_ad_plugin_example/utils/device_util.dart';
 
 class HomePage extends StatelessWidget {
   final List _items = [
@@ -14,9 +15,11 @@ class HomePage extends StatelessWidget {
     {'icon': Icons.play_circle_outline_outlined, 'title': '激励视频广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '插屏广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生广告'},
+    {'icon': Icons.play_circle_outline_outlined, 'title': '原生draw广告'},
   ];
 
   void _initSDK() async {
+    DeviceUtil.initialize();
     AdSetting? adSetting = await AdSetting.fromFile();
     if (adSetting != null) {
        WindmillAd.adult(adSetting.otherSetting!.adultState == 0? Adult.adult:Adult.children);
@@ -148,6 +151,9 @@ class HomePage extends StatelessWidget {
         break;
       case 4:
         Get.toNamed(Routes.NATIVE);
+        break;
+      case 5:
+        Get.toNamed(Routes.NATIVE_DRAW);
         break;
     }
   }

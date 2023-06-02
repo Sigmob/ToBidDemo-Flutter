@@ -111,6 +111,11 @@ class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
   void onAdLoaded(WindmillSplashAd ad) {
     print('flu-Splash --- onAdLoaded');
     c.callbacks.add('onAdLoaded -- ${ad.request.placementId}');
+    ad.getCacheAdInfoList().then((adinfos) => 
+          adinfos?.forEach((element) {
+              c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+          })
+    );
   }
 
   @override

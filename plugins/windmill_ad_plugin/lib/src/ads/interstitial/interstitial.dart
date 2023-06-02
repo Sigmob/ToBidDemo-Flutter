@@ -43,6 +43,29 @@ class WindmillInterstitialAd with WindmillEventHandler {
     return AdInfo.fromJson(adInfoJson); 
   }
 
+
+  Future<List<AdInfo>?> getCacheAdInfoList() async{
+
+     List<Object?> listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
+      "uniqId": _uniqId,
+    });
+
+
+    if(listStr.isNotEmpty){
+
+        var cacheList = List.generate(listStr
+        .length
+        , (index){
+              var adInfoStr  = listStr[index] as String;
+              final adInfoJson = json.decode(adInfoStr);
+              return AdInfo.fromJson(adInfoJson);
+        });
+        return cacheList; 
+    } 
+   
+    return null;
+  }
+    
   Future<void> loadAdData() async {
     await _channel.invokeMethod('load', {
       "uniqId": _uniqId,

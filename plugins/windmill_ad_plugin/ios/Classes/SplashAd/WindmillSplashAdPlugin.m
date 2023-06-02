@@ -177,6 +177,21 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     result(nil);
 }
 
+- (void)getCacheAdInfoListMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSArray<WindMillAdInfo *> * adInfoList = [self.splashView  getCacheAdInfoList];
+    
+    if(adInfoList != nil && adInfoList.count>0){
+        NSMutableArray * list = [[NSMutableArray alloc] initWithCapacity:adInfoList.count];
+        for (WindMillAdInfo * ad in adInfoList) {
+            [list addObject:[ad toJson]];
+        }
+        result(list);
+    }
+    result(nil);
+
+}
+
+
 #pragma mark - WindMillSplashAdDelegate
 
 //成功加载广告

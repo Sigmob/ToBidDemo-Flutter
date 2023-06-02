@@ -21,7 +21,9 @@ import com.windmill.sdk.models.AdInfo;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.Log;
@@ -71,7 +73,20 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
         return this.ad.getAdInstance(uniqId);
     }
 
+    public Object getCacheAdInfoList(MethodCall call){
 
+        List<AdInfo> adinfoList =  this.interstitialAd.checkValidAdCaches();
+        if(adinfoList != null){
+            ArrayList<String> list = new ArrayList<>(adinfoList.size());
+
+            for (AdInfo info :adinfoList) {
+                list.add(info.toString());
+            }
+            return list;
+        }
+
+        return null;
+    }
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);

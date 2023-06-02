@@ -100,14 +100,21 @@ class IWindMillRewardListener extends WindmillRewardListener<WindmillRewardAd> {
   void onAdLoaded(WindmillRewardAd ad) {
     print('onAdLoaded -- ${ad.request.placementId}');
     c.rwCallbacks.add('onAdLoaded -- ${ad.request.placementId}');
+    ad.getCacheAdInfoList().then((adinfos) => 
+          adinfos?.forEach((element) {
+              c.rwCallbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+    })
+    );
   }
 
   @override
   void onAdOpened(WindmillRewardAd ad) {
     print('onAdOpened -- ${ad.request.placementId}');
+  
      ad.getAdInfo().then((adinfo) => 
         c.rwCallbacks.add('onAdOpened -- ${ad.request.placementId} -- adInfo -- ${ adinfo.toJson()}')
     );
+    ad.loadAdData();
   }
 
   @override

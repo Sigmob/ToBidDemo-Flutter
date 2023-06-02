@@ -9,6 +9,15 @@
 #import "WindmillRewardVideoAdPlugin.h"
 #import "WindmillSplashAdPlugin.h"
 #import "WindMillCustomDevInfo.h"
+#import "WindmillUtil.h"
+
+#if __has_include(<KSUAdDebugTool/KSAdDebugToolCommon.h>)
+  #import <KSUAdDebugTool/KSAdDebugToolCommon.h>
+#endif
+
+#if __has_include(<KSUAdDebugTool/KSAdDebugHomeViewController.h>)
+   #import <KSUAdDebugTool/KSAdDebugHomeViewController.h>
+#endif
 
 @implementation WindmillAdPlugin
 
@@ -135,6 +144,18 @@ static NSString *userId;
     result(nil);
 }
 
+- (void)showKSDebugMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [KSAdDebugToolCommon sharedInstance].useDebugTool = YES;
+      
+    KSAdDebugHomeViewController *demoVC = [KSAdDebugHomeViewController new];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:demoVC];
+    
+    [[WindmillUtil getCurrentController] presentViewController:nav animated:YES completion:nil];
+    
+    result(nil);
+
+ }
 - (void)getUidMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result([WindMillAds getUid]);
 }

@@ -12,7 +12,7 @@
 #import <WindMillSDK/WindMillSDK.h>
 
 static CGFloat const margin = 10;
-static UIEdgeInsets const padding = {10, 10, 10, 10};
+static UIEdgeInsets const padding = {0, 0, 10, 10};
 
 @implementation WindmillFeedAdViewStyle
 + (NSAttributedString *)attributeText:(NSString *)text params:(NSDictionary *)params {
@@ -71,8 +71,6 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
             }
         
         }
-        
-        [[adView.logoView superview] bringSubviewToFront:adView.logoView];
     }
     
     
@@ -109,6 +107,17 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
         }
     }
     
+
+    
+    config = [args objectForKey:@"ctaButton"];
+    
+    if(config != nil){
+        ViewConfigItem * ctaButton = [[ViewConfigItem alloc] initWithDic:config];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.CTAButton ViewConfig:ctaButton];
+        [clickViewSet addObject:adView.CTAButton];
+
+    }
+    
     config = [args objectForKey:@"adLogoView"];
     
     if(config != nil){
@@ -118,15 +127,6 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
         if ([adLogoView isCtaClick]) {
             [clickViewSet addObject:adView.logoView];
         }
-    }
-    
-    config = [args objectForKey:@"ctaButton"];
-    
-    if(config != nil){
-        ViewConfigItem * ctaButton = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.CTAButton ViewConfig:ctaButton];
-        [clickViewSet addObject:adView.CTAButton];
-
     }
     
     config = [args objectForKey:@"dislikeButton"];
@@ -155,6 +155,7 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
 
 +(void)updateViewProperty:(UIView *) view ViewConfig:(ViewConfigItem *) viewConfigItem {
     view.frame = [viewConfigItem getFrame];
+    [view setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin];
     UIColor * bgColor = [viewConfigItem getBackgroudColor];
     if(bgColor != nil){
         [view setBackgroundColor:bgColor];
@@ -191,9 +192,9 @@ static UIEdgeInsets const padding = {10, 10, 10, 10};
     }
     
 
-    if([view isKindOfClass: [UITextView class]]){
+    if([view isKindOfClass: [UILabel class]]){
         
-        UITextView *textview =(UITextView*) view;
+        UILabel *textview =(UILabel*) view;
         UIColor *color = [viewConfigItem getTextColor];
         if (color != nil) {
             [textview setTextColor:color];

@@ -12,6 +12,7 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
+import com.sigmob.windad.rewardVideo.WindRewardVideoAd;
 import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
@@ -23,7 +24,9 @@ import com.windmill.sdk.reward.WMRewardInfo;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.Log;
@@ -55,7 +58,7 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         super.setup(channel, adRequest,activity);
         this.adChannel = channel;
         this.activity = activity;
-        this.rewardAd = new WMRewardAd(activity, WMRewardAdRequest.getWindVideoAdRequest(adRequest));
+        this.rewardAd = new WMRewardAd(activity, new WMRewardAdRequest(adRequest.getPlacementId(),adRequest.getUserId(),adRequest.getOptions()));
         this.rewardAd.setRewardedAdListener(new IWMRewardAdListener(this,channel));
     }
 
@@ -104,6 +107,21 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         return null;
      }
 
+
+     public Object getCacheAdInfoList(MethodCall call){
+
+         List<AdInfo> adinfoList =  this.rewardAd.checkValidAdCaches();
+         if(adinfoList != null){
+             ArrayList<String> list = new ArrayList<>(adinfoList.size());
+
+             for (AdInfo info :adinfoList) {
+                 list.add(info.toString());
+             }
+             return list;
+         }
+
+        return null;
+     }
     private Object showAd(MethodCall call) {
 
         HashMap<String, String> options = call.argument("options");

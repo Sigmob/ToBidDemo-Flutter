@@ -358,3 +358,9 @@ public *;
 -dontwarn com.beizi.ad.**
 -keep class com.beizi.fusion.** {*; }
 -keep class com.beizi.ad.** {*; }
+
+# TapTap混淆
+-dontwarn com.tapsdk.**
+-dontwarn com.tapadn.**
+-keep class com.tapsdk.** {*; }
+-keep class com.tapadn.** {*; }

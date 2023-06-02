@@ -25,7 +25,9 @@ import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.sdk.models.AdInfo;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.Log;
@@ -119,6 +121,20 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
         return null;
      }
 
+    public Object getCacheAdInfoList(MethodCall call){
+
+        List<AdInfo> adinfoList =  this.bannerAdView.checkValidAdCaches();
+        if(adinfoList != null){
+            ArrayList<String> list = new ArrayList<>(adinfoList.size());
+
+            for (AdInfo info :adinfoList) {
+                list.add(info.toString());
+            }
+            return list;
+        }
+
+        return null;
+    }
     public Object isReady(MethodCall call) {
         return this.bannerAdView.isReady();
     }

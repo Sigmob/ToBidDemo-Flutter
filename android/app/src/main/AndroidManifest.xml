@@ -2,13 +2,18 @@
 xmlns:tools="http://schemas.android.com/tools"
     package="com.example.windmill_ad_plugin_example">
 
-    <uses-sdk tools:overrideLibrary="com.bun.miitmdid"/>
+    <uses-sdk tools:overrideLibrary="com.bun.miitmdid,com.tapsdk.tapad"/>
    <application
         android:label="windmill_ad_plugin_example"
-        tools:replace="android:label"
+        tools:replace="android:label,android:allowBackup"
+        android:allowBackup="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
-        <activity
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-3940256099942544~3347511713" />
+
+       <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -103,17 +108,6 @@ xmlns:tools="http://schemas.android.com/tools"
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/klevin_provider_paths" />
-        </provider>
-
-        <!-- MiMo -->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/mimo_file_paths" />
         </provider>
 
 

@@ -106,6 +106,11 @@ class IWindMillInterstitialListener extends WindmillInterstitialListener<Windmil
   void onAdLoaded(WindmillInterstitialAd ad) {
     print('onAdLoaded -- ${ad.request.placementId}');
     c.callbacks.add('onAdLoaded -- ${ad.request.placementId}');
+    ad.getCacheAdInfoList().then((adinfos) => 
+          adinfos?.forEach((element) {
+              c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+    })
+    );
   }
 
   @override

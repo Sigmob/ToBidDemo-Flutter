@@ -33,6 +33,7 @@ import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +115,20 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
             nativeAd.excuted(call, result);
         }
     }
+    public Object getCacheAdInfoList(MethodCall call){
 
+        List<AdInfo> adInfoList =  this.nativeAd.checkValidAdCaches();
+        if(adInfoList != null){
+            ArrayList<String> list = new ArrayList<>(adInfoList.size());
+
+            for (AdInfo info :adInfoList) {
+                list.add(info.toString());
+            }
+            return list;
+        }
+
+        return null;
+    }
 
     private Object destroy(MethodCall call) {
         isShowAd = false;

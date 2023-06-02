@@ -36,7 +36,7 @@
         WindmillNativeAdPlugin * plugin = [WindmillNativeAdPlugin getPluginWithUniqId:uniqId];
         
         [plugin showAd:_contentView args:nativeCustomViewConfig];
-        NSLog(@"WindmillBannerAdPlugin init...");
+        NSLog(@"WindmillNativeAdPlugin init...");
     }
     return self;
 }

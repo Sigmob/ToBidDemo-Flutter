@@ -80,6 +80,27 @@ class WindmillSplashAd with WindmillEventHandler{
     });
   }
 
+  Future<List<AdInfo>?> getCacheAdInfoList() async{
+
+    List<Object?> listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
+      "uniqId": _uniqId,
+    });
+
+
+    if(listStr.isNotEmpty){
+
+        var cacheList = List.generate(listStr
+        .length
+        , (index){
+              var adInfoStr  = listStr[index] as String;
+              final adInfoJson = json.decode(adInfoStr);
+              return AdInfo.fromJson(adInfoJson);
+        });
+        return cacheList; 
+    } 
+   
+    return null;
+  }
   Future<AdInfo> getAdInfo() async {
     String adinfoStr = await _channel.invokeMethod("getAdInfo",{
       "uniqId":_uniqId 

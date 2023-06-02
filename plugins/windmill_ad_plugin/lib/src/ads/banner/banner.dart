@@ -67,7 +67,28 @@ class WindmillBannerAd with WindmillEventHandler{
     final adInfoJson = json.decode(adinfoStr);
     return AdInfo.fromJson(adInfoJson); 
   }
-  
+
+  Future<List<AdInfo>?> getCacheAdInfoList() async{
+
+     List<Object?> listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
+      "uniqId": _uniqId,
+    });
+
+
+    if(listStr.isNotEmpty){
+
+        var cacheList = List.generate(listStr
+        .length
+        , (index){
+              var adInfoStr  = listStr[index] as String;
+              final adInfoJson = json.decode(adInfoStr);
+              return AdInfo.fromJson(adInfoJson);
+        });
+        return cacheList; 
+    } 
+   
+    return null;
+  } 
 
   Future<void> destroy() async {
     await _channel.invokeMethod('destroy', {
