@@ -50,6 +50,16 @@ class IWindmillRewardListener with WindmillAdEvent {
     if(arguments != null){
       rewardInfo.userId  = arguments['user_id'] as String;
       rewardInfo.transId = arguments['trans_id'] as String;
+      if(arguments.containsKey("customData")){
+          try
+          {
+            var customData = new Map<String,dynamic>.from(arguments['customData']);
+            rewardInfo.customData = customData;
+
+          }catch(e){
+            print(" unknow error: $e");
+          }
+      }
     }
 
 

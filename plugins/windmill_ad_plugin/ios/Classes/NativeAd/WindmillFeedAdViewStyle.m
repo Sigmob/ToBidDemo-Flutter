@@ -27,10 +27,20 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
 }
 
 
++ (BOOL) disableAutoresize:(WindMillNativeAd *)ad{
+    
+    if(ad.networkId == 16){
+        return true;
+    }
+    return false;
+}
+
 + (CGFloat) renderAdWithCustomConfig:(WindmillNativeAdCustomView *)adView
                                 args:(NSDictionary *)args
                             nativeAd:(WindMillNativeAd *)nativeAd
 {
+    
+    bool isDisableAutoresize = [WindmillFeedAdViewStyle disableAutoresize:nativeAd];
     NSMutableArray *clickViewSet = [[NSMutableArray alloc] init];
     NSDictionary *config = [args objectForKey:@"rootView"];
     ViewConfigItem * rootView = [[ViewConfigItem alloc] initWithDic:config];
@@ -47,15 +57,18 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
         ViewConfigItem * rootView = [[ViewConfigItem alloc] initWithDic:config];
         
         if (nativeAd.feedADMode == WindMillFeedADModeLargeImage) {
-            [clickViewSet addObject:adView.mainImageView];
-            [WindmillFeedAdViewStyle updateViewProperty:adView.mainImageView ViewConfig:rootView  ];
+            [WindmillFeedAdViewStyle updateViewProperty:adView.mainImageView ViewConfig:rootView  disableAutoreSize:isDisableAutoresize];
+            if ([rootView isCtaClick]) {
+                [clickViewSet addObject:adView.mainImageView];
+            }
         }else if (nativeAd.feedADMode == WindMillFeedADModeVideo ||
                   nativeAd.feedADMode == WindMillFeedADModeVideoPortrait ||
                   nativeAd.feedADMode == WindMillFeedADModeVideoLandSpace) {
             
-            [WindmillFeedAdViewStyle updateViewProperty:adView.mediaView ViewConfig:rootView];
-            [clickViewSet addObject:adView.mediaView];
-
+            [WindmillFeedAdViewStyle updateViewProperty:adView.mediaView ViewConfig:rootView disableAutoreSize:isDisableAutoresize];
+            if ([rootView isCtaClick]) {
+                [clickViewSet addObject:adView.mediaView];
+            }
 
         }else  if (nativeAd.feedADMode == WindMillFeedADModeGroupImage){
             CGRect frame = [rootView getFrame];
@@ -68,6 +81,9 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
             for(int i=0; i< adView.imageViewList.count ; i++){
                UIImageView* imageView = adView.imageViewList[i];
                imageView.frame = CGRectMake(x+i*imgW, y, imgW, imgHeight);
+                if ([rootView isCtaClick]) {
+                    [clickViewSet addObject:imageView];
+                }
             }
         
         }
@@ -78,7 +94,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     if(config != nil){
         
         ViewConfigItem * iconView = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.iconImageView ViewConfig:iconView];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.iconImageView ViewConfig:iconView disableAutoreSize:isDisableAutoresize];
         
         if ([iconView isCtaClick]) {
             [clickViewSet addObject:adView.iconImageView];
@@ -89,7 +105,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     if(config != nil){
         
         ViewConfigItem * titleView = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.titleLabel ViewConfig:titleView];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.titleLabel ViewConfig:titleView disableAutoreSize:isDisableAutoresize];
         if ([titleView isCtaClick]) {
             [clickViewSet addObject:adView.titleLabel];
         }
@@ -101,7 +117,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     
     if(config != nil){
         ViewConfigItem * descriptView = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.descLabel ViewConfig:descriptView];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.descLabel ViewConfig:descriptView disableAutoreSize:isDisableAutoresize];
         if ([descriptView isCtaClick]) {
             [clickViewSet addObject:adView.descLabel];
         }
@@ -113,7 +129,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     
     if(config != nil){
         ViewConfigItem * ctaButton = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.CTAButton ViewConfig:ctaButton];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.CTAButton ViewConfig:ctaButton disableAutoreSize:isDisableAutoresize];
         [clickViewSet addObject:adView.CTAButton];
 
     }
@@ -122,7 +138,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     
     if(config != nil){
         ViewConfigItem * adLogoView = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.logoView ViewConfig:adLogoView];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.logoView ViewConfig:adLogoView disableAutoreSize:isDisableAutoresize];
         
         if ([adLogoView isCtaClick]) {
             [clickViewSet addObject:adView.logoView];
@@ -133,7 +149,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     
     if(config != nil){
         ViewConfigItem * dislikeButton = [[ViewConfigItem alloc] initWithDic:config];
-        [WindmillFeedAdViewStyle updateViewProperty:adView.dislikeButton ViewConfig:dislikeButton];
+        [WindmillFeedAdViewStyle updateViewProperty:adView.dislikeButton ViewConfig:dislikeButton disableAutoreSize:isDisableAutoresize];
     }
     
     [adView setClickableViews:clickViewSet];
@@ -153,9 +169,12 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     return image;
 }
 
-+(void)updateViewProperty:(UIView *) view ViewConfig:(ViewConfigItem *) viewConfigItem {
++(void)updateViewProperty:(UIView *) view ViewConfig:(ViewConfigItem *) viewConfigItem disableAutoreSize: (Boolean) disable {
     view.frame = [viewConfigItem getFrame];
-    [view setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin];
+    if(disable){
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin];
+    }
+
     UIColor * bgColor = [viewConfigItem getBackgroudColor];
     if(bgColor != nil){
         [view setBackgroundColor:bgColor];

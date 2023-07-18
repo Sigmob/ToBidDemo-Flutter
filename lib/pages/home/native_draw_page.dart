@@ -16,11 +16,10 @@ class NativeDrawPage extends StatelessWidget {
   Widget build(BuildContext context) {
     DeviceUtil.initialize();
     return Scaffold(
-      body: _buildContent(),
-    );
+      body: _buildContent(context) );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     final c = Get.find<NativeDrawController>();
 
     return PageView.builder(
@@ -109,8 +108,8 @@ class NativeDrawPage extends StatelessWidget {
                 backgroundColor: "#2576F6"),
         CustomNativeAdConfig.mainAdView():
             CustomNativeAdConfig.createNativeSubViewAttribute(
-                DeviceUtil.screenWidth, DeviceUtil.screenHeight,
-                x: 0, y: 0, backgroundColor: '#FFFFFF'),
+                DeviceUtil.screenWidth, DeviceUtil.screenHeight-70,
+                x: 0, y: 20, backgroundColor: '#000000'),
         CustomNativeAdConfig.adLogoView():
             CustomNativeAdConfig.createNativeSubViewAttribute(20, 20,
                 x: DeviceUtil.screenWidth - 40, y: DeviceUtil.screenHeight - 95),

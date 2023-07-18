@@ -115,9 +115,11 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     if(width != [NSNull null] && height != [NSNull null]){
         self.nativeAdManager.adSize = CGSizeMake(width.doubleValue, height.doubleValue);
     }
-    [self.nativeAdManager loadAdDataWithCount:1];
     _adView = nil;
     self.adinfo = nil;
+    self.nativeAd = nil;
+    [self.nativeAdManager loadAdDataWithCount:1];
+
     result(nil);
 }
 

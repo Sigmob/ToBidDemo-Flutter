@@ -11,8 +11,6 @@ import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdV
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-
-import com.sigmob.windad.rewardVideo.WindRewardVideoAd;
 import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
@@ -198,12 +196,13 @@ public void onVideoAdPlayError(final WindMillError windMillError,final String pl
     @Override
     public void onVideoRewarded(final AdInfo adInfo,final  WMRewardInfo wmRewardInfo) {
 
-
-
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("trans_id", wmRewardInfo.getTrans_id());
         args.put("user_id", wmRewardInfo.getUser_id());
 
+        if(wmRewardInfo.getCustomData() != null){
+            args.put("customData", wmRewardInfo.getCustomData());
+        }
         channel.invokeMethod(kWindmillEventAdReward, args);
     }
 }

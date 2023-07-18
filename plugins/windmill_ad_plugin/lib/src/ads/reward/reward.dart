@@ -11,6 +11,7 @@ class RewardInfo {
    late bool isReward;
    late String transId;
    late String userId;
+   Map<String,dynamic>? customData;
 }
 
 class WindmillRewardAd with WindmillEventHandler {
@@ -51,9 +52,9 @@ class WindmillRewardAd with WindmillEventHandler {
 
   Future<List<AdInfo>?> getCacheAdInfoList() async{
 
-    List<Object?> listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
+    List<Object?>? listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
       "uniqId": _uniqId,
-    });
+    })??[];
 
 
     if(listStr.isNotEmpty){

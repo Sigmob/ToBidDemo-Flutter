@@ -114,13 +114,15 @@ class IWindMillRewardListener extends WindmillRewardListener<WindmillRewardAd> {
      ad.getAdInfo().then((adinfo) => 
         c.rwCallbacks.add('onAdOpened -- ${ad.request.placementId} -- adInfo -- ${ adinfo.toJson()}')
     );
-    ad.loadAdData();
+    // ad.loadAdData();
   }
 
   @override
   void onAdReward(WindmillRewardAd ad, RewardInfo rewardInfo) {
-    print('onAdReward -- ${ad.request.placementId} -- IsReward -- ${rewardInfo.isReward} --- TransId -- ${rewardInfo.transId} -- UserId -- ${rewardInfo.userId} ');
-    c.rwCallbacks.add('onAdReward -- ${ad.request.placementId} -- IsReward -- ${rewardInfo.isReward} --- TransId -- ${rewardInfo.transId} -- UserId -- ${rewardInfo.userId} ');
+
+    var customdata = rewardInfo.customData?? "";
+    print('onAdReward -- ${ad.request.placementId} -- IsReward -- ${rewardInfo.isReward} --- TransId -- ${rewardInfo.transId} -- UserId -- ${rewardInfo.userId} -- customData -- ${customdata}');
+    c.rwCallbacks.add('onAdReward -- ${ad.request.placementId} -- IsReward -- ${rewardInfo.isReward} --- TransId -- ${rewardInfo.transId} -- UserId -- ${rewardInfo.userId} -- customData -- ${customdata}');
   }
 
   @override
