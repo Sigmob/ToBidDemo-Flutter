@@ -15,3 +15,4 @@ export 'src/models/ad_info.dart';
 export 'src/models/custom_device.dart';
 export 'src/models/location.dart';
 export 'src/models/error.dart';
+export 'src/models/network_info.dart';

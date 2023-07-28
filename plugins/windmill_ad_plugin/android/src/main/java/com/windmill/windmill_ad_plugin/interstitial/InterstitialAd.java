@@ -9,7 +9,6 @@ import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdV
 
 import android.app.Activity;
 
-import androidx.annotation.NonNull;
 
 import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
@@ -88,7 +87,7 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
         return null;
     }
     @Override
-    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+    public void onMethodCall( MethodCall call,  MethodChannel.Result result) {
         Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
 

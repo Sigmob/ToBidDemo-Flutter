@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'windmill_ad_plugin'
-  s.version          = '2.11.0'
+  s.version          = '2.12.1'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -18,17 +18,17 @@ A new Flutter project.
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
   # s.static_framework = true
-  s.dependency 'ToBid-iOS', '2.11.0'
-  s.dependency 'ToBid-iOS/TouTiaoAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/AdmobAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/MintegralAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/GDTAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/VungleAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/UnityAdsAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/KSAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/BaiduAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/KlevinAdapter', '2.11.0'
-  s.dependency 'ToBid-iOS/AdScopeAdapter', '2.11.0'
+  s.dependency 'ToBid-iOS', '2.12.1'
+  s.dependency 'ToBid-iOS/TouTiaoAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/AdmobAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/MintegralAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/GDTAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/VungleAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/UnityAdsAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/KSAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/BaiduAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/KlevinAdapter', '2.12.1'
+  s.dependency 'ToBid-iOS/AdScopeAdapter', '2.12.1'
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
 end

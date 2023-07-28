@@ -6,11 +6,14 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import com.windmill.sdk.WMAdConfig;
+import com.windmill.sdk.WMAdnInitConfig;
 import com.windmill.sdk.WMCustomController;
+import com.windmill.sdk.WMNetworkConfig;
 import com.windmill.sdk.WindMillAd;
 import com.windmill.sdk.WindMillConsentStatus;
 import com.windmill.sdk.WindMillUserAgeStatus;
@@ -52,10 +55,11 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
 
-        Log.d(TAG, "onMethodCall: " + call.method);
-
-        WebView.setWebContentsDebuggingEnabled(true);
-        if (call.method.equals("setupSdkWithAppId")) {
+        if (call.method.equals("setPresetLocalStrategyPath")) {
+            setPresetLocalStrategyPath(call, result);
+        }else if (call.method.equals("networkPreInit")) {
+            networkPreInit(call, result);
+        } else if (call.method.equals("setupSdkWithAppId")) {
             setupSdkWithAppId(call, result);
         }else if (call.method.equals("getSdkVersion")) {
             getSdkVersion(call, result);
@@ -247,7 +251,46 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
     private void getSdkVersion(MethodCall call, MethodChannel.Result result) {
         result.success(WindMillAd.getVersion());
     }
+    
+    private void networkPreInit(MethodCall call, MethodChannel.Result result) {
 
+        ArrayList<HashMap<String,Object>> list = call.argument("networksMap");
+
+        WMNetworkConfig.Builder builder = new  WMNetworkConfig.Builder();
+        if(list != null){
+
+            for (HashMap map :list) {
+                int networkId = 0;
+                String appId = "";
+                String appKey = "";
+                Object obj = map.get("networkId");
+                if(obj instanceof Integer){
+                    networkId = (int)obj;
+                }
+                obj = map.get("appId");
+                if(obj instanceof String){
+                    appId = (String)obj;
+                }
+                obj = map.get("appKey");
+                if(obj instanceof String){
+                    appKey = (String)obj;
+                }
+
+                builder.addInitConfig(new WMAdnInitConfig(networkId,appId,appKey));
+
+            }
+        }
+
+        WindMillAd.sharedAds().setInitNetworkConfig(builder.build());
+    }
+
+    private void setPresetLocalStrategyPath(MethodCall call, MethodChannel.Result result) {
+
+        String path = call.argument("path");
+
+        WindMillAd.sharedAds().setLocalStrategyAssetPath(this.activity,path);
+
+    }
     private void setupSdkWithAppId(MethodCall call, MethodChannel.Result result) {
         String appId = call.argument("appId");
         if (wmCustomController != null){

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:ffi';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/models/ad_setting.dart';
@@ -26,6 +27,34 @@ class HomePage extends StatelessWidget {
 
        WindmillAd.setUserId(adSetting.otherSetting!.userId);
 
+
+      //Tobid 渠道预初始化
+      //  List<WindmillNetworkInfo> infolist = <WindmillNetworkInfo>[];
+      //  var sigAppId = Platform.isIOS?"21193":"1282";
+      //  var csjAppId = Platform.isIOS?"5000546":"5001121";
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Mintegral,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Vungle,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Applovin,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.UnityAds,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Ironsource,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Admob,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.CSJ,appId: csjAppId,appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Sigmob,appId: sigAppId,appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.KuaiShou,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Klevin,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Baidu,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Adscope,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Qumeng,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.TapTap,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Pangle,appId: "",appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Pangle,appId: "",appKey: ""));
+      //  WindmillAd.networkPreInit(infolist);
+
+
+
+      //Tobid 预置策略目录设置 ios: bundle文件名称，android: assets下的目录名称
+      //  var path = Platform.isIOS? "localstrategy":"localStrategy";
+      //  WindmillAd.setPresetLocalStrategyPath(path);
 
        WindmillAd.personalizedAdvertisin(adSetting.otherSetting!.personalizedAdvertisingState == 0? Personalized.on:Personalized.off);
 

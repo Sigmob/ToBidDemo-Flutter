@@ -11,11 +11,18 @@
 #import "WindMillCustomDevInfo.h"
 #import "WindmillUtil.h"
 
+#if __has_include(<KSUAdDebugTool/KSAdDebugToolCommon.h>)
+  #import <KSUAdDebugTool/KSAdDebugToolCommon.h>
+#endif
+
+#if __has_include(<KSUAdDebugTool/KSAdDebugHomeViewController.h>)
+   #import <KSUAdDebugTool/KSAdDebugHomeViewController.h>
+#endif
 
 @implementation WindmillAdPlugin
 
 static NSString *userId;
-
+NSMutableArray * sdkConfigures;
 
 +(NSString *)getUserId{
     return userId;
@@ -37,13 +44,12 @@ static NSString *userId;
     WindmillNativeViewFactory *nativeFactory = [[WindmillNativeViewFactory alloc] initWithMessenger:[registrar messenger]];
     [registrar registerViewFactory:nativeFactory withId:kWindmillFeedAdViewId];
     
-    
     [WindmillIntersititialAdPlugin registerWithRegistrar:registrar];
     [WindmillRewardVideoAdPlugin registerWithRegistrar:registrar];
     [WindmillNativeAdPlugin registerWithRegistrar:registrar];
     [WindmillBannerAdPlugin registerWithRegistrar:registrar];
     [WindmillSplashAdPlugin registerWithRegistrar:registrar];
-
+    
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -68,12 +74,40 @@ static NSString *userId;
     result(version);
 }
 
+- (void)setPresetLocalStrategyPathMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSString *bundleName = call.arguments[@"path"];
+    
+    if(bundleName != nil){
+        
+        NSBundle * bundle = nil;
+        if( [bundleName isEqualToString: @"mainbundle"]){
+            bundle = [NSBundle mainBundle];
+        }else{
+            NSString * bundlePath = [[NSBundle mainBundle] pathForResource:bundleName ofType:@"bundle"];
+           
+            if([[NSFileManager defaultManager] fileExistsAtPath:bundlePath]){
+                bundle = [NSBundle bundleWithPath:bundlePath];
+            }else{
+                NSLog(@"error: bundle %@ not exist",bundleName);
+            }
+        }
+        
+        if(bundle != nil){
+            NSLog(@"setPresetPlacementConfigPathBundle bundle: %@ sccess",bundleName);
+
+            [WindMillAds setPresetPlacementConfigPathBundle:bundle];
+        }
+    }
+
+    result(nil);
+}
+
 /*
  * 获取sdk的版本号
  */
 - (void)setupSdkWithAppIdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *appId = call.arguments[@"appId"];
-    [WindMillAds setupSDKWithAppId:appId];
+    [WindMillAds setupSDKWithAppId:appId sdkConfigures:sdkConfigures];
     result(nil);
 }
 - (void)setOAIDCertPemMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -137,8 +171,37 @@ static NSString *userId;
     result(nil);
 }
 
-- (void)showKSDebugMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void) networkPreInitMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
+    
+    NSArray<NSDictionary *> *networkConfigList = call.arguments[@"networksMap"];
+
+    
+    sdkConfigures = [[NSMutableArray alloc] init];
+    
+    for (NSDictionary *dic in networkConfigList) {
+        
+        NSNumber *networkId = dic[@"networkId"];
+        NSString *appId = dic[@"appId"];
+        NSString *appKey = dic[@"appKey"];
+        
+        if(networkId != nil && networkId != [NSNull null]){
+            
+            NSLog(@"networkId %@ appId %@ appKey %@",networkId,appId,appKey);
+            [sdkConfigures addObject:[[AWMSDKConfigure alloc] initWithAdnId:networkId appid:appId appKey:appKey]];
+        }
+    }
+}
+
+- (void)showKSDebugMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [KSAdDebugToolCommon sharedInstance].useDebugTool = YES;
+      
+    KSAdDebugHomeViewController *demoVC = [KSAdDebugHomeViewController new];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:demoVC];
+    
+    [[WindmillUtil getCurrentController] presentViewController:nav animated:YES completion:nil];
+    
     result(nil);
 
  }

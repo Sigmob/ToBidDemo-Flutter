@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:windmill_ad_plugin/src/core/windmill_enum.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 class WindmillAd {
@@ -64,6 +63,24 @@ class WindmillAd {
     });
   }
 
+
+   static Future<void> networkPreInit(List<WindmillNetworkInfo>? networkInfoList) {
+
+
+      if(networkInfoList == null){
+        return Future.value();
+      }
+      List<Map<String,dynamic>> networkInfoListMap = [];
+      for(WindmillNetworkInfo networkInfo in networkInfoList){
+        networkInfoListMap.add(networkInfo.toJson());
+      }
+
+      return _channel.invokeMethod("networkPreInit",{
+        'networksMap':networkInfoListMap
+      });
+
+   }
+
   static Future<void> ccpa(CCPA state) {
     return _channel.invokeMethod('setCCPAStatus', {
       'state': state.index
@@ -94,6 +111,12 @@ class WindmillAd {
   static Future<void> personalizedAdvertisin(Personalized state) {
     return _channel.invokeMethod('setPersonalizedStatus', {
       'state': state.index
+    });
+  }
+
+  static Future<void> setPresetLocalStrategyPath(String path) {
+     return _channel.invokeMethod('setPresetLocalStrategyPath', {
+      'path':path
     });
   }
 }
