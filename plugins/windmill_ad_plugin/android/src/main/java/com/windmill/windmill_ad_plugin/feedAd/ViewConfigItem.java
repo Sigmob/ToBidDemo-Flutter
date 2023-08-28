@@ -1,5 +1,7 @@
 package com.windmill.windmill_ad_plugin.feedAd;
 
+import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +29,7 @@ class ViewConfigItem {
         try {
             int x = config.getInt("x");
             if (!userPixel()){
-               x = (int)ResourceUtil.Instace().dip2Px(x);
+               x = (int) ResourceUtil.Instace().dip2Px(x);
             }
             return x;
         } catch (JSONException e) {

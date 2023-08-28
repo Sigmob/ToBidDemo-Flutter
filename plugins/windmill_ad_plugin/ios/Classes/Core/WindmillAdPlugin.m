@@ -11,13 +11,6 @@
 #import "WindMillCustomDevInfo.h"
 #import "WindmillUtil.h"
 
-#if __has_include(<KSUAdDebugTool/KSAdDebugToolCommon.h>)
-  #import <KSUAdDebugTool/KSAdDebugToolCommon.h>
-#endif
-
-#if __has_include(<KSUAdDebugTool/KSAdDebugHomeViewController.h>)
-   #import <KSUAdDebugTool/KSAdDebugHomeViewController.h>
-#endif
 
 @implementation WindmillAdPlugin
 
@@ -135,6 +128,25 @@ NSMutableArray * sdkConfigures;
 
     result(nil);
 }
+
+
+- (void)initCustomGroupForPlacementMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    
+    NSString *customGroup = call.arguments[@"customGroup"];
+    NSString *placementId = call.arguments[@"placementId"];
+ 
+    NSData *data = [customGroup dataUsingEncoding:NSUTF8StringEncoding];
+    
+    if(data != nil){
+        NSError *error;
+        NSDictionary * dic = [NSJSONSerialization  JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+
+        [WindMillAds initCustomGroup:dic forPlacementId:placementId];
+    }
+
+    result(nil);
+}
+
 - (void)customDeviceMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
     
@@ -187,24 +199,18 @@ NSMutableArray * sdkConfigures;
         
         if(networkId != nil && networkId != [NSNull null]){
             
-            NSLog(@"networkId %@ appId %@ appKey %@",networkId,appId,appKey);
-            [sdkConfigures addObject:[[AWMSDKConfigure alloc] initWithAdnId:networkId appid:appId appKey:appKey]];
+            AWMSDKConfigure * conf = [[AWMSDKConfigure alloc] initWithAdnId:networkId appid:appId appKey:appKey];
+            
+            NSLog(@"networkId11 %@ appId %@ appKey %@",conf.adnId,conf.appId,conf.appKey);
+
+            [sdkConfigures addObject:conf];
+            
+            
         }
     }
 }
 
-- (void)showKSDebugMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    [KSAdDebugToolCommon sharedInstance].useDebugTool = YES;
-      
-    KSAdDebugHomeViewController *demoVC = [KSAdDebugHomeViewController new];
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:demoVC];
-    
-    [[WindmillUtil getCurrentController] presentViewController:nav animated:YES completion:nil];
-    
-    result(nil);
 
- }
 - (void)getUidMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result([WindMillAds getUid]);
 }

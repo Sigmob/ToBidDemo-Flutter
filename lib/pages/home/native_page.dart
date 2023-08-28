@@ -183,6 +183,11 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
     ad.getAdInfo().then((adinfo) => 
         c.callbacks.add('onAdOpened -- ${ad.request.placementId} --  adInfo -- ${ adinfo.toJson()}')
     );
+
+    ad.getAppInfo().then((appInfo) => 
+       
+        c.callbacks.add('onAdOpened -- ${ad.request.placementId} --  appInfo -- ${ appInfo?.toString()}')
+    );
   }
 
   @override

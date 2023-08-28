@@ -19,7 +19,7 @@ import com.czhj.sdk.common.utils.ImageManager;
 import com.windmill.sdk.natives.WMNativeAdData;
 import com.windmill.sdk.natives.WMNativeAdDataType;
 import com.windmill.sdk.natives.WMNativeAdRender;
-import com.czhj.sdk.common.utils.ResourceUtil;
+import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -186,21 +186,7 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
 
 
 
-        try {
-            mCTAButton = new Button(context);
-
-            JSONObject config = mCustomViewConfig.getJSONObject("ctaButton");
-            if(config != null){
-                ViewConfigItem item = new ViewConfigItem(config);
-
-                updateViewProperty(mCTAButton,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(mCTAButton,lp);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+       
 
         if (patternType == WMNativeAdDataType.NATIVE_SMALL_IMAGE_AD || patternType == WMNativeAdDataType.NATIVE_BIG_IMAGE_AD) {
             try {
@@ -405,6 +391,21 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             e.printStackTrace();
         }
 
+         try {
+            mCTAButton = new Button(context);
+
+            JSONObject config = mCustomViewConfig.getJSONObject("ctaButton");
+            if(config != null){
+                ViewConfigItem item = new ViewConfigItem(config);
+
+                updateViewProperty(mCTAButton,item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
+                lp.setMargins(item.getX(),item.getY(),0,0);
+                rootView.addView(mCTAButton,lp);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         iv_dislike.setImageResource(ResourceUtil.getDrawableId(view.getContext(),"sig_dislike"));
 

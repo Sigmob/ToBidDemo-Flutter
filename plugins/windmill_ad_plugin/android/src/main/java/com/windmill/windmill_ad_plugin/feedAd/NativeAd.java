@@ -11,8 +11,6 @@ import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdR
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +27,7 @@ import com.windmill.sdk.natives.WMNativeAdRender;
 import com.windmill.sdk.natives.WMNativeAdRequest;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
+import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,6 +113,31 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         if(nativeAd != null){
             nativeAd.excuted(call, result);
         }
+    }
+
+    
+
+    public Object getAppInfo(MethodCall call){
+
+        if(wmNativeAdData != null){
+            WMNativeAdData.AppInfo appInfo = wmNativeAdData.getAppInfo();
+
+            if(appInfo != null){
+                    HashMap map = new HashMap<>();
+
+                    map.put("appName",appInfo.getAppName());
+                    map.put("developerName",appInfo.getDeveloperName());
+                    map.put("appVersion",appInfo.getAppVersion());
+                    map.put("privacyUrl",appInfo.getPrivacyUrl());
+                    map.put("permissionInfoUrl",appInfo.getPermissionInfoUrl());
+                    map.put("permissionInfo",appInfo.getPermissionInfo());
+                    map.put("functionDescUrl",appInfo.getFunctionDescUrl());
+
+                    return map;
+
+            }
+        }
+        return null;
     }
     public Object getCacheAdInfoList(MethodCall call){
 

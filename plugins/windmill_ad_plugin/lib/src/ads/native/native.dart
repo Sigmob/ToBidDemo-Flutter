@@ -71,6 +71,16 @@ class WindmillNativeAd with WindmillEventHandler{
     final adInfoJson = json.decode(adinfoStr);
     return AdInfo.fromJson(adInfoJson); 
   }
+
+  Future<AppInfo?> getAppInfo() async {
+    dynamic appInfoMap = await _channel.invokeMethod("getAppInfo",{
+      "uniqId":_uniqId 
+    });
+    if(appInfoMap == null){
+        return Future.value(null);
+    }
+    return AppInfo.fromJson(appInfoMap.cast<String?,dynamic>()); 
+  }
   
   Future<List<AdInfo>?> getCacheAdInfoList() async{
 
@@ -99,6 +109,42 @@ class WindmillNativeAd with WindmillEventHandler{
     await _channel.invokeMethod('destroy', {
       "uniqId": _uniqId
     });
+  }
+}
+
+class AppInfo {
+    String? appName;
+    String? appVersion;
+    String? developerName;
+    String? privacyUrl;
+    String? permissionInfoUrl;
+    String? permissionInfo;
+    String? functionDescUrl;
+
+    AppInfo({
+      this.appName,
+      this.appVersion,
+      this.developerName,
+      this.privacyUrl,
+      this.permissionInfoUrl,
+      this.permissionInfo,
+      this.functionDescUrl,
+    });
+
+    factory AppInfo.fromJson(Map<String?, dynamic> json) => AppInfo(
+      appName: json["appName"],
+      appVersion: json["appVersion"],
+      developerName: json["developerName"],
+      privacyUrl: json["privacyUrl"],
+      permissionInfoUrl: json["permissionInfoUrl"],
+      permissionInfo: json["permissionInfo"],
+      functionDescUrl: json["functionDescUrl"],
+
+    );
+
+  @override
+  String toString() {
+    return 'AppInfo{appName: $appName, appVersion: $appVersion, developerName: $developerName, privacyUrl: $privacyUrl, permissInfoUrl: $permissionInfoUrl,permissInfo: $permissionInfo,  functionDescUrl: $functionDescUrl}';
   }
 }
 

@@ -16,6 +16,7 @@ import com.czhj.sdk.common.utils.ImageManager;
 import com.windmill.sdk.natives.WMNativeAdData;
 import com.windmill.sdk.natives.WMNativeAdDataType;
 import com.windmill.sdk.natives.WMNativeAdRender;
+import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
 
 import java.util.ArrayList;
 import java.util.List;

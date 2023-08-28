@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
@@ -14,11 +17,28 @@ class WindmillAd {
     });
   }
 
-  static Future<void> initCustomGroup(String customGroup) {
+  static Future<void> requestPermission() {
+    
+    if( Platform.isAndroid){
+        return _channel.invokeMethod('requestPermission');
+    }
+    return Future.value();
+  }
+
+
+  static Future<void> initCustomGroup(Map customGroup) {
     return _channel.invokeMethod('initCustomGroup', {
-      'customGroup': customGroup
+      'customGroup': json.encode(customGroup)
     });
   }
+
+  static Future<void> initCustomGroupForPlacement(Map customGroup,String placementId) {
+    return _channel.invokeMethod('initCustomGroupForPlacement', {
+       'customGroup': json.encode(customGroup),
+        'placementId': placementId
+    });
+  }
+
 
   static Future<void> setCustomDevice(CustomDevice customDevice) {
     return _channel.invokeMethod('customDevice', {

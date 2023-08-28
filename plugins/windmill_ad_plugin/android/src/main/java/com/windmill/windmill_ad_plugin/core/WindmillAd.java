@@ -11,6 +11,7 @@ import com.windmill.sdk.interstitial.WMInterstitialAdRequest;
 import com.windmill.sdk.natives.WMNativeAdRequest;
 import com.windmill.sdk.reward.WMRewardAdRequest;
 import com.windmill.sdk.splash.WMSplashAdRequest;
+import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,6 +117,14 @@ public class WindmillAd<T> {
 
                     String title = (String) arguments.get("title");
                     String desc = (String) arguments.get("desc");
+
+                    if(!TextUtils.isEmpty(title)){
+
+                        int width = ResourceUtil.Instace().getWidth();
+                        int height = ResourceUtil.Instace().getHeight()-ResourceUtil.Instace().dip2Px(100);
+                        options.put(WMConstants.AD_WIDTH, width);
+                        options.put(WMConstants.AD_HEIGHT,height);
+                    }
 
                     adRequest = new WMSplashAdRequest(placementId, userId, options);
                     ((WMSplashAdRequest) adRequest).setAppTitle(title);

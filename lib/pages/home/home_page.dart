@@ -23,6 +23,9 @@ class HomePage extends StatelessWidget {
     DeviceUtil.initialize();
     AdSetting? adSetting = await AdSetting.fromFile();
     if (adSetting != null) {
+
+       WindmillAd.requestPermission(); 
+
        WindmillAd.adult(adSetting.otherSetting!.adultState == 0? Adult.adult:Adult.children);
 
        WindmillAd.setUserId(adSetting.otherSetting!.userId);
@@ -121,9 +124,12 @@ class HomePage extends StatelessWidget {
             }
          }
       }
-
-      WindmillAd.initCustomGroup(json.encode(customGroup));
-
+      var placementId = Platform.isIOS?"9966371082635223":"7373760992206247";
+      WindmillAd.initCustomGroup(customGroup);
+      Map customGroup2 = Map();
+      customGroup2["qa"] = "test";
+      WindmillAd.initCustomGroupForPlacement(customGroup2,placementId);
+      
       await WindmillAd.init(adSetting.appId!.toString());
       
     

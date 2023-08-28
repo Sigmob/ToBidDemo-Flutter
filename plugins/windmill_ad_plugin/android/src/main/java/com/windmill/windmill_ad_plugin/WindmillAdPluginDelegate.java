@@ -69,6 +69,8 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
         } else if(call.method.equals("setAdultStatus")){
             int state = call.argument("state");
             WindMillAd.sharedAds().setAdult(state ==0);
+        } else if(call.method.equals("requestPermission")){
+            WindMillAd.requestPermission(this.activity);
         } else if(call.method.equals("setPersonalizedStatus")){
             int state = call.argument("state");
             WindMillAd.sharedAds().setPersonalizedAdvertisingOn(state == 0);
@@ -150,7 +152,24 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        } else if(call.method.equals("initCustomGroupForPlacement")){
 
+            String customGroup = call.argument("customGroup");
+            String placementId = call.argument("placementId");
+            try {
+                JSONObject jsonObject = new JSONObject(customGroup);
+                HashMap map = new HashMap();
+                Iterator<String> keys = jsonObject.keys();
+                while (keys.hasNext()){
+                    String next = keys.next();
+                    map.put(next,jsonObject.getString(next));
+                }
+
+                WindMillAd.sharedAds().initPlacementCustomMap(placementId,map);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if(call.method.equals("setAge")){
             int age = call.argument("age");
             WindMillAd.sharedAds().setUserAge(age);

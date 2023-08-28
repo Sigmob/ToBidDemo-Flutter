@@ -29,9 +29,10 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
 
 + (BOOL) disableAutoresize:(WindMillNativeAd *)ad{
     
-    if(ad.networkId == 16){
-        return true;
-    }
+    //如遇到GDT渠道显示UI问题可以打开此开关
+//    if(ad.networkId == 16){
+//        return true;
+//    }
     return false;
 }
 
@@ -170,10 +171,13 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
 }
 
 +(void)updateViewProperty:(UIView *) view ViewConfig:(ViewConfigItem *) viewConfigItem disableAutoreSize: (Boolean) disable {
-    view.frame = [viewConfigItem getFrame];
-    if(disable){
-        [view setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin];
-    }
+    CGRect frame = [viewConfigItem getFrame];
+    
+    [view sms_remakeConstraints:^(SMSConstraintMaker *make) {
+        make.left.sms_equalTo(frame.origin.x);
+        make.top.sms_equalTo(frame.origin.y);
+        make.size.sms_equalTo(frame.size);
+    }];
 
     UIColor * bgColor = [viewConfigItem getBackgroudColor];
     if(bgColor != nil){
@@ -308,6 +312,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
         adView.imageViewList[0].frame = CGRectMake(x, y, imgW, imgHeight);
         adView.imageViewList[1].frame = CGRectMake(CGRectGetMaxX(adView.imageViewList[0].frame)+margin, y, imgW, imgHeight);
         adView.imageViewList[2].frame = CGRectMake(CGRectGetMaxX(adView.imageViewList[1].frame)+margin, y, imgW, imgHeight);
+        [adView.logoView setTranslatesAutoresizingMaskIntoConstraints:true];
         CGSize logoSize = adView.logoView.frame.size;
         if (CGSizeEqualToSize(logoSize, CGSizeZero)) {
             logoSize = CGSizeMake(25, 25);
@@ -370,6 +375,8 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     if (CGSizeEqualToSize(logoSize, CGSizeZero)) {
         logoSize = CGSizeMake(30, 30);
     }
+    
+    [adView.logoView setTranslatesAutoresizingMaskIntoConstraints:true];
     adView.logoView.frame = CGRectMake(CGRectGetMaxX(adView.mainImageView.frame)-logoSize.width, CGRectGetMaxY(adView.mainImageView.frame)-logoSize.height, logoSize.width, logoSize.height);
     y += imgHeight + 10;
     adView.adLabel.frame = CGRectMake(x, y, 40, 20);
@@ -417,6 +424,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     if(nativeAd.iconUrl != nil && [nativeAd.iconUrl length]>0){
         [adView.iconImageView sm_setImageWithURL:[NSURL URLWithString:nativeAd.iconUrl]];
     }
+    [adView.logoView setTranslatesAutoresizingMaskIntoConstraints:true];
     adView.logoView.frame = CGRectMake(CGRectGetMaxX(adView.mainImageView.frame)-logoSize.width, CGRectGetMaxY(adView.mainImageView.frame)-logoSize.height, logoSize.width, logoSize.height);
     y += imgHeight + 10;
     adView.adLabel.frame = CGRectMake(x, y, 40, 20);
