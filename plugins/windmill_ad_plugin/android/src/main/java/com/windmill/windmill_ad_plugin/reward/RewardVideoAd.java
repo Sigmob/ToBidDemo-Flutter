@@ -21,6 +21,9 @@ import com.windmill.sdk.reward.WMRewardInfo;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -199,8 +202,20 @@ public void onVideoAdPlayError(final WindMillError windMillError,final String pl
         args.put("trans_id", wmRewardInfo.getTrans_id());
         args.put("user_id", wmRewardInfo.getUser_id());
 
-        if(wmRewardInfo.getCustomData() != null){
-            args.put("customData", wmRewardInfo.getCustomData());
+
+        Map<String, Object> customData = wmRewardInfo.getCustomData();
+        if(customData != null){
+            JSONObject obj = new JSONObject();
+
+            for (String key: customData.keySet()) {
+                Object value = customData.get(key);
+                try {
+                    obj.put(key,value);
+                } catch (JSONException e) {
+                }
+
+            }
+            args.put("customData", obj.toString());
         }
         channel.invokeMethod(kWindmillEventAdReward, args);
     }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:windmill_ad_plugin/src/ads/reward/reward.dart';
 import 'package:windmill_ad_plugin/src/models/error.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
@@ -53,9 +55,8 @@ class IWindmillRewardListener with WindmillAdEvent {
       if(arguments.containsKey("customData")){
           try
           {
-            var customData = new Map<String,dynamic>.from(arguments['customData']);
-            rewardInfo.customData = customData;
-
+            var customData =jsonDecode(arguments['customData']);
+            rewardInfo.customData = customData as Map<String, dynamic>?;
           }catch(e){
             print(" unknow error: $e");
           }
