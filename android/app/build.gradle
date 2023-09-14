@@ -80,6 +80,7 @@ dependencies {
     implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/adscope')
     implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/unity')
     implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/klevin')
+    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/oppoadn')
     implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/admob')
     implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/qumeng')
     implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/taptap')

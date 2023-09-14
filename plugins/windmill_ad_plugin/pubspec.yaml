@@ -1,10 +1,10 @@
 name: windmill_ad_plugin
 description: A new Flutter project.
-version: 2.15.0
+version: 2.15.3
 homepage: https://www.sigmob.com
 
 environment:
-  sdk: ">=2.12.0 <3.3.0"
+  sdk: ">=2.12.0 <3.3.11"
   flutter: ">=2.0.0"
 
 dependencies:
