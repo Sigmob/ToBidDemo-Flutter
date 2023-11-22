@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31 
+    compileSdkVersion 31
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -40,10 +40,10 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.windmill_ad_plugin_example"
-        minSdkVersion 19
+        minSdkVersion 21
         // You can update the following values to match your application needs. 
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -70,20 +70,20 @@ dependencies {
     //AndroidX
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/Core')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/csj')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/gdt')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/kuaishou')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/baidu')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/mintegral-cn')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/vungle')
-    implementation fileTree(include: ["*.jar","*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/adscope')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/unity')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/klevin')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/oppoadn')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/admob')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/qumeng')
-    implementation fileTree(include: ["*.jar",'*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/taptap')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/Core')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/csj')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/gdt')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/kuaishou')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/baidu')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/mintegral-cn')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/vungle')
+    implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/adscope')
+    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/unity')
+    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/klevin')
+    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/oppoadn')
+    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/admob')
+    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/qumeng')
+    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/taptap')
 
 
     implementation "com.github.bumptech.glide:glide:4.0.0"
@@ -106,5 +106,5 @@ dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
 
     implementation "androidx.appcompat:appcompat:1.2.0"
-    implementation "androidx.recyclerview:recyclerview:1.2.0" 
+    implementation "androidx.recyclerview:recyclerview:1.2.0"
 }
