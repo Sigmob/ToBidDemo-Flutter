@@ -175,11 +175,12 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
 - (void)bannerAdViewDidAutoRefresh:(WindMillBannerView *)bannerAdView {
     NSLog(@"%@  size: %@", NSStringFromSelector(_cmd), NSStringFromCGSize(bannerAdView.adSize));
     CGSize adSize = bannerAdView.adSize;
-    [bannerAdView sms_remakeConstraints:^(SMSConstraintMaker *make) {
-        make.size.sms_equalTo(adSize);
-        make.center.sms_equalTo(self.adContainer);
-    }];
-    
+    if (self.adContainer) {
+        [bannerAdView sms_remakeConstraints:^(SMSConstraintMaker *make) {
+            make.size.sms_equalTo(adSize);
+            make.center.sms_equalTo(self.adContainer);
+        }];
+    }
     
     [self.channel invokeMethod:kWindmillEventAdAutoRefreshed arguments:@{
         @"width": @(adSize.width),

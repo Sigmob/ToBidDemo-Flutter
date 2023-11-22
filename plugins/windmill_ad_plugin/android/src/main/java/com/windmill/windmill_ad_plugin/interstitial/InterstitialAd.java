@@ -40,20 +40,24 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
 
-    public InterstitialAd() {}
+    public InterstitialAd() {
+    }
+
     public InterstitialAd(Activity activity, FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
         this.activity = activity;
         this.flutterPluginBinding = flutterPluginBinding;
         ad = new WindmillAd<>();
     }
+
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
-        super.setup(channel, adRequest,activity);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest, Activity activity) {
+        super.setup(channel, adRequest, activity);
         this.adChannel = channel;
         this.activity = activity;
-        this.interstitialAd = new WMInterstitialAd(activity,new WMInterstitialAdRequest(adRequest.getPlacementId(),adRequest.getUserId(),adRequest.getOptions()));
-        this.interstitialAd.setInterstitialAdListener(new IWMIntersititialAdListener(this,channel));
+        this.interstitialAd = new WMInterstitialAd(activity, new WMInterstitialAdRequest(adRequest.getPlacementId(), adRequest.getUserId(), adRequest.getOptions()));
+        this.interstitialAd.setInterstitialAdListener(new IWMInterstitialAdListener(this, channel));
     }
+
     public void onAttachedToEngine() {
         Log.d("ToBid", "onAttachedToEngine");
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.windmill/interstitial");
@@ -62,23 +66,23 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
 
     public void onDetachedFromEngine() {
         Log.d("ToBid", "onDetachedFromEngine");
-        if(channel != null){
+        if (channel != null) {
             channel.setMethodCallHandler(null);
         }
     }
 
 
-    public WindmillBaseAd getAdInstance(String uniqId){
+    public WindmillBaseAd getAdInstance(String uniqId) {
         return this.ad.getAdInstance(uniqId);
     }
 
-    public Object getCacheAdInfoList(MethodCall call){
+    public Object getCacheAdInfoList(MethodCall call) {
 
-        List<AdInfo> adinfoList =  this.interstitialAd.checkValidAdCaches();
-        if(adinfoList != null){
+        List<AdInfo> adinfoList = this.interstitialAd.checkValidAdCaches();
+        if (adinfoList != null) {
             ArrayList<String> list = new ArrayList<>(adinfoList.size());
 
-            for (AdInfo info :adinfoList) {
+            for (AdInfo info : adinfoList) {
                 list.add(info.toString());
             }
             return list;
@@ -86,16 +90,17 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
 
         return null;
     }
+
     @Override
-    public void onMethodCall( MethodCall call,  MethodChannel.Result result) {
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
 
         WindmillBaseAd interstitialAd = this.ad.getAdInstance(uniqId);
         if (interstitialAd == null) {
-            interstitialAd = this.ad.createAdInstance(InterstitialAd.class, getArguments(call.arguments), flutterPluginBinding,  WindmillAd.AdType.Interstitial,activity);
+            interstitialAd = this.ad.createAdInstance(InterstitialAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Interstitial, activity);
         }
-        if(interstitialAd != null){
+        if (interstitialAd != null) {
             interstitialAd.excuted(call, result);
         }
     }
@@ -111,42 +116,44 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
     }
 
     public Object getAdInfo(MethodCall call) {
-        if(this.adInfo != null){
+        if (this.adInfo != null) {
             return this.adInfo.toString();
         }
         return null;
-     }
+    }
 
     private Object showAd(MethodCall call) {
         HashMap<String, String> options = call.argument("options");
 
         String scene_desc = options.get("AD_SCENE_DESC");
         String scene_id = options.get("AD_SCENE_ID");
-        HashMap<String,String> opt =new HashMap<String,String>();
-        opt.put(WMConstants.AD_SCENE_ID,scene_desc);
-        opt.put(WMConstants.AD_SCENE_DESC,scene_id);
+        HashMap<String, String> opt = new HashMap<String, String>();
+        opt.put(WMConstants.AD_SCENE_ID, scene_desc);
+        opt.put(WMConstants.AD_SCENE_DESC, scene_id);
         this.interstitialAd.show(this.activity, options);
         return null;
     }
+
     private Object destroy(MethodCall call) {
 
-        if(this.interstitialAd != null){
+        if (this.interstitialAd != null) {
             this.interstitialAd.destroy();
         }
 
-        if(this.adChannel != null){
+        if (this.adChannel != null) {
             this.adChannel.setMethodCallHandler(null);
         }
         return null;
     }
 }
 
-class IWMIntersititialAdListener implements WMInterstitialAdListener {
+class IWMInterstitialAdListener implements WMInterstitialAdListener {
 
     private MethodChannel channel;
     private InterstitialAd interstitialAd;
-    private static final String TAG = IWMIntersititialAdListener.class.getSimpleName();
-    public IWMIntersititialAdListener(InterstitialAd interstitialAd,MethodChannel channel) {
+    private static final String TAG = IWMInterstitialAdListener.class.getSimpleName();
+
+    public IWMInterstitialAdListener(InterstitialAd interstitialAd, MethodChannel channel) {
         this.channel = channel;
         this.interstitialAd = interstitialAd;
     }
@@ -154,7 +161,7 @@ class IWMIntersititialAdListener implements WMInterstitialAdListener {
 
     @Override
     public void onInterstitialAdLoadSuccess(final String s) {
-        android.util.Log.d(TAG, "onInterstitialAdLoadSuccess: "+ channel);
+        android.util.Log.d(TAG, "onInterstitialAdLoadSuccess: " + channel);
         channel.invokeMethod(kWindmillEventAdLoaded, null);
     }
 
@@ -181,7 +188,7 @@ class IWMIntersititialAdListener implements WMInterstitialAdListener {
     public void onInterstitialAdClosed(final AdInfo adInfo) {
         android.util.Log.d(TAG, "onInterstitialAdClosed: ");
         channel.invokeMethod(kWindmillEventAdClosed, null);
-       }
+    }
 
     @Override
     public void onInterstitialAdLoadError(final WindMillError windMillError, final String s) {

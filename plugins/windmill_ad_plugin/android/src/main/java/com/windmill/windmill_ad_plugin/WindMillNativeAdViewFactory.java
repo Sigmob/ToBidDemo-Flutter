@@ -28,7 +28,8 @@ public class WindMillNativeAdViewFactory extends PlatformViewFactory {
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
 
     private WindmillBaseAd windmillBaseAd;
-    public WindMillNativeAdViewFactory(String viewName,WindmillBaseAd windmillBaseAd, Activity activity) {
+
+    public WindMillNativeAdViewFactory(String viewName, WindmillBaseAd windmillBaseAd, Activity activity) {
         super(StandardMessageCodec.INSTANCE);
         this.viewName = viewName;
         this.activity = activity;
@@ -37,33 +38,31 @@ public class WindMillNativeAdViewFactory extends PlatformViewFactory {
 
 
     @Override
-    public  PlatformView create(Context context, int viewId, Object args) {
+    public PlatformView create(Context context, int viewId, Object args) {
 
         String uniqId = WindmillBaseAd.getArgument(args, "uniqId");
-        WindmillBaseAd baseAd =  windmillBaseAd.getAdInstance(uniqId);
+        WindmillBaseAd baseAd = windmillBaseAd.getAdInstance(uniqId);
 
-        if(this.viewName.equals(WindmillAdPlugin.kWindmillBannerAdViewId)){
+        if (this.viewName.equals(WindmillAdPlugin.kWindmillBannerAdViewId)) {
 
-            return new BannerAdView(this.activity,baseAd);
+            return new BannerAdView(this.activity, baseAd);
 
-        }else if(this.viewName.equals(WindmillAdPlugin.kWindmillFeedAdViewId)){
+        } else if (this.viewName.equals(WindmillAdPlugin.kWindmillFeedAdViewId)) {
 
-            Object nativeCustomConfig = WindmillBaseAd.getArgument(args,"nativeCustomViewConfig");
-          
+            Object nativeCustomConfig = WindmillBaseAd.getArgument(args, "nativeCustomViewConfig");
+
             JSONObject config = null;
 
-            if (nativeCustomConfig instanceof Map){
+            if (nativeCustomConfig instanceof Map) {
                 config = new JSONObject((Map) nativeCustomConfig);
-            }else if(nativeCustomConfig instanceof  JSONObject) {
+            } else if (nativeCustomConfig instanceof JSONObject) {
                 config = (JSONObject) nativeCustomConfig;
             }
-            return new NativeAdView(this.activity,baseAd,config);
+            return new NativeAdView(this.activity, baseAd, config);
         }
 
         return null;
     }
-
-
 
 
 }

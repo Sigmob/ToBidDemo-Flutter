@@ -45,27 +45,29 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     protected AdInfo adInfo;
     private WindowManager.LayoutParams layoutParams;
 
-    public SplashAd() {}
+    public SplashAd() {
+    }
+
     public SplashAd(Activity activity, FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
         this.activity = activity;
         this.flutterPluginBinding = flutterPluginBinding;
         ad = new WindmillAd<>();
     }
 
-    public  WindmillBaseAd getAdInstance(String uniqId) {
-        if(ad != null){
+    public WindmillBaseAd getAdInstance(String uniqId) {
+        if (ad != null) {
             return this.ad.getAdInstance(uniqId);
         }
         return null;
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
-        super.setup(channel, adRequest,activity);
-        this.splashAdRequest= (WMSplashAdRequest) adRequest;
-        this.adChannel  = channel;
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest, Activity activity) {
+        super.setup(channel, adRequest, activity);
+        this.splashAdRequest = (WMSplashAdRequest) adRequest;
+        this.adChannel = channel;
         this.activity = activity;
-        this.splashAdView = new WMSplashAd(activity,this.splashAdRequest,new IWMSplashAdListener(this,channel));
+        this.splashAdView = new WMSplashAd(activity, this.splashAdRequest, new IWMSplashAdListener(this, channel));
 
     }
 
@@ -77,18 +79,18 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     public void onDetachedFromEngine() {
         Log.d("ToBid", "onDetachedFromEngine");
-        if(channel != null){
+        if (channel != null) {
             channel.setMethodCallHandler(null);
         }
     }
 
-    public Object getCacheAdInfoList(MethodCall call){
+    public Object getCacheAdInfoList(MethodCall call) {
 
-        List<AdInfo> adInfoList =  this.splashAdView.checkValidAdCaches();
-        if(adInfoList != null){
+        List<AdInfo> adInfoList = this.splashAdView.checkValidAdCaches();
+        if (adInfoList != null) {
             ArrayList<String> list = new ArrayList<>(adInfoList.size());
 
-            for (AdInfo info :adInfoList) {
+            for (AdInfo info : adInfoList) {
                 list.add(info.toString());
             }
             return list;
@@ -98,16 +100,16 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public void onMethodCall( MethodCall call, MethodChannel.Result result) {
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
-        WindmillBaseAd splashAd=this.ad.getAdInstance(uniqId);
+        WindmillBaseAd splashAd = this.ad.getAdInstance(uniqId);
 
         if (splashAd == null) {
 
-            splashAd = this.ad.createAdInstance(SplashAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Splash,activity);
+            splashAd = this.ad.createAdInstance(SplashAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Splash, activity);
         }
-        if(splashAd != null){
+        if (splashAd != null) {
             splashAd.excuted(call, result);
         }
     }
@@ -116,7 +118,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     void restoreNavigationBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window _window = this.activity.getWindow();
-            if((layoutParams.flags&WindowManager.LayoutParams.FLAG_FULLSCREEN) != WindowManager.LayoutParams.FLAG_FULLSCREEN){
+            if ((layoutParams.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != WindowManager.LayoutParams.FLAG_FULLSCREEN) {
                 _window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
             _window.setAttributes(layoutParams);
@@ -124,11 +126,11 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     public Object getAdInfo(MethodCall call) {
-        if(this.adInfo != null){
+        if (this.adInfo != null) {
             return this.adInfo.toString();
         }
         return null;
-     }
+    }
 
     public Object load(MethodCall call) {
         this.adInfo = null;
@@ -136,7 +138,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         return null;
     }
 
-    public Object showAd(MethodCall call){
+    public Object showAd(MethodCall call) {
 
         Window _window = this.activity.getWindow();
         layoutParams = new WindowManager.LayoutParams();
@@ -152,7 +154,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     public Object destroy(MethodCall call) {
-        if(this.adChannel != null){
+        if (this.adChannel != null) {
             this.adChannel.setMethodCallHandler(null);
         }
         return null;
@@ -165,7 +167,7 @@ class IWMSplashAdListener implements WMSplashAdListener {
     private MethodChannel channel;
     private SplashAd splashAd;
 
-    public IWMSplashAdListener(final SplashAd splashAd,final MethodChannel channel) {
+    public IWMSplashAdListener(final SplashAd splashAd, final MethodChannel channel) {
         this.channel = channel;
         this.splashAd = splashAd;
     }
@@ -184,7 +186,7 @@ class IWMSplashAdListener implements WMSplashAdListener {
     }
 
     @Override
-    public void onSplashAdFailToLoad(final WindMillError windMillError,final String placementId) {
+    public void onSplashAdFailToLoad(final WindMillError windMillError, final String placementId) {
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("code", windMillError.getErrorCode());
         args.put("message", windMillError.getMessage());

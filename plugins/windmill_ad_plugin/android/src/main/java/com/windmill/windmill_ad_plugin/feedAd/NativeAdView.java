@@ -22,17 +22,19 @@ import android.widget.RelativeLayout;
 
 import org.json.JSONObject;
 
-public class NativeAdView  implements PlatformView {
+public class NativeAdView implements PlatformView {
 
     protected FrameLayout contentView;
 
-    public NativeAdView() {}
+    public NativeAdView() {
+    }
+
     public NativeAdView(Activity activity, WindmillBaseAd nativeAd, JSONObject customViewConfig) {
         contentView = new FrameLayout(activity);
         contentView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
-        if(nativeAd != null){
-            ((NativeAd)nativeAd).showAd(contentView, customViewConfig);
+        if (nativeAd != null) {
+            ((NativeAd) nativeAd).showAd(contentView, customViewConfig);
         }
     }
 

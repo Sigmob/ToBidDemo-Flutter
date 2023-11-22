@@ -45,7 +45,9 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
 
-    public RewardVideoAd() {}
+    public RewardVideoAd() {
+    }
+
     public RewardVideoAd(Activity activity, FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
         this.activity = activity;
         this.flutterPluginBinding = flutterPluginBinding;
@@ -54,12 +56,12 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
-        super.setup(channel, adRequest,activity);
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest, Activity activity) {
+        super.setup(channel, adRequest, activity);
         this.adChannel = channel;
         this.activity = activity;
-        this.rewardAd = new WMRewardAd(activity, new WMRewardAdRequest(adRequest.getPlacementId(),adRequest.getUserId(),adRequest.getOptions()));
-        this.rewardAd.setRewardedAdListener(new IWMRewardAdListener(this,channel));
+        this.rewardAd = new WMRewardAd(activity, new WMRewardAdRequest(adRequest.getPlacementId(), adRequest.getUserId(), adRequest.getOptions()));
+        this.rewardAd.setRewardedAdListener(new IWMRewardAdListener(this, channel));
     }
 
 
@@ -71,21 +73,21 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
 
     public void onDetachedFromEngine() {
         Log.d("ToBid", "onDetachedFromEngine");
-        if(channel != null){
+        if (channel != null) {
             channel.setMethodCallHandler(null);
         }
     }
 
     @Override
-    public void onMethodCall( MethodCall call,  MethodChannel.Result result) {
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
 
         WindmillBaseAd rewardVideoAd = this.ad.getAdInstance(uniqId);
         if (rewardVideoAd == null) {
-            rewardVideoAd = this.ad.createAdInstance(RewardVideoAd.class,getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Reward,activity);
+            rewardVideoAd = this.ad.createAdInstance(RewardVideoAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Reward, activity);
         }
-        if(rewardVideoAd != null){
+        if (rewardVideoAd != null) {
             rewardVideoAd.excuted(call, result);
         }
     }
@@ -93,53 +95,56 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
     public Object isReady(MethodCall call) {
         return this.rewardAd.isReady();
     }
+
     public Object load(MethodCall call) {
 
-        this.adInfo = null; 
+        this.adInfo = null;
         this.rewardAd.loadAd();
         return null;
     }
 
     public Object getAdInfo(MethodCall call) {
-        if(this.adInfo != null){
+        if (this.adInfo != null) {
             return this.adInfo.toString();
         }
         return null;
-     }
+    }
 
 
-     public Object getCacheAdInfoList(MethodCall call){
+    public Object getCacheAdInfoList(MethodCall call) {
 
-         List<AdInfo> adinfoList =  this.rewardAd.checkValidAdCaches();
-         if(adinfoList != null){
-             ArrayList<String> list = new ArrayList<>(adinfoList.size());
+        List<AdInfo> adinfoList = this.rewardAd.checkValidAdCaches();
+        if (adinfoList != null) {
+            ArrayList<String> list = new ArrayList<>(adinfoList.size());
 
-             for (AdInfo info :adinfoList) {
-                 list.add(info.toString());
-             }
-             return list;
-         }
+            for (AdInfo info : adinfoList) {
+                list.add(info.toString());
+            }
+            return list;
+        }
 
         return null;
-     }
+    }
+
     private Object showAd(MethodCall call) {
 
         HashMap<String, String> options = call.argument("options");
 
         String scene_desc = options.get("AD_SCENE_DESC");
         String scene_id = options.get("AD_SCENE_ID");
-        HashMap<String,String> opt =new HashMap<String,String>();
-        opt.put(WMConstants.AD_SCENE_ID,scene_desc);
-        opt.put(WMConstants.AD_SCENE_DESC,scene_id);
+        HashMap<String, String> opt = new HashMap<String, String>();
+        opt.put(WMConstants.AD_SCENE_ID, scene_desc);
+        opt.put(WMConstants.AD_SCENE_DESC, scene_id);
 
         this.rewardAd.show(this.activity, opt);
         return null;
     }
+
     private Object destroy(MethodCall call) {
-        if(this.rewardAd != null){
+        if (this.rewardAd != null) {
             this.rewardAd.destroy();
         }
-        if(this.adChannel != null){
+        if (this.adChannel != null) {
             this.adChannel.setMethodCallHandler(null);
         }
         return null;
@@ -150,7 +155,8 @@ class IWMRewardAdListener implements WMRewardAdListener {
 
     private MethodChannel channel;
     private RewardVideoAd rewardVideoAd;
-    public IWMRewardAdListener(final RewardVideoAd rewardVideoAd,final MethodChannel channel) {
+
+    public IWMRewardAdListener(final RewardVideoAd rewardVideoAd, final MethodChannel channel) {
         this.channel = channel;
         this.rewardVideoAd = rewardVideoAd;
     }
@@ -161,7 +167,7 @@ class IWMRewardAdListener implements WMRewardAdListener {
     }
 
     @Override
-    public void onVideoAdLoadError(final WindMillError windMillError,final String placemnetId) {
+    public void onVideoAdLoadError(final WindMillError windMillError, final String placemnetId) {
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("code", windMillError.getErrorCode());
         args.put("message", windMillError.getMessage());
@@ -177,7 +183,7 @@ class IWMRewardAdListener implements WMRewardAdListener {
     }
 
     @Override
-public void onVideoAdPlayError(final WindMillError windMillError,final String placemnetId) {
+    public void onVideoAdPlayError(final WindMillError windMillError, final String placemnetId) {
     }
 
     @Override
@@ -196,7 +202,7 @@ public void onVideoAdPlayError(final WindMillError windMillError,final String pl
     }
 
     @Override
-    public void onVideoRewarded(final AdInfo adInfo,final  WMRewardInfo wmRewardInfo) {
+    public void onVideoRewarded(final AdInfo adInfo, final WMRewardInfo wmRewardInfo) {
 
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("trans_id", wmRewardInfo.getTrans_id());
@@ -204,13 +210,13 @@ public void onVideoAdPlayError(final WindMillError windMillError,final String pl
 
 
         Map<String, Object> customData = wmRewardInfo.getCustomData();
-        if(customData != null){
+        if (customData != null) {
             JSONObject obj = new JSONObject();
 
-            for (String key: customData.keySet()) {
+            for (String key : customData.keySet()) {
                 Object value = customData.get(key);
                 try {
-                    obj.put(key,value);
+                    obj.put(key, value);
                 } catch (JSONException e) {
                 }
 

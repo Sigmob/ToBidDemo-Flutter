@@ -50,10 +50,10 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
     private Button mCTAButton;
 
 
-
-    NativeAdRenderCustomView(JSONObject customViewConfig){
+    NativeAdRenderCustomView(JSONObject customViewConfig) {
         mCustomViewConfig = customViewConfig;
     }
+
     /**
      * NativeAdPatternType 取值范围
      *
@@ -64,7 +64,7 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
     @Override
     public View createView(Context context, int adPatternType) {
         Log.d(TAG, "---------createView----------" + adPatternType);
-        if(context == null ) return null;
+        if (context == null) return null;
 
         View developView = new RelativeLayout(context);
         developView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -72,82 +72,85 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
     }
 
 
+    private void updateViewProperty(View view, ViewConfigItem viewConfigItem) {
 
-
-
-    private void updateViewProperty(View view, ViewConfigItem viewConfigItem){
-
-        if(view == null || viewConfigItem == null){
+        if (view == null || viewConfigItem == null) {
             return;
         }
 
         try {
 
             String backgroundColor = viewConfigItem.getBackgroundColor();
-            if(!TextUtils.isEmpty(backgroundColor) && backgroundColor.length() == 7 && backgroundColor.startsWith("#")){
+            if (!TextUtils.isEmpty(backgroundColor) && backgroundColor.length() == 7 && backgroundColor.startsWith("#")) {
                 view.setBackgroundColor(Color.parseColor(backgroundColor));
             }
-        }catch (Throwable th){
+        } catch (Throwable th) {
 
         }
 
 
-        if(view instanceof ImageView){
+        if (view instanceof ImageView) {
             ImageView imageView = (ImageView) view;
-            switch (viewConfigItem.getScaleType()){
-                case 0:{
+            switch (viewConfigItem.getScaleType()) {
+                case 0: {
                     imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                }break;
-                case 1:{
+                }
+                break;
+                case 1: {
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                }break;
-                case 2:{
+                }
+                break;
+                case 2: {
                     imageView.setScaleType(ImageView.ScaleType.CENTER);
-                }break;
-                default:{
+                }
+                break;
+                default: {
 
-                }break;
+                }
+                break;
             }
         }
 
 
-        if (view instanceof TextView){
-            TextView textView = (TextView)view;
+        if (view instanceof TextView) {
+            TextView textView = (TextView) view;
 
-            if(!TextUtils.isEmpty(viewConfigItem.getTextColor())){
+            if (!TextUtils.isEmpty(viewConfigItem.getTextColor())) {
                 textView.setTextColor(Color.parseColor(viewConfigItem.getTextColor()));
             }
 
-            if(viewConfigItem.getFontSize()>0){
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,viewConfigItem.getFontSize());
+            if (viewConfigItem.getFontSize() > 0) {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, viewConfigItem.getFontSize());
             }
-            switch (viewConfigItem.getTextAlign()){
-                case 0:{
+            switch (viewConfigItem.getTextAlign()) {
+                case 0: {
                     textView.setTextAlignment(View.TEXT_ALIGNMENT_INHERIT);
-                }break;
-                case 1:{
+                }
+                break;
+                case 1: {
                     textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                }break;
-                case 2:{
+                }
+                break;
+                case 2: {
                     textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                }break;
-                default:{
+                }
+                break;
+                default: {
 
-                }break;
+                }
+                break;
             }
         }
 
 
-
-
-
     }
+
     @Override
     public void renderAdView(View view, final WMNativeAdData adData) {
 
-        if(view == null || adData == null) return;
+        if (view == null || adData == null) return;
 
-        ViewGroup rootView = (ViewGroup)view;
+        ViewGroup rootView = (ViewGroup) view;
         Context context = view.getContext();
         Log.d(TAG, "renderAdView:" + adData.getTitle());
         List<View> clickableViews = new ArrayList<>();
@@ -156,23 +159,23 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
         int patternType = adData.getAdPatternType();
         Log.d(TAG, "patternType:" + patternType);
 
-        if (patternType == WMNativeAdDataType.NATIVE_VIDEO_AD){
+        if (patternType == WMNativeAdDataType.NATIVE_VIDEO_AD) {
             try {
                 mMediaViewLayout = new FrameLayout(context);
 
                 JSONObject config = mCustomViewConfig.getJSONObject("mainAdView");
-                if(config != null){
+                if (config != null) {
                     ViewConfigItem item = new ViewConfigItem(config);
 
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                    lp.setMargins(item.getX(),item.getY(),0,0);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                    lp.setMargins(item.getX(), item.getY(), 0, 0);
 
-                    updateViewProperty(mMediaViewLayout,item);
-                    rootView.addView(mMediaViewLayout,lp);
+                    updateViewProperty(mMediaViewLayout, item);
+                    rootView.addView(mMediaViewLayout, lp);
 
-                    if(item.isCtaClick()){
+                    if (item.isCtaClick()) {
                         creativeViewList.add(mMediaViewLayout);
-                    }else{
+                    } else {
                         clickableViews.add(mMediaViewLayout);
                     }
                 }
@@ -182,34 +185,28 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
         }
 
 
-
-
-
-
-       
-
         if (patternType == WMNativeAdDataType.NATIVE_SMALL_IMAGE_AD || patternType == WMNativeAdDataType.NATIVE_BIG_IMAGE_AD) {
             try {
                 mMainImageView = new ImageView(context);
                 JSONObject config = mCustomViewConfig.getJSONObject("mainAdView");
-                if(config != null){
+                if (config != null) {
                     ViewConfigItem item = new ViewConfigItem(config);
-                    updateViewProperty(mMainImageView,item);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                    lp.setMargins(item.getX(),item.getY(),0,0);
-                    rootView.addView(mMainImageView,lp);
-                    if(item.isCtaClick()){
+                    updateViewProperty(mMainImageView, item);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                    lp.setMargins(item.getX(), item.getY(), 0, 0);
+                    rootView.addView(mMainImageView, lp);
+                    if (item.isCtaClick()) {
                         creativeViewList.add(mMainImageView);
-                    }else{
+                    } else {
                         clickableViews.add(mMainImageView);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else if(patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD){
+        } else if (patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD) {
             try {
-                LinearLayout  linearLayout = new LinearLayout(context);
+                LinearLayout linearLayout = new LinearLayout(context);
                 JSONObject config = mCustomViewConfig.getJSONObject("mainAdView");
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
                 linearLayout.setWeightSum(3);
@@ -218,20 +215,20 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
                         .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.weight = 1;
-                layoutParams.setMargins(3,3,3,3);
+                layoutParams.setMargins(3, 3, 3, 3);
 
 
                 LinearLayout.LayoutParams layoutParams2 = new LinearLayout
                         .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams2.weight = 1;
-                layoutParams2.setMargins(3,3,3,3);
+                layoutParams2.setMargins(3, 3, 3, 3);
 
                 LinearLayout.LayoutParams layoutParams3 = new LinearLayout
                         .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams3.weight = 1;
-                layoutParams3.setMargins(3,3,3,3);
+                layoutParams3.setMargins(3, 3, 3, 3);
 
                 mImageView1 = new ImageView(context);
                 mImageView1.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -248,16 +245,16 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
                 linearLayout.addView(mImageView3, layoutParams3);
                 mImageView3.setAdjustViewBounds(true);
                 mImageView3.setScaleType(ImageView.ScaleType.FIT_XY);
-               
-                if(config != null){
+
+                if (config != null) {
                     ViewConfigItem item = new ViewConfigItem(config);
-                    updateViewProperty(linearLayout,item);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                    lp.setMargins(item.getX(),item.getY(),0,0);
-                    rootView.addView(linearLayout,lp);
-                    if(item.isCtaClick()){
+                    updateViewProperty(linearLayout, item);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                    lp.setMargins(item.getX(), item.getY(), 0, 0);
+                    rootView.addView(linearLayout, lp);
+                    if (item.isCtaClick()) {
                         creativeViewList.add(linearLayout);
-                    }else{
+                    } else {
                         clickableViews.add(linearLayout);
                     }
                 }
@@ -270,12 +267,12 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             ad_logo = new ImageView(context);
 
             JSONObject config = mCustomViewConfig.getJSONObject("adLogoView");
-            if(config != null){
+            if (config != null) {
                 ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(ad_logo,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(ad_logo,lp);
+                updateViewProperty(ad_logo, item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                lp.setMargins(item.getX(), item.getY(), 0, 0);
+                rootView.addView(ad_logo, lp);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -285,15 +282,15 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             iconView = new ImageView(context);
 
             JSONObject config = mCustomViewConfig.getJSONObject("iconView");
-            if(config != null){
+            if (config != null) {
                 ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(iconView,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(iconView,lp);
-                if(item.isCtaClick()){
+                updateViewProperty(iconView, item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                lp.setMargins(item.getX(), item.getY(), 0, 0);
+                rootView.addView(iconView, lp);
+                if (item.isCtaClick()) {
                     creativeViewList.add(iconView);
-                }else{
+                } else {
                     clickableViews.add(iconView);
                 }
             }
@@ -313,15 +310,15 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             text_title = new TextView(context);
 
             JSONObject config = mCustomViewConfig.getJSONObject("titleView");
-            if(config != null){
+            if (config != null) {
                 ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(text_title,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(text_title,lp);
-                if(item.isCtaClick()){
+                updateViewProperty(text_title, item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                lp.setMargins(item.getX(), item.getY(), 0, 0);
+                rootView.addView(text_title, lp);
+                if (item.isCtaClick()) {
                     creativeViewList.add(text_title);
-                }else{
+                } else {
                     clickableViews.add(text_title);
                 }
             }
@@ -334,15 +331,15 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             text_desc = new TextView(context);
 
             JSONObject config = mCustomViewConfig.getJSONObject("descriptView");
-            if(config != null){
+            if (config != null) {
                 ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(text_desc,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(text_desc,lp);
-                if(item.isCtaClick()){
+                updateViewProperty(text_desc, item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                lp.setMargins(item.getX(), item.getY(), 0, 0);
+                rootView.addView(text_desc, lp);
+                if (item.isCtaClick()) {
                     creativeViewList.add(text_desc);
-                }else{
+                } else {
                     clickableViews.add(text_desc);
                 }
             }
@@ -377,13 +374,13 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
 
 
             JSONObject config = mCustomViewConfig.getJSONObject("dislikeButton");
-            if(config != null){
+            if (config != null) {
                 ViewConfigItem item = new ViewConfigItem(config);
-                updateViewProperty(iv_dislike,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(iv_dislike,lp);
-                if(item.isCtaClick()){
+                updateViewProperty(iv_dislike, item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                lp.setMargins(item.getX(), item.getY(), 0, 0);
+                rootView.addView(iv_dislike, lp);
+                if (item.isCtaClick()) {
                     clickableViews.add(iv_dislike);
                 }
             }
@@ -391,23 +388,23 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             e.printStackTrace();
         }
 
-         try {
+        try {
             mCTAButton = new Button(context);
 
             JSONObject config = mCustomViewConfig.getJSONObject("ctaButton");
-            if(config != null){
+            if (config != null) {
                 ViewConfigItem item = new ViewConfigItem(config);
 
-                updateViewProperty(mCTAButton,item);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(),item.getHeight());
-                lp.setMargins(item.getX(),item.getY(),0,0);
-                rootView.addView(mCTAButton,lp);
+                updateViewProperty(mCTAButton, item);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                lp.setMargins(item.getX(), item.getY(), 0, 0);
+                rootView.addView(mCTAButton, lp);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        iv_dislike.setImageResource(ResourceUtil.getDrawableId(view.getContext(),"sig_dislike"));
+        iv_dislike.setImageResource(ResourceUtil.getDrawableId(view.getContext(), "sig_dislike"));
 
 
         //clickViews数量必须大于等于1
@@ -424,7 +421,7 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
         if (patternType == WMNativeAdDataType.NATIVE_SMALL_IMAGE_AD || patternType == WMNativeAdDataType.NATIVE_BIG_IMAGE_AD) {
             // 双图双文、单图双文：注册mImagePoster的点击事件
             imageViews.add(mMainImageView);
-        }else  if (patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD) {
+        } else if (patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD) {
 
             imageViews.add(mImageView1);
             imageViews.add(mImageView2);
@@ -435,7 +432,6 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
         //重要! 这个涉及到广告计费，必须正确调用。convertView必须使用ViewGroup。
         //作为creativeViewList传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效
         adData.bindViewForInteraction(context, view, clickableViews, creativeViewList, iv_dislike);
-
 
 
         //需要等到bindViewForInteraction后再去添加media

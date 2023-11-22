@@ -103,6 +103,7 @@ NSMutableArray * sdkConfigures;
     [WindMillAds setupSDKWithAppId:appId sdkConfigures:sdkConfigures];
     result(nil);
 }
+
 - (void)setOAIDCertPemMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result(nil);
 }
@@ -113,6 +114,7 @@ NSMutableArray * sdkConfigures;
     [WindMillAds sceneExposeWithSceneId:sceneId sceneName:sceneName];
     result(nil);
 }
+
 - (void)initCustomGroupMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     
     NSString *customGroup = call.arguments[@"customGroup"];
@@ -128,7 +130,6 @@ NSMutableArray * sdkConfigures;
 
     result(nil);
 }
-
 
 - (void)initCustomGroupForPlacementMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     
@@ -174,7 +175,6 @@ NSMutableArray * sdkConfigures;
     if(customIDFA != NULL){
         devInfo.customIDFA = customIDFA;
     }
-    
 
     devInfo.canUseLocation = [isCanUseLocation boolValue];
 
@@ -185,9 +185,7 @@ NSMutableArray * sdkConfigures;
 
 - (void) networkPreInitMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
-    
     NSArray<NSDictionary *> *networkConfigList = call.arguments[@"networksMap"];
-
     
     sdkConfigures = [[NSMutableArray alloc] init];
     
@@ -199,12 +197,11 @@ NSMutableArray * sdkConfigures;
         
         if(networkId != nil && networkId != [NSNull null]){
             
-            AWMSDKConfigure * conf = [[AWMSDKConfigure alloc] initWithAdnId:networkId appid:appId appKey:appKey];
-            
-            NSLog(@"networkId11 %@ appId %@ appKey %@",conf.adnId,conf.appId,conf.appKey);
+            AWMSDKConfigure * conf = [[AWMSDKConfigure alloc] initWithAdnId:[networkId integerValue] appid:appId appKey:appKey];
+
+            NSLog(@"networkId %ld appId %@ appKey %@",conf.adnId,conf.appId,conf.appKey);
 
             [sdkConfigures addObject:conf];
-            
             
         }
     }
@@ -214,15 +211,18 @@ NSMutableArray * sdkConfigures;
 - (void)getUidMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result([WindMillAds getUid]);
 }
+
 - (void)setDebugEnableMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSNumber *flags = call.arguments[@"flags"];
     [WindMillAds setDebugEnable:flags.boolValue];
     result(nil);
 }
+
 - (void)setUserIdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     userId = call.arguments[@"userId"];
     result(nil);
 }
+
 - (void)setGDPRStatusMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSNumber *state = call.arguments[@"state"];
     [WindMillAds setUserGDPRConsentStatus:state.intValue];

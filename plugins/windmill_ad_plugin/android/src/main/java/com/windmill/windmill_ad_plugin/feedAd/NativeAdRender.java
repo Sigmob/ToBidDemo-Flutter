@@ -43,10 +43,10 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
     private Button mCTAButton;
 
 
-
-    NativeAdRender(){
+    NativeAdRender() {
 
     }
+
     /**
      * NativeAdPatternType 取值范围
      *
@@ -57,11 +57,11 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
     @Override
     public View createView(Context context, int adPatternType) {
         Log.d(TAG, "---------createView----------" + adPatternType);
-        if(context == null ) return null;
+        if (context == null) return null;
 
         View developView = null;
         if (developView == null) {
-            developView = LayoutInflater.from(context).inflate(ResourceUtil.getLayoutId(context,"native_ad_item_normal"), null);
+            developView = LayoutInflater.from(context).inflate(ResourceUtil.getLayoutId(context, "native_ad_item_normal"), null);
         }
         if (developView.getParent() != null) {
             ((ViewGroup) developView.getParent()).removeView(developView);
@@ -73,26 +73,26 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
     @Override
     public void renderAdView(View view, final WMNativeAdData adData) {
 
-        if(view == null || adData == null) return;
-   
+        if (view == null || adData == null) return;
+
         Context context = view.getContext();
         Log.d(TAG, "renderAdView:" + adData.getTitle());
-        img_logo = view.findViewById(ResourceUtil.getId(context,"img_logo"));
-        ad_logo = view.findViewById(ResourceUtil.getId(context,"channel_ad_logo"));
-        iv_dislike = view.findViewById(ResourceUtil.getId(context,"iv_dislike"));
+        img_logo = view.findViewById(ResourceUtil.getId(context, "img_logo"));
+        ad_logo = view.findViewById(ResourceUtil.getId(context, "channel_ad_logo"));
+        iv_dislike = view.findViewById(ResourceUtil.getId(context, "iv_dislike"));
 
-        text_desc = view.findViewById(ResourceUtil.getId(context,"text_desc"));
+        text_desc = view.findViewById(ResourceUtil.getId(context, "text_desc"));
 
-        mMediaViewLayout = view.findViewById(ResourceUtil.getId(context,"media_layout"));
-        mImagePoster = view.findViewById(ResourceUtil.getId(context,"img_poster")); 
+        mMediaViewLayout = view.findViewById(ResourceUtil.getId(context, "media_layout"));
+        mImagePoster = view.findViewById(ResourceUtil.getId(context, "img_poster"));
 
-        native_3img_ad_container = view.findViewById(ResourceUtil.getId(context,"native_3img_ad_container"));
-        img_1 = view.findViewById(ResourceUtil.getId(context,"img_1"));
-        img_2 = view.findViewById(ResourceUtil.getId(context,"img_2"));
-        img_3 = view.findViewById(ResourceUtil.getId(context,"img_3"));
+        native_3img_ad_container = view.findViewById(ResourceUtil.getId(context, "native_3img_ad_container"));
+        img_1 = view.findViewById(ResourceUtil.getId(context, "img_1"));
+        img_2 = view.findViewById(ResourceUtil.getId(context, "img_2"));
+        img_3 = view.findViewById(ResourceUtil.getId(context, "img_3"));
 
-        text_title = view.findViewById(ResourceUtil.getId(context,"text_title")); 
-        mCTAButton = view.findViewById(ResourceUtil.getId(context,"btn_cta"));  
+        text_title = view.findViewById(ResourceUtil.getId(context, "text_title"));
+        mCTAButton = view.findViewById(ResourceUtil.getId(context, "btn_cta"));
 
         //渲染UI
         if (!TextUtils.isEmpty(adData.getIconUrl())) {
@@ -147,7 +147,6 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
         //重要! 这个涉及到广告计费，必须正确调用。convertView必须使用ViewGroup。
         //作为creativeViewList传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效
         adData.bindViewForInteraction(context, view, clickableViews, creativeViewList, iv_dislike);
-
 
 
         //需要等到bindViewForInteraction后再去添加media

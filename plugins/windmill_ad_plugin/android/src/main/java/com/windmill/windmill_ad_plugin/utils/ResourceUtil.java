@@ -9,31 +9,33 @@ import android.content.Context;
 public class ResourceUtil {
 
 
-    private static ResourceUtil ginstace;
+    private static ResourceUtil gInstance;
 
 
-   public static synchronized void InitUtil(Context context){
-       if (ginstace == null){
-           ginstace = new ResourceUtil(context);
-       }
+    public static synchronized void InitUtil(Context context) {
+        if (gInstance == null) {
+            gInstance = new ResourceUtil(context);
+        }
     }
-    public static  ResourceUtil Instace() {
-        return ginstace;
+
+    public static ResourceUtil Instance() {
+        return gInstance;
     }
 
     Context context;
-    ResourceUtil(Context context){
+
+    ResourceUtil(Context context) {
         this.context = context.getApplicationContext();
     }
 
 
-    public  int dip2Px(int dipValue) {
+    public int dip2Px(int dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
 
-    public  int px2dip(int pxValue) {
-        if (pxValue != 0){
+    public int px2dip(int pxValue) {
+        if (pxValue != 0) {
             final float scale = context.getResources().getDisplayMetrics().density;
             return (int) (pxValue / scale + 0.5f);
         }
@@ -42,12 +44,23 @@ public class ResourceUtil {
     }
 
     public int getWidth() {
-       return context.getResources().getDisplayMetrics().widthPixels;
+        return context.getResources().getDisplayMetrics().widthPixels;
     }
 
     public int getHeight() {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
+
+    //获取状态栏高度
+    public int getStatusBarHeight() {
+        int height = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            height = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return height;
+    }
+
     public static int getId(Context context, String resourceName) {
         return getIdentifierByType(context, resourceName, "id");
     }

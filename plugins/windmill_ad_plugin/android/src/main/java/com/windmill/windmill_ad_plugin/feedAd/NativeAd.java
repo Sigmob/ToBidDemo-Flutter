@@ -70,14 +70,13 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
-        super.setup(channel, adRequest,activity);
-        this.adChannel = channel; 
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest, Activity activity) {
+        super.setup(channel, adRequest, activity);
+        this.adChannel = channel;
         this.nativeAdRequest = (WMNativeAdRequest) adRequest;
         this.activity = activity;
         this.nativeAd = new WMNativeAd(activity, nativeAdRequest);
     }
-
 
 
     public void onAttachedToEngine() {
@@ -96,7 +95,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     public void onDetachedFromEngine() {
         Log.d("ToBid", "onDetachedFromEngine");
-        if(channel != null){
+        if (channel != null) {
             channel.setMethodCallHandler(null);
         }
     }
@@ -108,44 +107,43 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
         WindmillBaseAd nativeAd = this.ad.getAdInstance(uniqId);
         if (nativeAd == null) {
-            nativeAd = this.ad.createAdInstance(NativeAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Native,activity);
+            nativeAd = this.ad.createAdInstance(NativeAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Native, activity);
         }
-        if(nativeAd != null){
+        if (nativeAd != null) {
             nativeAd.excuted(call, result);
         }
     }
 
-    
+    public Object getAppInfo(MethodCall call) {
 
-    public Object getAppInfo(MethodCall call){
-
-        if(wmNativeAdData != null){
+        if (wmNativeAdData != null) {
             WMNativeAdData.AppInfo appInfo = wmNativeAdData.getAppInfo();
 
-            if(appInfo != null){
-                    HashMap map = new HashMap<>();
+            if (appInfo != null) {
+                HashMap map = new HashMap<>();
 
-                    map.put("appName",appInfo.getAppName());
-                    map.put("developerName",appInfo.getDeveloperName());
-                    map.put("appVersion",appInfo.getAppVersion());
-                    map.put("privacyUrl",appInfo.getPrivacyUrl());
-                    map.put("permissionInfoUrl",appInfo.getPermissionInfoUrl());
-                    map.put("permissionInfo",appInfo.getPermissionInfo());
-                    map.put("functionDescUrl",appInfo.getFunctionDescUrl());
+                map.put("appName", appInfo.getAppName());
+                map.put("developerName", appInfo.getDeveloperName());
+                map.put("appVersion", appInfo.getAppVersion());
+                map.put("privacyUrl", appInfo.getPrivacyUrl());
+                map.put("permissionInfoUrl", appInfo.getPermissionInfoUrl());
+                map.put("permissionInfo", appInfo.getPermissionInfo());
+                map.put("functionDescUrl", appInfo.getFunctionDescUrl());
 
-                    return map;
+                return map;
 
             }
         }
         return null;
     }
-    public Object getCacheAdInfoList(MethodCall call){
 
-        List<AdInfo> adInfoList =  this.nativeAd.checkValidAdCaches();
-        if(adInfoList != null){
+    public Object getCacheAdInfoList(MethodCall call) {
+
+        List<AdInfo> adInfoList = this.nativeAd.checkValidAdCaches();
+        if (adInfoList != null) {
             ArrayList<String> list = new ArrayList<>(adInfoList.size());
 
-            for (AdInfo info :adInfoList) {
+            for (AdInfo info : adInfoList) {
                 list.add(info.toString());
             }
             return list;
@@ -156,10 +154,10 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     private Object destroy(MethodCall call) {
         isShowAd = false;
-        if(this.nativeAd != null){
+        if (this.nativeAd != null) {
             this.nativeAd.destroy();
         }
-        if(this.adChannel != null){
+        if (this.adChannel != null) {
             this.adChannel.setMethodCallHandler(null);
         }
         return null;
@@ -222,8 +220,8 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         if (wmNativeAdData.isExpressAd()) {
             wmNativeAdData.render();
             View expressAdView = wmNativeAdData.getExpressAdView();
-            wmNativeContainer.addView(expressAdView,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
-        }else {
+            wmNativeContainer.addView(expressAdView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        } else {
             WMNativeAdRender adRender;
             if (customViewConfig == null || !customViewConfig.has("mainAdView")) {
                 adRender = new NativeAdRender();
@@ -238,10 +236,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.addView(wmNativeContainer, layoutParams);
     }
-
-
 }
-
 
 class IWMNativeDislikeListener implements WMNativeAdData.DislikeInteractionCallback {
 
@@ -257,9 +252,9 @@ class IWMNativeDislikeListener implements WMNativeAdData.DislikeInteractionCallb
     }
 
     @Override
-    public void onSelected(final int i,final String reason,final boolean b) {
+    public void onSelected(final int i, final String reason, final boolean b) {
         Map<String, Object> args = new HashMap<String, Object>();
-            args.put("reason", reason);
+        args.put("reason", reason);
         channel.invokeMethod(kWindmillEventAdDidDislike, args);
 
     }
@@ -306,7 +301,7 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     private MethodChannel channel;
     private NativeAd nativeAd;
 
-    public IWMNativeAdListener(final NativeAd nativeAd,final MethodChannel channel) {
+    public IWMNativeAdListener(final NativeAd nativeAd, final MethodChannel channel) {
         this.channel = channel;
         this.nativeAd = nativeAd;
     }
@@ -326,19 +321,19 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     }
 
     @Override
-    public void onADRenderSuccess(final AdInfo adInfo,final View view,final float width,final float height) {
+    public void onADRenderSuccess(final AdInfo adInfo, final View view, final float width, final float height) {
         view.post(new Runnable() {
             @Override
             public void run() {
-               final int view_width = view.getWidth();
-               final int view_height = view.getHeight();
+                final int view_width = view.getWidth();
+                final int view_height = view.getHeight();
 
                 Map<String, Object> args = new HashMap<String, Object>();
                 args.put("width", view_width);
                 args.put("height", view_height);
 
-                if(view_width>0 && view_height>0){
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)nativeAd.wmNativeContainer.getLayoutParams();
+                if (view_width > 0 && view_height > 0) {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) nativeAd.wmNativeContainer.getLayoutParams();
                     layoutParams.width = view.getWidth();
                     layoutParams.height = view.getHeight();
                     layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
@@ -356,11 +351,10 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
         });
 
 
-
     }
 
     @Override
-    public void onADError(final AdInfo adInfo,final WindMillError windMillError) {
+    public void onADError(final AdInfo adInfo, final WindMillError windMillError) {
 
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("code", windMillError.getErrorCode());
@@ -378,13 +372,13 @@ class IWMNativeAdLoadListener implements WMNativeAd.NativeAdLoadListener {
     private MethodChannel channel;
     private NativeAd nativeAd;
 
-    public IWMNativeAdLoadListener(final MethodChannel channel,final NativeAd nativeAd) {
+    public IWMNativeAdLoadListener(final MethodChannel channel, final NativeAd nativeAd) {
         this.channel = channel;
         this.nativeAd = nativeAd;
     }
 
     @Override
-    public void onError(final WindMillError windMillError,final String placementId) {
+    public void onError(final WindMillError windMillError, final String placementId) {
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("code", windMillError.getErrorCode());
         args.put("message", windMillError.getMessage());

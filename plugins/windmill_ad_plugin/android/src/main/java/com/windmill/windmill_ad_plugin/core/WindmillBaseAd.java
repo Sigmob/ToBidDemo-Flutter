@@ -1,7 +1,6 @@
 package com.windmill.windmill_ad_plugin.core;
 
 
-
 import android.app.Activity;
 
 import com.windmill.sdk.WindMillAdRequest;
@@ -27,11 +26,11 @@ public class WindmillBaseAd {
         // TODO document why this method is empty
     }
 
-
-    public  WindmillBaseAd getAdInstance(String uniqId) {
+    public WindmillBaseAd getAdInstance(String uniqId) {
         return null;
     }
-    public static  <T> T getArgument(Object arguments, String key) {
+
+    public static <T> T getArgument(Object arguments, String key) {
         if (arguments == null) {
             return null;
         } else if (arguments instanceof Map) {
@@ -43,13 +42,12 @@ public class WindmillBaseAd {
         }
     }
 
-    public static Map<String, Object> getArguments(Object arguments)  {
-
-        if (arguments instanceof Map){
-            return (Map)arguments;
-        }else if (arguments instanceof JSONObject){
+    public static Map<String, Object> getArguments(Object arguments) {
+        if (arguments instanceof Map) {
+            return (Map) arguments;
+        } else if (arguments instanceof JSONObject) {
             try {
-                return toMap((JSONObject)arguments);
+                return toMap((JSONObject) arguments);
             } catch (JSONException e) {
                 return null;
             }
@@ -57,25 +55,24 @@ public class WindmillBaseAd {
         return null;
     }
 
-
     public static List<Object> toList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
+        for (int i = 0; i < array.length(); i++) {
             Object value = array.get(i);
             if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
-            }
-            else if (value instanceof JSONObject) {
+            } else if (value instanceof JSONObject) {
                 value = toMap((JSONObject) value);
             }
             list.add(value);
-        }   return list;
+        }
+        return list;
     }
 
-    public static Map<String, Object> toMap(JSONObject jsonobj)  throws JSONException {
+    public static Map<String, Object> toMap(JSONObject jsonobj) throws JSONException {
         Map<String, Object> map = new HashMap<String, Object>();
         Iterator<String> keys = jsonobj.keys();
-        while(keys.hasNext()) {
+        while (keys.hasNext()) {
             String key = keys.next();
             Object value = jsonobj.get(key);
             if (value instanceof JSONArray) {
@@ -84,9 +81,11 @@ public class WindmillBaseAd {
                 value = toMap((JSONObject) value);
             }
             map.put(key, value);
-        }   return map;
+        }
+        return map;
     }
-    public void excuted( MethodCall call,  MethodChannel.Result result) {
+
+    public void excuted(MethodCall call, MethodChannel.Result result) {
         Class<? extends WindmillBaseAd> cls = this.getClass();
         try {
             Method method = cls.getDeclaredMethod(call.method, call.getClass());
@@ -97,7 +96,6 @@ public class WindmillBaseAd {
         }
     }
 
-
     public void onAttachedToEngine() {
 
     }
@@ -107,7 +105,6 @@ public class WindmillBaseAd {
     }
 
     public Object load(MethodCall o) {
-
         return null;
     }
 }

@@ -27,7 +27,6 @@ public class WindmillAd<T> {
         Interstitial,
         Banner,
         Native,
-
     }
 
     private Map<String, WindmillBaseAd> map = new HashMap<String, WindmillBaseAd>();
@@ -40,7 +39,7 @@ public class WindmillAd<T> {
     }
 
     public T createAdInstance(Class<? extends T> cls, Map<String, Object> arguments,
-            FlutterPlugin.FlutterPluginBinding binding, WindmillAd.AdType adType, Activity activity) {
+                              FlutterPlugin.FlutterPluginBinding binding, WindmillAd.AdType adType, Activity activity) {
 
         try {
             Map<String, Object> options = new HashMap<String, Object>();
@@ -85,7 +84,7 @@ public class WindmillAd<T> {
                     adRequest = new WMBannerAdRequest(placementId, userId, options);
 
                 }
-                    break;
+                break;
                 case Native: {
                     Double width = (Double) arguments.get("width");
                     options.put(WMConstants.AD_WIDTH, width.intValue());// 针对于模版广告有效、单位dp
@@ -100,30 +99,30 @@ public class WindmillAd<T> {
 
                     channelName = "com.windmill/native." + uniqId;
                 }
-                    break;
+                break;
                 case Reward: {
                     adRequest = new WMRewardAdRequest(placementId, userId, options);
 
                     channelName = "com.windmill/reward." + uniqId;
                 }
-                    break;
+                break;
                 case Interstitial: {
                     adRequest = new WMInterstitialAdRequest(placementId, userId, options);
 
                     channelName = "com.windmill/interstitial." + uniqId;
                 }
-                    break;
+                break;
                 case Splash: {
 
                     String title = (String) arguments.get("title");
                     String desc = (String) arguments.get("desc");
 
-                    if(!TextUtils.isEmpty(title)){
+                    if (!TextUtils.isEmpty(title)) {
 
-                        int width = ResourceUtil.Instace().getWidth();
-                        int height = ResourceUtil.Instace().getHeight()-ResourceUtil.Instace().dip2Px(100);
+                        int width = ResourceUtil.Instance().getWidth();
+                        int height = ResourceUtil.Instance().getHeight() + ResourceUtil.Instance().getStatusBarHeight() - ResourceUtil.Instance().dip2Px(100);
                         options.put(WMConstants.AD_WIDTH, width);
-                        options.put(WMConstants.AD_HEIGHT,height);
+                        options.put(WMConstants.AD_HEIGHT, height);
                     }
 
                     adRequest = new WMSplashAdRequest(placementId, userId, options);
@@ -132,13 +131,13 @@ public class WindmillAd<T> {
 
                     channelName = "com.windmill/splash." + uniqId;
                 }
-                    break;
+                break;
                 default: {
                 }
-                    break;
+                break;
 
             }
-            if(!TextUtils.isEmpty(channelName)) {
+            if (!TextUtils.isEmpty(channelName)) {
                 MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), channelName);
                 T t = cls.newInstance();
                 WindmillBaseAd windmillBaseAd = (WindmillBaseAd) t;
@@ -146,7 +145,7 @@ public class WindmillAd<T> {
                 map.put(uniqId, windmillBaseAd);
                 return t;
             }
-           
+
         } catch (Exception e) {
             // TODO: handle exception
         }

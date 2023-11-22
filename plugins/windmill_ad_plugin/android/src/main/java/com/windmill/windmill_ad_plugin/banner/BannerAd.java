@@ -47,7 +47,9 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
 
-    public BannerAd() {}
+    public BannerAd() {
+    }
+
     public BannerAd(Activity activity, FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
         this.activity = activity;
         this.flutterPluginBinding = flutterPluginBinding;
@@ -55,23 +57,22 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     @Override
-    public  WindmillBaseAd getAdInstance(String uniqId) {
-        if(ad != null){
+    public WindmillBaseAd getAdInstance(String uniqId) {
+        if (ad != null) {
             return this.ad.getAdInstance(uniqId);
         }
         return null;
     }
 
     @Override
-    public void setup(MethodChannel channel, WindMillAdRequest adRequest,Activity activity ) {
-        super.setup(channel, adRequest,activity);
-        this.bannerAdRequest= (WMBannerAdRequest) adRequest;
-        this.adChannel  = channel;
+    public void setup(MethodChannel channel, WindMillAdRequest adRequest, Activity activity) {
+        super.setup(channel, adRequest, activity);
+        this.bannerAdRequest = (WMBannerAdRequest) adRequest;
+        this.adChannel = channel;
         this.activity = activity;
         this.bannerAdView = new WMBannerView(activity);
-        this.bannerAdView.setAdListener(new IWMBannerAdListener(channel,this));
+        this.bannerAdView.setAdListener(new IWMBannerAdListener(channel, this));
     }
-
 
     public void onAttachedToEngine() {
         Log.d("ToBid", "onAttachedToEngine");
@@ -82,27 +83,27 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     public void onDetachedFromEngine() {
         Log.d("ToBid", "onDetachedFromEngine");
 
-        if(channel != null){
+        if (channel != null) {
             channel.setMethodCallHandler(null);
         }
- 
+
     }
 
-    public void showAd(ViewGroup adContainer){
-        if (adContainer != null){
-            adContainer.addView(bannerAdView,new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+    public void showAd(ViewGroup adContainer) {
+        if (adContainer != null) {
+            adContainer.addView(bannerAdView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         }
     }
 
     @Override
-    public void onMethodCall(final MethodCall call,final MethodChannel.Result result) {
+    public void onMethodCall(final MethodCall call, final MethodChannel.Result result) {
         Log.d("ToBid", "-- onMethodCall: " + call.method + ", arguments: " + call.arguments);
         String uniqId = call.argument("uniqId");
-        WindmillBaseAd bannerAd=this.ad.getAdInstance(uniqId);
+        WindmillBaseAd bannerAd = this.ad.getAdInstance(uniqId);
 
         if (bannerAd == null) {
 
-            bannerAd = this.ad.createAdInstance(BannerAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Banner,activity);
+            bannerAd = this.ad.createAdInstance(BannerAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Banner, activity);
         }
         bannerAd.excuted(call, result);
     }
@@ -115,19 +116,18 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     public Object getAdInfo(MethodCall call) {
-        if(this.adInfo != null){
+        if (this.adInfo != null) {
             return this.adInfo.toString();
         }
         return null;
-     }
+    }
 
-    public Object getCacheAdInfoList(MethodCall call){
+    public Object getCacheAdInfoList(MethodCall call) {
+        List<AdInfo> adInfoList = this.bannerAdView.checkValidAdCaches();
+        if (adInfoList != null) {
+            ArrayList<String> list = new ArrayList<>(adInfoList.size());
 
-        List<AdInfo> adinfoList =  this.bannerAdView.checkValidAdCaches();
-        if(adinfoList != null){
-            ArrayList<String> list = new ArrayList<>(adinfoList.size());
-
-            for (AdInfo info :adinfoList) {
+            for (AdInfo info : adInfoList) {
                 list.add(info.toString());
             }
             return list;
@@ -135,13 +135,14 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
         return null;
     }
+
     public Object isReady(MethodCall call) {
         return this.bannerAdView.isReady();
     }
 
     public Object destroy(MethodCall call) {
-         this.bannerAdView.destroy();
-         if(this.adChannel != null){
+        this.bannerAdView.destroy();
+        if (this.adChannel != null) {
             this.adChannel.setMethodCallHandler(null);
         }
         return null;
@@ -155,25 +156,26 @@ class IWMBannerAdListener implements WMBannerAdListener {
     private final BannerAd bannerAd;
     private MethodChannel channel;
 
-    public IWMBannerAdListener(MethodChannel channel,BannerAd bannerAd) {
+    public IWMBannerAdListener(MethodChannel channel, BannerAd bannerAd) {
         this.channel = channel;
         this.bannerAd = bannerAd;
     }
+
     @Override
-    public void onAdLoadSuccess(String placmentId) {
+    public void onAdLoadSuccess(String placementId) {
         Log.d(TAG, "onAdLoadSuccess: ");
         Map<String, Object> args = new HashMap<String, Object>();
-        args.put("width", bannerAd.bannerAdView.getWidth()*1.0f);
-        args.put("height", bannerAd.bannerAdView.getHeight()*1.0f);
+        args.put("width", bannerAd.bannerAdView.getWidth() * 1.0f);
+        args.put("height", bannerAd.bannerAdView.getHeight() * 1.0f);
         channel.invokeMethod(kWindmillEventAdLoaded, args);
     }
 
     @Override
-    public void onAdLoadError(final WindMillError windMillError,final String placementId) {
+    public void onAdLoadError(final WindMillError windMillError, final String placementId) {
         Log.d(TAG, "onAdLoadError: ");
         Map<String, Object> args = new HashMap<String, Object>();
-            args.put("code", windMillError.getErrorCode());
-            args.put("message", windMillError.getMessage());
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
         channel.invokeMethod(kWindmillEventAdFailedToLoad, args);
     }
 
@@ -184,8 +186,8 @@ class IWMBannerAdListener implements WMBannerAdListener {
         this.bannerAd.adInfo = adInfo;
 
         Map<String, Object> args = new HashMap<String, Object>();
-        args.put("width", bannerAd.bannerAdView.getWidth()*1.0f);
-        args.put("height", bannerAd.bannerAdView.getHeight()*1.0f);
+        args.put("width", bannerAd.bannerAdView.getWidth() * 1.0f);
+        args.put("height", bannerAd.bannerAdView.getHeight() * 1.0f);
 
         channel.invokeMethod(kWindmillEventAdOpened, null);
 

@@ -73,13 +73,15 @@ class WindmillNativeAd with WindmillEventHandler{
   }
 
   Future<AppInfo?> getAppInfo() async {
-    dynamic appInfoMap = await _channel.invokeMethod("getAppInfo",{
-      "uniqId":_uniqId 
-    });
-    if(appInfoMap == null){
-        return Future.value(null);
+
+    if(Platform.isAndroid){
+      dynamic appInfoMap = await _channel.invokeMethod("getAppInfo",{"uniqId":_uniqId });
+      if(appInfoMap != null){
+        return AppInfo.fromJson(appInfoMap.cast<String?,dynamic>()); 
+      }
     }
-    return AppInfo.fromJson(appInfoMap.cast<String?,dynamic>()); 
+
+    return Future.value(null);
   }
   
   Future<List<AdInfo>?> getCacheAdInfoList() async{
