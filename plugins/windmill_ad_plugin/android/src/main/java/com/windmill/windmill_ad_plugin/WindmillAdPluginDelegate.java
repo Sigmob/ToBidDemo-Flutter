@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import com.windmill.sdk.WMAdConfig;
 import com.windmill.sdk.WMAdnInitConfig;
@@ -269,9 +270,13 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
         } else if (call.method.equals("setSupportMultiProcess")) {
             boolean flags = call.argument("flags");
             WindMillAd.sharedAds().setSupportMultiProcess(flags);
-        } else if (call.method.equals("setWxOpenAppId")) {
+        } else if (call.method.equals("setWxOpenAppIdAndUniversalLink")) {
             String wxAppId = call.argument("wxAppId");
             WindMillAd.sharedAds().setWxOpenAppId(wxAppId);
+        } else if (call.method.equals("setFilterNetworkFirmIdList")) {
+            String placementId = call.argument("placementId");
+            List<String> networkFirmIdList = call.argument("networkFirmIdList");
+            WindMillAd.sharedAds().setFilterNetworkFirmIdList(placementId, networkFirmIdList);
         } else {
             result.notImplemented();
         }

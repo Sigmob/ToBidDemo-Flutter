@@ -20,6 +20,7 @@ public class WindmillAdPlugin implements FlutterPlugin, ActivityAware {
     // event
     public static final String kWindmillEventAdLoaded = "onAdLoaded";
     public static final String kWindmillEventAdFailedToLoad = "onAdFailedToLoad";
+    public static final String kWindmillEventAdShowError = "onAdShowError";
     public static final String kWindmillEventAdOpened = "onAdOpened";
     public static final String kWindmillEventAdClicked = "onAdClicked";
     public static final String kWindmillEventAdSkiped = "onAdSkiped";

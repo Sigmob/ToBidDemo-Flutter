@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 
 
-import com.windmill.windmill_ad_plugin.banner.BannerAd;
 import com.windmill.windmill_ad_plugin.banner.BannerAdView;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
-import com.windmill.windmill_ad_plugin.feedAd.NativeAd;
 import com.windmill.windmill_ad_plugin.feedAd.NativeAdView;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;

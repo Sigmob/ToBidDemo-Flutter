@@ -148,6 +148,22 @@ NSMutableArray * sdkConfigures;
     result(nil);
 }
 
+- (void)setFilterNetworkFirmIdListMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    
+    NSString *placementId = call.arguments[@"placementId"];
+    
+    NSArray<NSString *> *networkFirmIdList = call.arguments[@"networkFirmIdList"];
+     
+    if(networkFirmIdList != nil){
+        
+        NSLog(@"setFilterNetworkFirmIdListMethodCall: %@", networkFirmIdList);
+        
+        [WindMillAds setFilterNetworkChannelIdList:networkFirmIdList forPlacementId:placementId];
+    }
+
+    result(nil);
+}
+
 - (void)customDeviceMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
     
@@ -215,6 +231,20 @@ NSMutableArray * sdkConfigures;
 - (void)setDebugEnableMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSNumber *flags = call.arguments[@"flags"];
     [WindMillAds setDebugEnable:flags.boolValue];
+    result(nil);
+}
+
+-(void)setWxOpenAppIdAndUniversalLinkMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSString *wxAppId = call.arguments[@"wxAppId"];
+    NSString *universalLink = call.arguments[@"universalLink"];
+    [WindMillAds setExt:@{
+        WindMillWXAppId:wxAppId,
+        WindMillWXUniversalLink:universalLink
+    }];   
+    result(nil);
+}
+
+- (void)setSupportMultiProcessMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result(nil);
 }
 

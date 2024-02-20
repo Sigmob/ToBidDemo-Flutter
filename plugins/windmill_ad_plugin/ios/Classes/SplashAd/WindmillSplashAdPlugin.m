@@ -37,7 +37,7 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     if (self) {
         _channel = channel;
         _request = request;
-
+        
     }
     return self;
 }
@@ -50,8 +50,8 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
 }
 + (void)registerWithRegistrar:(nonnull NSObject<FlutterPluginRegistrar> *)registrar {
     FlutterMethodChannel *channel = [FlutterMethodChannel
-                                        methodChannelWithName:@"com.windmill/splash"
-                                        binaryMessenger:[registrar messenger]];
+                                     methodChannelWithName:@"com.windmill/splash"
+                                     binaryMessenger:[registrar messenger]];
     WindmillSplashAdPlugin *plugin = [[WindmillSplashAdPlugin alloc] init];
     plugin.registrar = registrar;
     [registrar addMethodCallDelegate:plugin channel:channel];
@@ -91,8 +91,8 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
         }
         NSString *channelName = [NSString stringWithFormat:@"com.windmill/splash.%@", uniqId];
         FlutterMethodChannel *channel = [FlutterMethodChannel
-                                            methodChannelWithName:channelName
-                                            binaryMessenger:[self.registrar messenger]];
+                                         methodChannelWithName:channelName
+                                         binaryMessenger:[self.registrar messenger]];
         plugin = [[WindmillSplashAdPlugin alloc] initWithChannel:channel request:adRequest];
         if(pluginMap == nil){
             pluginMap = [[NSMutableDictionary alloc] init];
@@ -120,7 +120,7 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     result(@([self.splashView isAdReady]));
 }
 - (void)loadMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-   
+    
     NSNumber *width = [(NSDictionary *)call.arguments objectForKey:@"width"];
     NSNumber *height= [(NSDictionary *)call.arguments objectForKey:@"height"];
     CGSize size = CGSizeMake(width.doubleValue, height.doubleValue);
@@ -136,12 +136,12 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     }
     
     
-
     
-     NSDictionary *extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size)};
+    
+    NSDictionary *extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size)};
     if(_title != nil && _title.length>0){
         _bottomView =  [self getLogoViewWithTitle:_title description:_desc];
-
+        
         
         extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size),
                   kWindMillSplashExtraBottomViewSize:NSStringFromCGSize(CGSizeMake(width.doubleValue, 100)),
@@ -152,23 +152,23 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     _splashView.delegate = self;
     _splashVC = [[UIViewController alloc] init];
     _splashView.rootViewController = _splashVC;
-
+    
     self.adinfo = nil;
     [self.splashView loadAd];
     result(nil);
 }
 
 - (void)showAdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
-     _splashWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    _splashWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     _splashWindow.rootViewController = _splashVC;
     [_splashWindow makeKeyAndVisible];
     
     [_splashView showAdInWindow:_splashWindow withBottomView:_bottomView];
-
+    
     result(nil);
-
+    
 }
 
 - (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -188,7 +188,7 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
         result(list);
     }
     result(nil);
-
+    
 }
 
 
@@ -237,6 +237,14 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     NSLog(@"%@", NSStringFromSelector(_cmd));
 }
 
+-(void)onSplashAdDidCloseOtherControllerWithInteractionType:(WindMillInteractionType)interactionType{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdDetailViewClosed arguments:@{
+        @"interactionType": [NSString stringWithFormat:@"%@", @(interactionType)]
+    }];
+}
+
+
 //根据宽度求高度  content 计算的内容  width 计算的宽度 font字体大小
 - (CGSize)getLabelSizeWithText:(NSString *)text width:(CGFloat)width font: (UIFont *)font {
     CGRect rect = [text boundingRectWithSize:CGSizeMake(width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
@@ -246,11 +254,11 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
 - (UIView *)getLogoViewWithTitle:(NSString *)title description:(NSString *)description {
     UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(UIScreen.mainScreen.bounds), 100)];
     bottomView.backgroundColor = [UIColor whiteColor];
-
+    
     UIView *backView = [[UIView alloc] init];
     backView.backgroundColor = [UIColor clearColor];
     [bottomView addSubview:backView];
-
+    
     //icon
     UIImageView *iconImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [iconImgView.layer setMasksToBounds:YES];
@@ -259,7 +267,7 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     NSString *icon = [[infoPlist valueForKeyPath:@"CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconFiles"] lastObject];
     UIImage* image = [UIImage imageNamed:icon];
     iconImgView.image = image;
-
+    
     //标题
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -267,7 +275,7 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     UIFont *titleFont = [UIFont fontWithName:@"Helvetica-Bold" size:25];
     titleLabel.font = titleFont;
     titleLabel.textColor = [UIColor blackColor];
-
+    
     //描述
     UILabel *descLabel = [[UILabel alloc] init];
     descLabel.textAlignment = NSTextAlignmentCenter;
@@ -275,16 +283,16 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     UIFont *descFont = [UIFont fontWithName:@"Helvetica" size:12];
     descLabel.font = descFont;
     descLabel.textColor = [UIColor grayColor];
-
+    
     [backView addSubview:iconImgView];
     [backView addSubview:titleLabel];
     [backView addSubview:descLabel];
-
+    
     CGSize titleSize = [self getLabelSizeWithText:title width:200 font:titleFont];
     CGSize descSize = [self getLabelSizeWithText:description width:200 font:descFont];
     float wid = MAX(titleSize.width, descSize.width);
     wid = MIN(wid, 180);
-
+    
     [backView sms_remakeConstraints:^(SMSConstraintMaker *make) {
         make.width.sms_equalTo(@(wid+60));
         make.height.sms_equalTo(bottomView);
@@ -318,10 +326,15 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     if(_splashVC != nil){
         _splashVC = nil;
     }
+    
     if(_splashWindow != nil){
         [_splashWindow resignKeyWindow];
         _splashWindow = nil;
     }
+//    if(_splashWindow != nil&&splashAd.adInfo.networkId!=WindMillAdnKs){
+//        [_splashWindow resignKeyWindow];
+//        _splashWindow = nil;
+//    }
     [self.channel invokeMethod:kWindmillEventAdClosed arguments:@{}];
 }
 

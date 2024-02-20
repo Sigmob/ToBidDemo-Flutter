@@ -18,6 +18,7 @@ abstract class WindmillAdEvent {
   void onAdDidDislike(Map<String, dynamic>? arguments){}
   void onAdDetailViewOpened(Map<String, dynamic>? arguments){}
   void onAdDetailViewClosed(Map<String, dynamic>? arguments){}
+  void onAdShowError(WMError? error, Map<String, dynamic>? arguments) {}
 }
 
 abstract class WindmillEventHandler {
@@ -82,6 +83,9 @@ abstract class WindmillEventHandler {
           break;
         case 'onAdDetailViewClosed':
           delegate!.onAdDetailViewClosed(arguments);
+          break;
+        case 'onAdShowError':
+          delegate!.onAdShowError(error!,arguments);
           break;
     
       }

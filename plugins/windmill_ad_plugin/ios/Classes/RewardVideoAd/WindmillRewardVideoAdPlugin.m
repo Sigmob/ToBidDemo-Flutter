@@ -184,7 +184,10 @@
 
 - (void)rewardVideoAdDidPlayFinish:(WindMillRewardVideoAd *)rewardVideoAd didFailWithError:(NSError *)error {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    [self.channel invokeMethod:kWindmillEventAdVideoPlayFinished arguments:@{}];
+    [self.channel invokeMethod:kWindmillEventAdVideoPlayFinished arguments:@{
+        @"code": @(error.code),
+        @"message": error.localizedDescription
+    }];   
 }
 
 - (void)dealloc {

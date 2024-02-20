@@ -66,6 +66,8 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
                   nativeAd.feedADMode == WindMillFeedADModeVideoPortrait ||
                   nativeAd.feedADMode == WindMillFeedADModeVideoLandSpace) {
             
+            [adView setMediaViewSize:[rootView getFrame].size];
+            
             [WindmillFeedAdViewStyle updateViewProperty:adView.mediaView ViewConfig:rootView disableAutoreSize:isDisableAutoresize];
             if ([rootView isCtaClick]) {
                 [clickViewSet addObject:adView.mediaView];
@@ -253,6 +255,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
 + (CGSize)layoutWithNativeAd:(WindMillNativeAd *)nativeAd
                     adView:(WindmillNativeAdCustomView *)adView
                       args:(NSDictionary *)args {
+    
     if (nativeAd.feedADMode == WindMillFeedADModeNativeExpress) return adView.frame.size;
     
     CGFloat h = adView.frame.size.height;

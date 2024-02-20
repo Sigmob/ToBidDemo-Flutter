@@ -52,9 +52,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     protected WMNativeAd nativeAd;
     private WMNativeAdRequest nativeAdRequest;
     protected WMNativeAdContainer wmNativeContainer;
-    private Map<String, Object> params;
     protected WMNativeAdData wmNativeAdData;
-    protected FrameLayout contentView;
     protected boolean isShowAd;
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
@@ -201,10 +199,6 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
         if (wmNativeContainer != null) {
             wmNativeContainer.removeAllViews();
-        }
-
-        if (contentView != null) {
-            contentView.removeAllViews();
         }
 
         wmNativeContainer = new WMNativeAdContainer(activity);

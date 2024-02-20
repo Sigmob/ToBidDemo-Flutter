@@ -10,9 +10,6 @@ import '../../controller/controller.dart';
 import '../../widgets/adslot_widget.dart';
 
 class SplashPage extends StatelessWidget {
-
-
-
   @override
   Widget build(BuildContext context) {
     print("splash_page --- build");
@@ -54,7 +51,7 @@ class SplashPage extends StatelessWidget {
           .where((element) => element.adType == 2)
           .toList(),
       onLoad: _adLoad,
-      onPlay:_adPlay,
+      onPlay: _adPlay,
     );
   }
 
@@ -66,7 +63,7 @@ class SplashPage extends StatelessWidget {
     bool isReady = await ad.isReady();
 
     if (isReady) {
-        ad.showAd();
+      ad.showAd();
     }
   }
 
@@ -75,8 +72,9 @@ class SplashPage extends StatelessWidget {
     final adcontroller = Get.find<Controller>();
 
     Size size = Size(window.physicalSize.width, window.physicalSize.height);
-    if(Platform.isIOS){
-        size = Size(window.physicalSize.width/window.devicePixelRatio, window.physicalSize.height/window.devicePixelRatio);
+    if (Platform.isIOS) {
+      size = Size(window.physicalSize.width / window.devicePixelRatio,
+          window.physicalSize.height / window.devicePixelRatio);
     }
     WindmillSplashAd ad = c.getOrCreateWindmillSplashAd(
         placementId: placementId,
@@ -89,7 +87,6 @@ class SplashPage extends StatelessWidget {
     ad.loadAd();
   }
 }
-
 
 class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
   final SplashController c = Get.find();
@@ -111,28 +108,24 @@ class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
   void onAdLoaded(WindmillSplashAd ad) {
     print('flu-Splash --- onAdLoaded');
     c.callbacks.add('onAdLoaded -- ${ad.request.placementId}');
-    ad.getCacheAdInfoList().then((adinfos) => 
-          adinfos?.forEach((element) {
-              c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
-          })
-    );
+    ad.getCacheAdInfoList().then((adinfos) => adinfos?.forEach((element) {
+          c.callbacks.add(
+              'onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+        }));
   }
 
   @override
   void onAdOpened(WindmillSplashAd ad) {
     print('flu-Splash --- onAdOpened');
-    ad.getAdInfo().then((adinfo) => 
-        c.callbacks.add('onAdOpened -- ${ad.request.placementId} -- adInfo -- ${ adinfo.toJson()}')
-    );
+    ad.getAdInfo().then((adinfo) => c.callbacks.add(
+        'onAdOpened -- ${ad.request.placementId} -- adInfo -- ${adinfo.toJson()}'));
   }
 
-
-  
   @override
-  void onAdShowError(WindmillSplashAd ad,WMError error) {
-
+  void onAdShowError(WindmillSplashAd ad, WMError error) {
     print('flu-Splash --- onAdShowError');
-    c.callbacks.add('onAdShowError -- ${ad.request.placementId},error: ${error.toJson()}');
+    c.callbacks.add(
+        'onAdShowError -- ${ad.request.placementId},error: ${error.toJson()}');
   }
 
   @override
@@ -145,6 +138,13 @@ class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
   void onAdSkiped(WindmillSplashAd ad) {
     // TODO: implement onAdSkiped
     c.callbacks.add('onAdSkiped -- ${ad.request.placementId}');
+  }
 
+  @override
+  void onAdDidCloseOtherController(
+      WindmillSplashAd ad, WindmillInteractionType interactionType) {
+    // TODO: implement onAdDidCloseOtherController
+    c.callbacks.add(
+        'onAdDidCloseOtherController -- ${ad.request.placementId},interactionType: ${interactionType.toString()}');
   }
 }

@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'windmill_ad_plugin'
-  s.version          = '3.2.0'
+  s.version          = '3.4.0'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -18,20 +18,21 @@ A new Flutter project.
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
   # s.static_framework = true
-  s.dependency 'ToBid-iOS', '3.2.0'
-  s.dependency 'ToBid-iOS/TouTiaoAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/CSJMediationAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/AdmobAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/MintegralAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/GDTAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/VungleAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/UnityAdsAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/KSAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/BaiduAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/KlevinAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/AdScopeAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/IronSourceAdapter', '3.2.0'
-  s.dependency 'ToBid-iOS/AppLovinAdapter', '3.2.0'
+  s.dependency 'ToBid-iOS', '3.4.0'
+  s.dependency 'ToBid-iOS/TouTiaoAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/CSJMediationAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/AdmobAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/MintegralAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/GDTAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/VungleAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/UnityAdsAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/KSAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/BaiduAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/KlevinAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/AdScopeAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/IronSourceAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/AppLovinAdapter', '3.4.0'
+  s.dependency 'ToBid-iOS/MSAdAdapter', '3.4.0'
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
 end

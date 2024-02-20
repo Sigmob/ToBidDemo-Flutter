@@ -5,6 +5,7 @@ import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdC
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdFailedToLoad;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdLoaded;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdOpened;
+import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdShowError;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdVideoPlayFinished;
 
 import android.app.Activity;
@@ -203,7 +204,11 @@ class IWMInterstitialAdListener implements WMInterstitialAdListener {
     @Override
     public void onInterstitialAdPlayError(final WindMillError windMillError, final String s) {
         android.util.Log.d(TAG, "onInterstitialAdPlayError: ");
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
 
+        channel.invokeMethod(kWindmillEventAdShowError, args);
     }
 }
 

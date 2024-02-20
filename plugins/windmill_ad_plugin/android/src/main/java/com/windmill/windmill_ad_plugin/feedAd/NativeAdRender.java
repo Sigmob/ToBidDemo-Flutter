@@ -16,6 +16,7 @@ import com.czhj.sdk.common.utils.ImageManager;
 import com.windmill.sdk.natives.WMNativeAdData;
 import com.windmill.sdk.natives.WMNativeAdDataType;
 import com.windmill.sdk.natives.WMNativeAdRender;
+import com.windmill.sdk.natives.WMViewBinder;
 import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
 
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
     private TextView text_title;
     private Button mCTAButton;
 
-
     NativeAdRender() {
 
     }
@@ -59,10 +59,7 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
         Log.d(TAG, "---------createView----------" + adPatternType);
         if (context == null) return null;
 
-        View developView = null;
-        if (developView == null) {
-            developView = LayoutInflater.from(context).inflate(ResourceUtil.getLayoutId(context, "native_ad_item_normal"), null);
-        }
+        View developView = LayoutInflater.from(context).inflate(ResourceUtil.getLayoutId(context, "native_ad_item_normal"), null);
         if (developView.getParent() != null) {
             ((ViewGroup) developView.getParent()).removeView(developView);
         }
@@ -142,12 +139,37 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
             mMediaViewLayout.setVisibility(View.GONE);
             clickableViews.add(mImagePoster);
             imageViews.add(mImagePoster);
+        } else if (patternType == WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD) {//IMAGE_MODE_GROUP_IMG
+            // 三小图广告：注册native_3img_ad_container的点击事件
+            native_3img_ad_container.setVisibility(View.VISIBLE);
+            mImagePoster.setVisibility(View.GONE);
+            mMediaViewLayout.setVisibility(View.GONE);
+            clickableViews.add(native_3img_ad_container);
+            imageViews.add(img_1);
+            imageViews.add(img_2);
+            imageViews.add(img_3);
+        }
+
+        //gromore需要绑定资源ID
+        //在bindViewForInteraction之前注册
+        if (adData.getNetworkId() == 22) {//gromore
+            WMViewBinder viewBinder = new WMViewBinder.Builder(view.getId())
+                    .titleId(text_title.getId())
+                    .descriptionTextId(text_desc.getId())
+                    .callToActionId(mCTAButton.getId())
+                    .iconImageId(img_logo.getId())
+                    .mainImageId(mImagePoster.getId())
+                    .mediaViewIdId(mMediaViewLayout.getId())
+                    .groupImage1Id(img_1.getId())
+                    .groupImage2Id(img_2.getId())
+                    .groupImage3Id(img_3.getId())
+                    .build();
+            adData.registerViewBidder(viewBinder);
         }
 
         //重要! 这个涉及到广告计费，必须正确调用。convertView必须使用ViewGroup。
         //作为creativeViewList传入，点击不进入详情页，直接下载或进入落地页，视频和图文广告均生效
         adData.bindViewForInteraction(context, view, clickableViews, creativeViewList, iv_dislike);
-
 
         //需要等到bindViewForInteraction后再去添加media
         if (!imageViews.isEmpty()) {

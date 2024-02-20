@@ -22,6 +22,20 @@ enum Personalized {
   off
 }
 
+enum WindmillInteractionType {
+    interactionTypeCustorm ,
+    interactionTypeNO_INTERACTION,  // pure ad display
+    interactionTypeURL,             // open the webpage using a browser
+    interactionTypePage ,            // open the webpage within the app
+    interactionTypeDownload,        // download the app
+    interactionTypePhone,           // make a call
+    interactionTypeMessage,         // send messages
+    interactionTypeEmail,           // send email
+    interactionTypeVideoAdDetail,    // video ad details page
+
+    interactionTypeMediationOthers  //聚合其他广告sdk返回的类型
+}
+
  class WindmillNetworkId {
   static const Mintegral = 1;
   static const Vungle = 4;
@@ -45,4 +59,8 @@ enum Personalized {
   static const TapTap =29;
   static const Pangle =30;
   static const Max =31;
+  static const REKLAMUP = 33;
+  static const ADMATE = 35;
+  static const HONOR = 36;
+  static const INMOBI = 37;
 }

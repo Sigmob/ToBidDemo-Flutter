@@ -3,6 +3,7 @@ package com.windmill.windmill_ad_plugin.reward;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdClicked;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdClosed;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdFailedToLoad;
+import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdShowError;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdLoaded;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdOpened;
 import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdReward;
@@ -176,14 +177,17 @@ class IWMRewardAdListener implements WMRewardAdListener {
     }
 
     @Override
-    public void onVideoAdPlayStart(final AdInfo adInfo) {
-
-        rewardVideoAd.adInfo = adInfo;
-        channel.invokeMethod(kWindmillEventAdOpened, null);
+    public void onVideoAdPlayError(final WindMillError windMillError, final String placemnetId) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", windMillError.getErrorCode());
+        args.put("message", windMillError.getMessage());
+        channel.invokeMethod(kWindmillEventAdShowError, args);
     }
 
     @Override
-    public void onVideoAdPlayError(final WindMillError windMillError, final String placemnetId) {
+    public void onVideoAdPlayStart(final AdInfo adInfo) {
+        rewardVideoAd.adInfo = adInfo;
+        channel.invokeMethod(kWindmillEventAdOpened, null);
     }
 
     @Override

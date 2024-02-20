@@ -166,8 +166,19 @@
 - (void)intersititialAdDidPlayFinish:(WindMillIntersititialAd *)intersititialAd
                     didFailWithError:(NSError *)error {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    [self.channel invokeMethod:kWindmillEventAdVideoPlayFinished arguments:@{}];
+    [self.channel invokeMethod:kWindmillEventAdVideoPlayFinished arguments:@{
+        @"code": @(error.code),
+        @"message": error.localizedDescription
+    }];    
 }
+
+- (void)intersititialAdDidCloseOtherController:(WindMillIntersititialAd *)intersititialAd withInteractionType:(WindMillInteractionType)interactionType{
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdDetailViewClosed arguments:@{
+        @"interactionType": [NSString stringWithFormat:@"%@", @(interactionType)]
+    }];
+}
+
 
 - (void)dealloc {
     NSLog(@"--- dealloc -- %@", self);
