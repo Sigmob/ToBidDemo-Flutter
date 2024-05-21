@@ -26,5 +26,10 @@
       <option name="name" value="Google3" />
       <option name="url" value="https://dl.google.com/dl/android/maven2/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://storage.flutter-io.cn/download.flutter.io" />
+    </remote-repository>
   </component>
 </project>
