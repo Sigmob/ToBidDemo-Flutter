@@ -1,6 +1,9 @@
 package com.windmill.windmill_ad_plugin;
 
 import android.app.Activity;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.webkit.WebView;
 
@@ -153,6 +156,14 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
                     @Override
                     public boolean isCanUseAppList() {
                         return isCanUseAppList == null ? true : isCanUseAppList;
+                    }
+
+                    @Override
+                    public List<PackageInfo> getInstalledPackages() {
+                        if (isCanUseAppList != null && !isCanUseAppList) {
+                            return getAllUserInstalledApps();
+                        }
+                        return super.getInstalledPackages();
                     }
 
                     @Override
@@ -357,6 +368,29 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
         WindMillAd.sharedAds().setLocalStrategyAssetPath(this.activity, path);
 
+    }
+
+    //{@ - 获取所有安装的APK (MATCH_UNINSTALLED_PACKAGES 表示未卸载的APK, 包括APK已被删除但是保留数据的)
+    // 需要获取所有apk 添加permission <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    public List<PackageInfo> getAllUserInstalledApps() {
+        try {
+            if (this.activity != null) {
+                List<PackageInfo> apps = new ArrayList<>();
+                PackageManager packageManager = this.activity.getPackageManager();
+                List<PackageInfo> installedApps = packageManager.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES);
+
+                for (PackageInfo packageInfo : installedApps) {
+                    // 过滤掉系统应用
+                    if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        apps.add(packageInfo);
+                    }
+                }
+                return apps;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void setupSdkWithAppId(MethodCall call, MethodChannel.Result result) {
