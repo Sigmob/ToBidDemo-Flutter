@@ -57,6 +57,25 @@ class _NativeListPage extends State<NativeListPage> {
 
   Widget _build(BuildContext context) {
     return ListView.builder(
+        itemCount: service.datas.length,
+        itemBuilder: (context, index) {
+          var data = service.datas[index];
+          if (data.type == 1) {
+            return Obx(() => Container(
+                  width: 200.px,
+                  height: 200.px,
+                  color: Color.fromARGB(255, math.Random().nextInt(255),
+                      math.Random().nextInt(255), math.Random().nextInt(255)),
+                  child: Text('${service.datas.length}'),
+                ));
+          } else if (data.type == 3) {
+            return Container(child: data.widget!);
+          }
+        });
+  }
+
+  Widget _build2(BuildContext context) {
+    return ListView.builder(
       itemCount: service.datas.length,
       itemBuilder: (context, index) {
         var data = service.datas[index];
