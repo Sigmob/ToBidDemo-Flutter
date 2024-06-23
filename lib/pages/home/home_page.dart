@@ -16,6 +16,7 @@ class HomePage extends StatelessWidget {
     {'icon': Icons.play_circle_outline_outlined, 'title': '激励视频广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '插屏广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生广告'},
+    {'icon': Icons.play_circle_outline_outlined, 'title': '原生list广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生draw广告'},
   ];
 
@@ -133,7 +134,7 @@ class HomePage extends StatelessWidget {
       customGroup2["qa"] = "test";
       WindmillAd.initCustomGroupForPlacement(customGroup2, placementId);
 
-      await WindmillAd.init(adSetting.appId!.toString());
+      // await WindmillAd.init(adSetting.appId!.toString());
     }
 
     print("sdkVersion: ${await WindmillAd.sdkVersion()}");
@@ -189,6 +190,9 @@ class HomePage extends StatelessWidget {
         Get.toNamed(Routes.NATIVE);
         break;
       case 5:
+        Get.toNamed(Routes.NATIVE_LIST);
+        break;
+      case 6:
         Get.toNamed(Routes.NATIVE_DRAW);
         break;
     }

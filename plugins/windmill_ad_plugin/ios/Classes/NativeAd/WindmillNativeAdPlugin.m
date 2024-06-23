@@ -258,6 +258,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 }
 
 - (void) destroy {
+    NSLog(@"---22 dealloc -- %@", self);
     if(self.nativeAdManager != nil){
         self.nativeAdManager.delegate = nil;
     }

@@ -6,6 +6,7 @@ import 'package:windmill_ad_plugin_example/controller/NativeDrawController.dart'
 import 'package:windmill_ad_plugin_example/controller/RwController.dart';
 import 'package:windmill_ad_plugin_example/controller/SplashController.dart';
 import 'package:windmill_ad_plugin_example/controller/controller.dart';
+import 'package:windmill_ad_plugin_example/pages/home/native_ad_service.dart';
 
 class ControllerBinding implements Bindings {
   @override
@@ -42,12 +43,19 @@ class NativeBinding implements Bindings {
   }
 
 }
+
+class NativeListBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.put(NativeAdService());
+  }
+}
+
 class NativeDrawBinding implements Bindings {
   @override
   void dependencies() {
     Get.put(NativeDrawController());
   }
-
 }
 
 class SplashBinding implements Bindings {

@@ -3,6 +3,7 @@ import 'package:windmill_ad_plugin_example/Binding/ControllerBinding.dart';
 import 'package:windmill_ad_plugin_example/pages/home/banner_page.dart';
 import 'package:windmill_ad_plugin_example/pages/home/home_page.dart';
 import 'package:windmill_ad_plugin_example/pages/home/intersititial_page.dart';
+import 'package:windmill_ad_plugin_example/pages/home/native_list_page.dart';
 import 'package:windmill_ad_plugin_example/pages/home/native_draw_page.dart';
 import 'package:windmill_ad_plugin_example/pages/home/native_page.dart';
 import 'package:windmill_ad_plugin_example/pages/home/reward_page.dart';
@@ -19,6 +20,7 @@ abstract class AppPages {
     GetPage(name: Routes.INTERSITITIAL, page:()=> IntersititialPage(), binding: InterstitialBinding()),
     GetPage(name: Routes.BANNER, page:()=> BannerPage(), binding: BannerBinding()),
     GetPage(name: Routes.NATIVE, page:()=> NativePage(), binding: NativeBinding()),
+    GetPage(name: Routes.NATIVE_LIST, page:()=> NativeListPage(), binding: NativeListBinding()),
     GetPage(name: Routes.NATIVE_DRAW, page:()=> NativeDrawPage(), binding: NativeDrawBinding()),
   ];
 }
@@ -32,5 +34,6 @@ class Routes {
   static const BANNER = '/banner';
   static const SPLASH = '/splash';
   static const NATIVE = '/native';
+  static const NATIVE_LIST = '/native_list';
   static const NATIVE_DRAW = '/native_draw';
 }

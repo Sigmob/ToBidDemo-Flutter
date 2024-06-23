@@ -8,10 +8,8 @@ import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/models/ad_request.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
-class WindmillNativeAd with WindmillEventHandler{
-
-  static const MethodChannel _channel =  MethodChannel('com.windmill/native');
-
+class WindmillNativeAd with WindmillEventHandler {
+  static const MethodChannel _channel = MethodChannel('com.windmill/native');
 
   final double width; //广告宽度
   final double height; //广告高度，设置为0表示根据width自适应，通过adSize.height获取自适应后的高度
@@ -28,8 +26,7 @@ class WindmillNativeAd with WindmillEventHandler{
     required this.width,
     required this.height,
     required WindmillNativeListener<WindmillNativeAd> listener,
-
-  }):super() {
+  }) : super() {
     _uniqId = hashCode.toString();
     _listener = listener;
     delegate = IWindmillNativeListener(this, _listener);
@@ -37,112 +34,97 @@ class WindmillNativeAd with WindmillEventHandler{
     _adChannel.setMethodCallHandler(handleEvent);
   }
 
-
   void updateAdSize(Size size) {
     adSize = size;
   }
 
-  Size? getAdSize(){
+  Size? getAdSize() {
     return adSize;
   }
 
   Future<bool> isReady() async {
-    bool isReady = await _channel.invokeMethod('isReady', {
-      "uniqId": _uniqId
-    });
+    bool isReady = await _channel.invokeMethod('isReady', {"uniqId": _uniqId});
     return isReady;
   }
 
   Future<void> loadAd() async {
     await _channel.invokeMethod('load', {
       "uniqId": _uniqId,
-      "width":  width,
+      "width": width,
       "height": height,
       'request': request.toJson()
     });
   }
 
-
-
   Future<AdInfo> getAdInfo() async {
-    String adinfoStr = await _channel.invokeMethod("getAdInfo",{
-      "uniqId":_uniqId 
-    });
+    String adinfoStr =
+        await _channel.invokeMethod("getAdInfo", {"uniqId": _uniqId});
     final adInfoJson = json.decode(adinfoStr);
-    return AdInfo.fromJson(adInfoJson); 
+    return AdInfo.fromJson(adInfoJson);
   }
 
   Future<AppInfo?> getAppInfo() async {
-
-    if(Platform.isAndroid){
-      dynamic appInfoMap = await _channel.invokeMethod("getAppInfo",{"uniqId":_uniqId });
-      if(appInfoMap != null){
-        return AppInfo.fromJson(appInfoMap.cast<String?,dynamic>()); 
+    if (Platform.isAndroid) {
+      dynamic appInfoMap =
+          await _channel.invokeMethod("getAppInfo", {"uniqId": _uniqId});
+      if (appInfoMap != null) {
+        return AppInfo.fromJson(appInfoMap.cast<String?, dynamic>());
       }
     }
 
     return Future.value(null);
   }
-  
-  Future<List<AdInfo>?> getCacheAdInfoList() async{
 
-    List<Object?> listStr =  await _channel.invokeMethod('getCacheAdInfoList', {
+  Future<List<AdInfo>?> getCacheAdInfoList() async {
+    List<Object?> listStr = await _channel.invokeMethod('getCacheAdInfoList', {
       "uniqId": _uniqId,
     });
 
+    if (listStr.isNotEmpty) {
+      var cacheList = List.generate(listStr.length, (index) {
+        var adInfoStr = listStr[index] as String;
+        final adInfoJson = json.decode(adInfoStr);
+        return AdInfo.fromJson(adInfoJson);
+      });
+      return cacheList;
+    }
 
-    if(listStr.isNotEmpty){
-
-        var cacheList = List.generate(listStr
-        .length
-        , (index){
-              var adInfoStr  = listStr[index] as String;
-              final adInfoJson = json.decode(adInfoStr);
-              return AdInfo.fromJson(adInfoJson);
-        });
-        return cacheList; 
-    } 
-   
     return null;
   }
 
-
   Future<void> destroy() async {
-    await _channel.invokeMethod('destroy', {
-      "uniqId": _uniqId
-    });
+    await _channel.invokeMethod('destroy', {"uniqId": _uniqId});
   }
 }
 
 class AppInfo {
-    String? appName;
-    String? appVersion;
-    String? developerName;
-    String? privacyUrl;
-    String? permissionInfoUrl;
-    String? permissionInfo;
-    String? functionDescUrl;
+  String? appName;
+  String? appVersion;
+  String? developerName;
+  String? privacyUrl;
+  String? permissionInfoUrl;
+  String? permissionInfo;
+  String? functionDescUrl;
 
-    AppInfo({
-      this.appName,
-      this.appVersion,
-      this.developerName,
-      this.privacyUrl,
-      this.permissionInfoUrl,
-      this.permissionInfo,
-      this.functionDescUrl,
-    });
+  AppInfo({
+    this.appName,
+    this.appVersion,
+    this.developerName,
+    this.privacyUrl,
+    this.permissionInfoUrl,
+    this.permissionInfo,
+    this.functionDescUrl,
+  });
 
-    factory AppInfo.fromJson(Map<String?, dynamic> json) => AppInfo(
-      appName: json["appName"],
-      appVersion: json["appVersion"],
-      developerName: json["developerName"],
-      privacyUrl: json["privacyUrl"],
-      permissionInfoUrl: json["permissionInfoUrl"],
-      permissionInfo: json["permissionInfo"],
-      functionDescUrl: json["functionDescUrl"],
-
-    );
+  factory AppInfo.fromJson(Map<String?, dynamic> json) => AppInfo(
+        appName: json["appName"],
+        appVersion: json["appVersion"],
+        developerName: json["developerName"],
+        privacyUrl: json["privacyUrl"],
+        permissionInfoUrl: json["permissionInfoUrl"],
+        permissionInfo: json["permissionInfo"],
+        functionDescUrl: json["functionDescUrl"],
+      );
 
   @override
   String toString() {
@@ -150,18 +132,16 @@ class AppInfo {
   }
 }
 
-
 class CustomNativeAdConfig {
-  
   static String rootView() {
     return 'rootView';
   }
 
-static String iconView() {
+  static String iconView() {
     return 'iconView';
   }
 
- static String mainAdView() {
+  static String mainAdView() {
     return 'mainAdView';
   }
 
@@ -185,8 +165,7 @@ static String iconView() {
     return 'dislikeButton';
   }
 
-
-static Map createNativeSubViewAttribute(double width, double height,
+  static Map createNativeSubViewAttribute(double width, double height,
       {double x = 0,
       double y = 0,
       String backgroundColor = '',
@@ -201,26 +180,26 @@ static Map createNativeSubViewAttribute(double width, double height,
       'y': y,
       'width': width,
       'height': height,
-      "fontSize":fontSize,
+      "fontSize": fontSize,
       'backgroundColor': backgroundColor,
-      'scaleType':scaleType,
-      'textAlignment':textAlignment,
+      'scaleType': scaleType,
+      'textAlignment': textAlignment,
       'textColor': textColor,
       'isCtaClick': isCtaClick,
-      'pixel':pixel
+      'pixel': pixel
     };
   }
 }
+
 class NativeAdWidget extends StatefulWidget {
   @override
   NativeAdWidgetState createState() => NativeAdWidgetState();
 
   final double width; //广告宽度
-  final double height; 
+  final double height;
   final WindmillNativeAd nativeAd;
   Map? nativeCustomViewConfig;
   late final ValueNotifier<Size> sizeNotify;
-
 
   NativeAdWidget({
     Key? key,
@@ -232,14 +211,10 @@ class NativeAdWidget extends StatefulWidget {
     sizeNotify = ValueNotifier<Size>(Size(width, height));
   }
 
-
-
-
   void updateAdSize(Size size) {
-
-      if(size.height>0 && size.width>0){
-        sizeNotify.value = size;
-      }
+    if (size.height > 0 && size.width > 0) {
+      sizeNotify.value = size;
+    }
   }
 }
 
@@ -249,9 +224,7 @@ class NativeAdWidgetState extends State<NativeAdWidget>
   final String viewType = 'flutter_windmill_ads_native';
   // 创建参数
   late Map<String, dynamic> creationParams;
-  NativeAdWidgetState() : super() {
-   
-  }
+  NativeAdWidgetState() : super() {}
 
   @override
   Widget build(BuildContext context) {
@@ -274,32 +247,31 @@ class NativeAdWidgetState extends State<NativeAdWidget>
   }
 
   Widget _buildAndroidWidget() {
-
- return ValueListenableBuilder<Size>(
+    return ValueListenableBuilder<Size>(
       builder: (ctx, size, child) {
+        Size optSize = size;
 
-         Size optSize = size;
-         
-        if(optSize.height < 1){
-           optSize = Size(size.width, 1);
+        if (optSize.height < 1) {
+          optSize = Size(size.width, 1);
         }
         return SizedBox.fromSize(
-              size: optSize,
-              child: child,
-          ); 
+          size: optSize,
+          child: child,
+        );
       },
       valueListenable: widget.sizeNotify,
       child: _buildAndroidView(),
     );
   }
-  
+
   _buildAndroidView() {
     return AndroidView(
-        viewType: viewType,
-        creationParams: creationParams,
-        creationParamsCodec: const StandardMessageCodec(),
-      );
+      viewType: viewType,
+      creationParams: creationParams,
+      creationParamsCodec: const StandardMessageCodec(),
+    );
   }
+
   Widget _buildUIKitView() {
     return UiKitView(
       viewType: viewType,
@@ -313,7 +285,7 @@ class NativeAdWidgetState extends State<NativeAdWidget>
     super.initState();
     creationParams = <String, dynamic>{
       "uniqId": widget.nativeAd.hashCode.toString(),
-      "nativeCustomViewConfig":widget.nativeCustomViewConfig,
+      "nativeCustomViewConfig": widget.nativeCustomViewConfig,
     };
   }
 
@@ -323,5 +295,5 @@ class NativeAdWidgetState extends State<NativeAdWidget>
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }
