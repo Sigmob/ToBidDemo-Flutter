@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
@@ -15,8 +15,7 @@ class TBData {
 // 原生广告模块控制器
 class NativeAdService extends GetxService {
   var datas = <TBData>[].obs;
-
-  var adItems = <NativeAdWidget>[].obs;
+  var notify = false.obs;
 
   var callbacks = <String>[].obs;
   final Map<String, WindmillNativeAd> _adMap = {};
@@ -72,7 +71,6 @@ class NativeAdService extends GetxService {
       data.message = 'fake data --> ${i}';
       this.datas.add(data);
     }
-    this.datas.refresh();
   }
 
   @override
@@ -103,8 +101,9 @@ class NativeAdService extends GetxService {
       width: size.width,
     );
 
-    this.datas.insert(2, data);
-    this.datas.refresh();
+    int index = math.Random().nextInt(this.datas.length);
+    this.datas.insert(index, data);
+    this.notify.value = !this.notify.value;
   }
 }
 

@@ -27,13 +27,15 @@ class _NativeListPage extends State<NativeListPage> {
     service.generateFakeDatas();
 
     service.adLoad(
-        "9399188276982074", Size(MediaQuery.of(context).size.width, 0));
+        "7547245474827569", Size(MediaQuery.of(context).size.width, 200));
 
-    // service.adLoad(
-    //     "7547245474827569", Size(MediaQuery.of(context).size.width, 200));
+    service.adLoad(
+        "3328854952462696", Size(MediaQuery.of(context).size.width, 200));
 
-    // service.adLoad(
-    //     "3328854952462696", Size(MediaQuery.of(context).size.width, 200));
+    Future.delayed(Duration(seconds: 10), () {
+      return service.adLoad(
+          "5225613544461947", Size(MediaQuery.of(context).size.width, 0));
+    });
 
     // service.adLoad(
     //     "2873998415684324", Size(MediaQuery.of(context).size.width, 200));
@@ -41,11 +43,32 @@ class _NativeListPage extends State<NativeListPage> {
     // service.adLoad(
     //     "5225613544461947", Size(MediaQuery.of(context).size.width, 200));
 
-    Timer(Duration(seconds: 5), () {
-      setState(() {
-        print('codi -- setState');
-      });
-    });
+    ///忽略1秒内的所有变化。
+    interval(
+        service.notify,
+        (_) => {
+              setState(() {
+                print('codi -3- setState');
+              })
+            },
+        time: Duration(seconds: 1));
+
+    // Timer(Duration(seconds: 7), () {
+    //   setState(() {
+    //     print('codi -3- setState');
+    //   });
+    //   setState(() {
+    //     print('codi -3- setState');
+    //   });
+    // });
+
+    // ever(
+    //     service.notify,
+    //     (_) => {
+    //           setState(() {
+    //             print('codi -- setState');
+    //           })
+    //         });
   }
 
   @override
