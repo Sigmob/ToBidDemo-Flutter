@@ -7,6 +7,7 @@ import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 class TBData {
   int type = 0;
   WindmillNativeAd? nativeAd;
+  NativeAdWidget? widget;
   double height = 0;
   String? message;
 }
@@ -14,6 +15,8 @@ class TBData {
 // 原生广告模块控制器
 class NativeAdService extends GetxService {
   var datas = <TBData>[].obs;
+
+  var adItems = <NativeAdWidget>[].obs;
 
   var callbacks = <String>[].obs;
   final Map<String, WindmillNativeAd> _adMap = {};
@@ -90,10 +93,16 @@ class NativeAdService extends GetxService {
 
   // 通知并展示原生广告
   void adPlay(WindmillNativeAd ad, Size size) {
-    print('codi -- adPlay: ${ad.request.placementId}');
+    print('codi -- adPlay: ${ad.request.placementId} - ${size}');
     var data = new TBData();
     data.nativeAd = ad;
-    data.type = 2;
+    data.type = 3;
+    data.widget = NativeAdWidget(
+      nativeAd: data.nativeAd!,
+      height: size.height,
+      width: size.width,
+    );
+
     this.datas.insert(2, data);
     this.datas.refresh();
   }
@@ -142,14 +151,15 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   @override
   void onAdRenderSuccess(WindmillNativeAd ad) {
     print('codi -- onAdRenderSuccess: ${ad.adSize}');
-    // c.datas.forEach((element) {
-    //   if (element.nativeAd != null &&
-    //       element.nativeAd == ad &&
-    //       ad.adSize != null) {
-    //     print('codi -- onAdRenderSuccess update: ${ad.adSize}');
-    //     element.height = ad.adSize!.height;
-    //   }
-    // });
+    c.datas.forEach((element) {
+      if (element.nativeAd != null &&
+          element.widget != null &&
+          element.nativeAd == ad &&
+          ad.adSize != null) {
+        print('codi -- onAdRenderSuccess update: ${ad.adSize}');
+        element.widget!.updateAdSize(ad.adSize!);
+      }
+    });
     c.callbacks.add(
         'onAdRenderSuccess -- ${ad.request.placementId} - width : ${ad.adSize?.width} , height : ${ad.adSize?.height}');
   }

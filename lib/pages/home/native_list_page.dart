@@ -29,11 +29,11 @@ class _NativeListPage extends State<NativeListPage> {
     service.adLoad(
         "9399188276982074", Size(MediaQuery.of(context).size.width, 200));
 
-    service.adLoad(
-        "7547245474827569", Size(MediaQuery.of(context).size.width, 200));
+    // service.adLoad(
+    //     "7547245474827569", Size(MediaQuery.of(context).size.width, 200));
 
-    service.adLoad(
-        "3328854952462696", Size(MediaQuery.of(context).size.width, 200));
+    // service.adLoad(
+    //     "3328854952462696", Size(MediaQuery.of(context).size.width, 200));
 
     // service.adLoad(
     //     "2873998415684324", Size(MediaQuery.of(context).size.width, 200));
@@ -68,6 +68,8 @@ class _NativeListPage extends State<NativeListPage> {
             height: 200,
             width: MediaQuery.of(context).size.width,
           ));
+        } else if (data.type == 3) {
+          return Container(child: data.widget!);
         } else if (data.type == 1) {
           return Container(
             height: 200.px, // 设置广告item的高度
