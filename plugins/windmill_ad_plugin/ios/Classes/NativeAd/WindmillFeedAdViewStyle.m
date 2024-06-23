@@ -40,7 +40,6 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
                                 args:(NSDictionary *)args
                             nativeAd:(WindMillNativeAd *)nativeAd
 {
-    
     bool isDisableAutoresize = [WindmillFeedAdViewStyle disableAutoresize:nativeAd];
     NSMutableArray *clickViewSet = [[NSMutableArray alloc] init];
     NSDictionary *config = [args objectForKey:@"rootView"];
@@ -260,7 +259,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     
     CGFloat h = adView.frame.size.height;
     
-    if (args != nil) {
+    if (args != nil && ![args isKindOfClass:[NSNull class]]) {
         h = [self renderAdWithCustomConfig:adView  args:args nativeAd:nativeAd];
     }else{
         switch (nativeAd.feedADMode) {
