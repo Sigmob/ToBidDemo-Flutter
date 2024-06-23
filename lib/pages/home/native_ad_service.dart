@@ -13,8 +13,6 @@ class TBData {
 
 // 原生广告模块控制器
 class NativeAdService extends GetxService {
-  var adItems = <NativeAdWidget>[].obs;
-
   var datas = <TBData>[].obs;
 
   var callbacks = <String>[].obs;
@@ -71,6 +69,7 @@ class NativeAdService extends GetxService {
       data.message = 'fake data --> ${i}';
       this.datas.add(data);
     }
+    this.datas.refresh();
   }
 
   @override
@@ -178,8 +177,6 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
     print('flu-nav-onAdDidDislike');
     c.callbacks.add('onAdDidDislike -- ${ad.request.placementId}');
     ad.destroy();
-    c.adItems.removeLast();
-    c.adItems.refresh();
   }
 
   @override

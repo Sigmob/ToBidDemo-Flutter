@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,12 @@ class _NativeListPage extends State<NativeListPage> {
 
     // service.adLoad(
     //     "5225613544461947", Size(MediaQuery.of(context).size.width, 200));
+
+    Timer(Duration(seconds: 5), () {
+      setState(() {
+        print('codi -- setState');
+      });
+    });
   }
 
   @override
@@ -49,42 +56,29 @@ class _NativeListPage extends State<NativeListPage> {
   }
 
   Widget _build(BuildContext context) {
-    return EasyRefresh(
-        header: const MaterialHeader(
-          position: IndicatorPosition.locator,
-        ),
-        footer: const MaterialFooter(
-          position: IndicatorPosition.locator,
-        ),
-        onRefresh: () async {
-          print("EasyRefresh -- onRefresh...");
-        },
-        onLoad: () async {
-          print("EasyRefresh -- onLoad...");
-        },
-        child: ListView.builder(
-          itemCount: service.datas.length,
-          itemBuilder: (context, index) {
-            var data = service.datas[index];
-            print('codi -- itemBuilder:  ${data.type}');
-            if (data.type == 2) {
-              return Container(
-                  child: NativeAdWidget(
-                nativeAd: data.nativeAd!,
-                height: 200,
-                width: MediaQuery.of(context).size.width,
-              ));
-            } else if (data.type == 1) {
-              return Container(
-                height: 200.px, // 设置广告item的高度
-                width: MediaQuery.of(context).size.width, // 设置广告item的宽度
-                child: Text(data.message!),
-                color: Color.fromARGB(255, math.Random().nextInt(255),
-                    math.Random().nextInt(255), math.Random().nextInt(255)),
-              );
-            }
-          },
-        ));
+    return ListView.builder(
+      itemCount: service.datas.length,
+      itemBuilder: (context, index) {
+        var data = service.datas[index];
+        print('codi -- itemBuilder:  ${data.type}');
+        if (data.type == 2) {
+          return Container(
+              child: NativeAdWidget(
+            nativeAd: data.nativeAd!,
+            height: 200,
+            width: MediaQuery.of(context).size.width,
+          ));
+        } else if (data.type == 1) {
+          return Container(
+            height: 200.px, // 设置广告item的高度
+            width: MediaQuery.of(context).size.width, // 设置广告item的宽度
+            child: Text('${data.message!}'),
+            color: Color.fromARGB(255, math.Random().nextInt(255),
+                math.Random().nextInt(255), math.Random().nextInt(255)),
+          );
+        }
+      },
+    );
   }
 }
 
