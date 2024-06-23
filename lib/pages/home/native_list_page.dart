@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/extension/num_extension.dart';
 import 'package:windmill_ad_plugin_example/pages/home/native_ad_service.dart';
@@ -19,10 +21,16 @@ class _NativeListPage extends State<NativeListPage> {
   int ad_show_count = 0;
 
   final service = Get.find<NativeAdService>();
+  late EasyRefreshController _controller;
 
   @override
   void initState() {
     super.initState();
+
+    _controller = EasyRefreshController(
+      controlFinishRefresh: true,
+      controlFinishLoad: true,
+    );
 
     service.generateFakeDatas();
 
@@ -31,11 +39,6 @@ class _NativeListPage extends State<NativeListPage> {
 
     service.adLoad(
         "3328854952462696", Size(MediaQuery.of(context).size.width, 200));
-
-    Future.delayed(Duration(seconds: 10), () {
-      return service.adLoad(
-          "5225613544461947", Size(MediaQuery.of(context).size.width, 0));
-    });
 
     // service.adLoad(
     //     "2873998415684324", Size(MediaQuery.of(context).size.width, 200));
@@ -48,27 +51,17 @@ class _NativeListPage extends State<NativeListPage> {
         service.notify,
         (_) => {
               setState(() {
+                _controller.finishLoad(IndicatorResult.success);
                 print('codi -3- setState');
               })
             },
         time: Duration(seconds: 1));
+  }
 
-    // Timer(Duration(seconds: 7), () {
-    //   setState(() {
-    //     print('codi -3- setState');
-    //   });
-    //   setState(() {
-    //     print('codi -3- setState');
-    //   });
-    // });
-
-    // ever(
-    //     service.notify,
-    //     (_) => {
-    //           setState(() {
-    //             print('codi -- setState');
-    //           })
-    //         });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -79,67 +72,53 @@ class _NativeListPage extends State<NativeListPage> {
   }
 
   Widget _build(BuildContext context) {
-    return ListView.builder(
-        itemCount: service.datas.length,
-        itemBuilder: (context, index) {
-          var data = service.datas[index];
-          if (data.type == 1) {
-            return Obx(() => Container(
-                  width: 200.px,
-                  height: 200.px,
-                  color: Color.fromARGB(255, math.Random().nextInt(255),
-                      math.Random().nextInt(255), math.Random().nextInt(255)),
-                  child: Text('${service.datas.length}'),
-                ));
-          } else if (data.type == 3) {
-            return Container(child: data.widget!);
-          }
-        });
-  }
-
-  Widget _build2(BuildContext context) {
-    return ListView.builder(
-      itemCount: service.datas.length,
-      itemBuilder: (context, index) {
-        var data = service.datas[index];
-        print('codi -- itemBuilder:  ${data.type} size: ${data.height}');
-        if (data.type == 2) {
-          return Container(
-              child: NativeAdWidget(
-            nativeAd: data.nativeAd!,
-            height: 200,
-            width: MediaQuery.of(context).size.width,
-          ));
-        } else if (data.type == 3) {
-          return Container(child: data.widget!);
-        } else if (data.type == 1) {
-          return Container(
-            height: 200.px, // 设置广告item的高度
-            width: MediaQuery.of(context).size.width, // 设置广告item的宽度
-            child: Text('${data.message!}'),
-            color: Color.fromARGB(255, math.Random().nextInt(255),
-                math.Random().nextInt(255), math.Random().nextInt(255)),
-          );
-        }
-      },
-    );
+    return EasyRefresh(
+        controller: _controller,
+        refreshOnStart: true,
+        refreshOnStartHeader: BuilderHeader(
+          triggerOffset: 70,
+          clamping: true,
+          position: IndicatorPosition.above,
+          processedDuration: Duration.zero,
+          builder: (ctx, state) {
+            if (state.mode == IndicatorMode.inactive ||
+                state.mode == IndicatorMode.done) {
+              return const SizedBox();
+            }
+            return Container(
+              padding: const EdgeInsets.only(bottom: 100),
+              width: double.infinity,
+              height: state.viewportDimension,
+              alignment: Alignment.center,
+              child: const SpinKitFadingCube(
+                size: 24,
+                color: Color.fromARGB(255, 255, 0, 0),
+              ),
+            );
+          },
+        ),
+        onLoad: () async {
+          service.adLoad(
+              "5225613544461947", Size(MediaQuery.of(context).size.width, 0));
+        },
+        child: ListView.builder(
+            itemCount: service.datas.length,
+            itemBuilder: (context, index) {
+              var data = service.datas[index];
+              if (data.type == 1) {
+                return Obx(() => Container(
+                      width: 200.px,
+                      height: 200.px,
+                      color: Color.fromARGB(
+                          255,
+                          math.Random().nextInt(255),
+                          math.Random().nextInt(255),
+                          math.Random().nextInt(255)),
+                      child: Text('${service.datas.length}'),
+                    ));
+              } else if (data.type == 3) {
+                return Container(child: data.widget!);
+              }
+            }));
   }
 }
-
-
-
-
-// if (service.datas.length > index) {
-            //   return Obx(() {
-            //     return Container(
-            //       width: MediaQuery.of(context).size.width,
-            //       child: Text('asdasaasas'),
-            //     );
-            //   });
-            // } else {
-            //   return Container(
-            //     height: 200.px, // 设置广告item的高度
-            //     width: MediaQuery.of(context).size.width, // 设置广告item的宽度
-            //     child: Text("item  =====  ${index}"),
-            //   );
-            // }

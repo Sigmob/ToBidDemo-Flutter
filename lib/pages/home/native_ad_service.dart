@@ -90,8 +90,9 @@ class NativeAdService extends GetxService {
   }
 
   // 通知并展示原生广告
-  void adPlay(WindmillNativeAd ad, Size size) {
-    print('codi -- adPlay: ${ad.request.placementId} - ${size}');
+  void adPlay(WindmillNativeAd ad, Size size) async {
+    print(
+        'codi -- adPlay: ${ad.request.placementId} - ${size} ${await ad.isReady()}');
     var data = new TBData();
     data.nativeAd = ad;
     data.type = 3;
@@ -101,8 +102,9 @@ class NativeAdService extends GetxService {
       width: size.width,
     );
 
-    int index = math.Random().nextInt(this.datas.length);
-    this.datas.insert(index, data);
+    // int index = math.Random().nextInt(this.datas.length);
+    // this.datas.insert(index, data);
+    this.datas.add(data);
     this.notify.value = !this.notify.value;
   }
 }
