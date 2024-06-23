@@ -27,7 +27,7 @@ class _NativeListPage extends State<NativeListPage> {
     service.generateFakeDatas();
 
     service.adLoad(
-        "9399188276982074", Size(MediaQuery.of(context).size.width, 200));
+        "9399188276982074", Size(MediaQuery.of(context).size.width, 0));
 
     // service.adLoad(
     //     "7547245474827569", Size(MediaQuery.of(context).size.width, 200));
@@ -60,7 +60,7 @@ class _NativeListPage extends State<NativeListPage> {
       itemCount: service.datas.length,
       itemBuilder: (context, index) {
         var data = service.datas[index];
-        print('codi -- itemBuilder:  ${data.type}');
+        print('codi -- itemBuilder:  ${data.type} size: ${data.height}');
         if (data.type == 2) {
           return Container(
               child: NativeAdWidget(
