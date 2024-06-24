@@ -11,6 +11,7 @@ import 'package:windmill_ad_plugin_example/pages/home/native_ad_service.dart';
 import 'package:windmill_ad_plugin_example/utils/device_util.dart';
 
 class NativeListPage extends StatefulWidget {
+
   const NativeListPage({Key? key}) : super(key: key);
 
   @override
@@ -18,7 +19,6 @@ class NativeListPage extends StatefulWidget {
 }
 
 class _NativeListPage extends State<NativeListPage> {
-  int ad_show_count = 0;
 
   final service = Get.find<NativeAdService>();
   late EasyRefreshController _controller;
@@ -67,7 +67,6 @@ class _NativeListPage extends State<NativeListPage> {
   @override
   Widget build(BuildContext context) {
     DeviceUtil.initialize();
-
     return Scaffold(body: _build(context));
   }
 
@@ -99,7 +98,7 @@ class _NativeListPage extends State<NativeListPage> {
         ),
         onLoad: () async {
           service.adLoad(
-              "5225613544461947", Size(MediaQuery.of(context).size.width, 0));
+              "9399188276982074", Size(MediaQuery.of(context).size.width, 0));
         },
         child: ListView.builder(
             itemCount: service.datas.length,
