@@ -30,9 +30,9 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
 + (BOOL) disableAutoresize:(WindMillNativeAd *)ad{
     
     //如遇到GDT渠道显示UI问题可以打开此开关
-//    if(ad.networkId == 16){
-//        return true;
-//    }
+    //    if(ad.networkId == 16){
+    //        return true;
+    //    }
     return false;
 }
 
@@ -40,6 +40,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
                                 args:(NSDictionary *)args
                             nativeAd:(WindMillNativeAd *)nativeAd
 {
+    
     bool isDisableAutoresize = [WindmillFeedAdViewStyle disableAutoresize:nativeAd];
     NSMutableArray *clickViewSet = [[NSMutableArray alloc] init];
     NSDictionary *config = [args objectForKey:@"rootView"];
@@ -49,9 +50,12 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     [adView.titleLabel setText:nativeAd.title];
     [adView.descLabel setText:nativeAd.desc];
     [adView.CTAButton setTitle:nativeAd.callToAction forState:UIControlStateNormal];
-
     
+    
+    CGFloat h = 0;
     config = [args objectForKey:@"mainAdView"];
+    NSString *height = config[@"height"];
+    h += height.floatValue;
     if(config != nil){
         
         ViewConfigItem * rootView = [[ViewConfigItem alloc] initWithDic:config];
@@ -71,28 +75,31 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
             if ([rootView isCtaClick]) {
                 [clickViewSet addObject:adView.mediaView];
             }
-
+            
         }else  if (nativeAd.feedADMode == WindMillFeedADModeGroupImage){
             CGRect frame = [rootView getFrame];
             CGFloat imgW = frame.size.width/adView.imageViewList.count;
             CGFloat imgHeight = 9.0/16.0*imgW;
-
+            
             CGFloat x =frame.origin.x;
             CGFloat y =frame.origin.y;
-
+            
             for(int i=0; i< adView.imageViewList.count ; i++){
-               UIImageView* imageView = adView.imageViewList[i];
-               imageView.frame = CGRectMake(x+i*imgW, y, imgW, imgHeight);
+                UIImageView* imageView = adView.imageViewList[i];
+                imageView.frame = CGRectMake(x+i*imgW, y, imgW, imgHeight);
                 if ([rootView isCtaClick]) {
                     [clickViewSet addObject:imageView];
                 }
             }
-        
+            
         }
     }
     
     
     config = [args objectForKey:@"iconView"];
+    NSString *logoH = config[@"height"];
+    h += logoH.floatValue;
+    
     if(config != nil){
         
         ViewConfigItem * iconView = [[ViewConfigItem alloc] initWithDic:config];
@@ -125,15 +132,18 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
         }
     }
     
-
+    
     
     config = [args objectForKey:@"ctaButton"];
+    NSString *ctaH = config[@"height"];
+    h += ctaH.floatValue;
+    h += 20;
     
     if(config != nil){
         ViewConfigItem * ctaButton = [[ViewConfigItem alloc] initWithDic:config];
         [WindmillFeedAdViewStyle updateViewProperty:adView.CTAButton ViewConfig:ctaButton disableAutoreSize:isDisableAutoresize];
         [clickViewSet addObject:adView.CTAButton];
-
+        
     }
     
     config = [args objectForKey:@"adLogoView"];
@@ -155,8 +165,8 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
     }
     
     [adView setClickableViews:clickViewSet];
-
-    return adView.frame.size.height;
+    
+    return h;
 }
 
 
@@ -179,13 +189,13 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
         make.top.sms_equalTo(frame.origin.y);
         make.size.sms_equalTo(frame.size);
     }];
-
+    
     UIColor * bgColor = [viewConfigItem getBackgroudColor];
     if(bgColor != nil){
         [view setBackgroundColor:bgColor];
     }
     int scaleType = [viewConfigItem getScaleType];
-
+    
     switch (scaleType) {
         case 0:
             [view setContentMode:UIViewContentModeScaleToFill];
@@ -208,14 +218,14 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
             [button setTitleColor:color forState:UIControlStateHighlighted];
         }
         int fontSize = [viewConfigItem getFontSize];
-
+        
         if(fontSize > 0){
             [button setFont:[UIFont systemFontOfSize:fontSize]];
         }
-
+        
     }
     
-
+    
     if([view isKindOfClass: [UILabel class]]){
         
         UILabel *textview =(UILabel*) view;
@@ -224,7 +234,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
             [textview setTextColor:color];
         }
         int fontSize = [viewConfigItem getFontSize];
-
+        
         if(fontSize > 0){
             [textview setFont:[UIFont systemFontOfSize:fontSize]];
         }
@@ -233,11 +243,11 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
         switch (alignment) {
             case 0:
                 [textview setTextAlignment:NSTextAlignmentLeft];
-
+                
                 break;
             case 1:
                 [textview setTextAlignment:NSTextAlignmentCenter];
-
+                
                 break;
             case 2:
                 [textview setTextAlignment:NSTextAlignmentRight];
@@ -246,14 +256,14 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
                 break;
         }
     }
-   
+    
 }
 
 
 
 + (CGSize)layoutWithNativeAd:(WindMillNativeAd *)nativeAd
-                    adView:(WindmillNativeAdCustomView *)adView
-                      args:(NSDictionary *)args {
+                      adView:(WindmillNativeAdCustomView *)adView
+                        args:(NSDictionary *)args {
     
     if (nativeAd.feedADMode == WindMillFeedADModeNativeExpress) return adView.frame.size;
     
@@ -267,7 +277,7 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
                 h = [self renderAdWithGroupImg:nativeAd adView:adView args:args];
                 break;
             case WindMillFeedADModeLargeImage:
-                h = [self renderAdWithGroupImg:nativeAd adView:adView args:args];
+                h = [self renderAdWithLargeImg:nativeAd adView:adView args:args];
                 break;
             case WindMillFeedADModeVideo:
             case WindMillFeedADModeVideoPortrait:
@@ -285,75 +295,82 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
 
 
 + (CGFloat)renderAdWithGroupImg:(WindMillNativeAd *)nativeAd
-                      adView:(WindmillNativeAdCustomView *)adView
-                        args:(NSDictionary *)args {
+                         adView:(WindmillNativeAdCustomView *)adView
+                           args:(NSDictionary *)args {
     
- 
-        
-        CGFloat width = CGRectGetWidth(adView.frame);
-        CGFloat height = CGRectGetHeight(adView.frame);
-        CGFloat contentWidth = (width - 2 * margin);
-        CGFloat x = padding.left;
-        CGFloat y = padding.top;
-        
-        NSAttributedString *descAttr = [self attributeText:nativeAd.desc params:@{
-            NSFontAttributeName: adView.descLabel.font
-        }];
-        adView.descLabel.attributedText = descAttr;
-        CGSize descSize = [adView.descLabel sizeThatFits:CGSizeMake(contentWidth, MAXFLOAT)];
-        adView.descLabel.frame = CGRectMake(x, y, contentWidth, descSize.height+5);
-        y = y+descSize.height+10;
-        CGFloat imgHeight = height - 80;
-
-
-        CGFloat imgW = (contentWidth - 2*margin)/adView.imageViewList.count;
-        if (height == 0) {
-            imgHeight = 9.0/16.0*imgW;
-        }
-
+    CGFloat width = CGRectGetWidth(adView.frame);
+    CGFloat height = CGRectGetHeight(adView.frame);
+    CGFloat contentWidth = (width - 2 * margin);
+    CGFloat x = padding.left;
+    CGFloat y = padding.top;
+    
+    NSAttributedString *descAttr = [self attributeText:nativeAd.desc params:@{
+        NSFontAttributeName: adView.descLabel.font
+    }];
+    adView.descLabel.attributedText = descAttr;
+    CGSize descSize = [adView.descLabel sizeThatFits:CGSizeMake(contentWidth, MAXFLOAT)];
+    adView.descLabel.frame = CGRectMake(x, y, contentWidth, descSize.height+5);
+    y = y+descSize.height+10;
+    CGFloat imgHeight = height - 80;
+    
+    
+    CGFloat imgW = (contentWidth - 2*margin)/adView.imageViewList.count;
+    if (height == 0) {
+        imgHeight = 9.0/16.0*imgW;
+    }
+    
+    if (adView.imageViewList.count > 0) {
         adView.imageViewList[0].frame = CGRectMake(x, y, imgW, imgHeight);
+    }
+    
+    if (adView.imageViewList.count > 1) {
         adView.imageViewList[1].frame = CGRectMake(CGRectGetMaxX(adView.imageViewList[0].frame)+margin, y, imgW, imgHeight);
+    }
+    
+    if (adView.imageViewList.count > 2) {
         adView.imageViewList[2].frame = CGRectMake(CGRectGetMaxX(adView.imageViewList[1].frame)+margin, y, imgW, imgHeight);
-        [adView.logoView setTranslatesAutoresizingMaskIntoConstraints:true];
-        CGSize logoSize = adView.logoView.frame.size;
-        if (CGSizeEqualToSize(logoSize, CGSizeZero)) {
-            logoSize = CGSizeMake(25, 25);
-        }
-        y += imgHeight + 10;
-        if(nativeAd.iconUrl != nil && [nativeAd.iconUrl length]>0){
-            [adView.iconImageView sm_setImageWithURL:[NSURL URLWithString:nativeAd.iconUrl]];
-        }
-        adView.adLabel.frame = CGRectMake(x, y, 40, 20);
-        adView.dislikeButton.imageEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
-        adView.dislikeButton.frame = CGRectMake(contentWidth-margin, y, 20, 20);
-        CGFloat ctaX = width-75;
-        if (adView.dislikeButton) {
-            ctaX = adView.dislikeButton.frame.origin.x - 75;
-        }
-        [adView.CTAButton setTitle:nativeAd.callToAction forState:UIControlStateNormal];
-        adView.CTAButton.frame = CGRectMake(ctaX, y, 75, 20);
-        
-        CGFloat titleLabelWidth = CGRectGetMinX(adView.CTAButton.frame) - CGRectGetMaxX(adView.adLabel.frame) - 5;
-        adView.titleLabel.textColor = [UIColor colorWithWhite:0.333 alpha:1];
-        adView.titleLabel.font = [UIFont systemFontOfSize:14];
-        adView.titleLabel.text = nativeAd.title;
-        adView.titleLabel.frame = CGRectMake(CGRectGetMaxX(adView.adLabel.frame) + 5, y, titleLabelWidth, 20);
-        if (height == 0) {
-            CGFloat h = CGRectGetMaxY(adView.titleLabel.frame);
-            return h + padding.bottom;
-        }
+    }
     
-        [adView setClickableViews:@[adView.CTAButton, adView.mediaView]];
-
-        return height;
-        
+    [adView.logoView setTranslatesAutoresizingMaskIntoConstraints:true];
+    CGSize logoSize = adView.logoView.frame.size;
+    if (CGSizeEqualToSize(logoSize, CGSizeZero)) {
+        logoSize = CGSizeMake(25, 25);
+    }
+    y += imgHeight + 10;
+    if(nativeAd.iconUrl != nil && [nativeAd.iconUrl length]>0){
+        [adView.iconImageView sm_setImageWithURL:[NSURL URLWithString:nativeAd.iconUrl]];
+    }
+    adView.adLabel.frame = CGRectMake(x, y, 40, 20);
+    adView.dislikeButton.imageEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    adView.dislikeButton.frame = CGRectMake(contentWidth-margin, y, 20, 20);
+    CGFloat ctaX = width-75;
+    if (adView.dislikeButton) {
+        ctaX = adView.dislikeButton.frame.origin.x - 75;
+    }
+    [adView.CTAButton setTitle:nativeAd.callToAction forState:UIControlStateNormal];
+    adView.CTAButton.frame = CGRectMake(ctaX, y, 75, 20);
     
-      
+    CGFloat titleLabelWidth = CGRectGetMinX(adView.CTAButton.frame) - CGRectGetMaxX(adView.adLabel.frame) - 5;
+    adView.titleLabel.textColor = [UIColor colorWithWhite:0.333 alpha:1];
+    adView.titleLabel.font = [UIFont systemFontOfSize:14];
+    adView.titleLabel.text = nativeAd.title;
+    adView.titleLabel.frame = CGRectMake(CGRectGetMaxX(adView.adLabel.frame) + 5, y, titleLabelWidth, 20);
+    if (height == 0) {
+        CGFloat h = CGRectGetMaxY(adView.titleLabel.frame);
+        return h + padding.bottom;
+    }
+    
+    [adView setClickableViews:@[adView.CTAButton, adView.mediaView]];
+    
+    return height;
+    
+    
+    
 }
 
 + (CGFloat)renderAdWithLargeImg:(WindMillNativeAd *)nativeAd
-                      adView:(WindmillNativeAdCustomView *)adView
-                        args:(NSDictionary *)args {
+                         adView:(WindmillNativeAdCustomView *)adView
+                           args:(NSDictionary *)args {
     CGFloat width = CGRectGetWidth(adView.frame);
     CGFloat height = CGRectGetHeight(adView.frame);
     CGFloat contentWidth = (width - 2 * margin);

@@ -31,8 +31,10 @@
         
         NSString *uniqId = [args objectForKey:@"uniqId"];
         NSDictionary *nativeCustomViewConfig = [args objectForKey:@"nativeCustomViewConfig"];
+        NSNumber *width = [args objectForKey:@"width"];
+        NSNumber *height = [args objectForKey:@"height"];
 
-
+        _contentView.frame =  CGRectMake(0, 0, width.intValue, height.intValue);
         WindmillNativeAdPlugin * plugin = [WindmillNativeAdPlugin getPluginWithUniqId:uniqId];
         
         [plugin showAd:_contentView args:nativeCustomViewConfig];

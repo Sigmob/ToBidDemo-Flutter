@@ -77,7 +77,7 @@ NSMutableArray * sdkConfigures;
             bundle = [NSBundle mainBundle];
         }else{
             NSString * bundlePath = [[NSBundle mainBundle] pathForResource:bundleName ofType:@"bundle"];
-           
+            
             if([[NSFileManager defaultManager] fileExistsAtPath:bundlePath]){
                 bundle = [NSBundle bundleWithPath:bundlePath];
             }else{
@@ -87,11 +87,11 @@ NSMutableArray * sdkConfigures;
         
         if(bundle != nil){
             NSLog(@"setPresetPlacementConfigPathBundle bundle: %@ sccess",bundleName);
-
+            
             [WindMillAds setPresetPlacementConfigPathBundle:bundle];
         }
     }
-
+    
     result(nil);
 }
 
@@ -124,10 +124,10 @@ NSMutableArray * sdkConfigures;
     if(data != nil){
         NSError *error;
         NSDictionary * dic = [NSJSONSerialization  JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-
+        
         [WindMillAds initCustomGroup:dic];
     }
-
+    
     result(nil);
 }
 
@@ -135,16 +135,16 @@ NSMutableArray * sdkConfigures;
     
     NSString *customGroup = call.arguments[@"customGroup"];
     NSString *placementId = call.arguments[@"placementId"];
- 
+    
     NSData *data = [customGroup dataUsingEncoding:NSUTF8StringEncoding];
     
     if(data != nil){
         NSError *error;
         NSDictionary * dic = [NSJSONSerialization  JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-
+        
         [WindMillAds initCustomGroup:dic forPlacementId:placementId];
     }
-
+    
     result(nil);
 }
 
@@ -153,28 +153,28 @@ NSMutableArray * sdkConfigures;
     NSString *placementId = call.arguments[@"placementId"];
     
     NSArray<NSString *> *networkFirmIdList = call.arguments[@"networkFirmIdList"];
-     
+    
     if(networkFirmIdList != nil){
         
         NSLog(@"setFilterNetworkFirmIdListMethodCall: %@", networkFirmIdList);
         
         [WindMillAds setFilterNetworkChannelIdList:networkFirmIdList forPlacementId:placementId];
     }
-
+    
     result(nil);
 }
 
 - (void)customDeviceMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
+    
     
     WindMillCustomDevInfo *devInfo =  [[WindMillCustomDevInfo alloc] init];
-     
+    
     
     NSNumber *isCanUseLocation = call.arguments[@"isCanUseLocation"];
     NSNumber *isCanUseIdfa = call.arguments[@"isCanUseIdfa"];
     NSString *customIDFA = call.arguments[@"customIDFA"];
     NSDictionary *customLocation = call.arguments[@"customLocation"];
-
+    
     if(customLocation != nil){
         
         AWMLocation *location = [[AWMLocation alloc] init];
@@ -186,21 +186,64 @@ NSMutableArray * sdkConfigures;
             devInfo.customLocation = location;
         }
     }
-
+    
     devInfo.canUseIdfa = [isCanUseIdfa boolValue];
     if(customIDFA != NULL){
         devInfo.customIDFA = customIDFA;
     }
-
+    
     devInfo.canUseLocation = [isCanUseLocation boolValue];
-
+    
     [WindMillAds setCustomDeviceController:devInfo];
+    
+    result(nil);
+}
 
+- (void) addFilterMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    
+    NSString *placementId = call.arguments[@"placementId"];
+    
+    NSLog(@"addFilterMethodCall: %@", placementId);
+    
+    if(placementId!=nil && placementId != [NSNull null]){
+        
+        NSArray<NSDictionary *> *filterInfoList = call.arguments[@"filterInfoList"];
+        
+        if(filterInfoList!=nil && filterInfoList != [NSNull null]){
+            
+            NSLog(@"addFilterMethodCall: %@", filterInfoList);
+            
+            //创建fliter对象
+            WindMillWaterfallFilter *filter = [[WindMillWaterfallFilter alloc] initWithPlacementId:placementId];
+            
+            for (NSDictionary *dic in filterInfoList) {
+                
+                NSNumber *networkId = dic[@"networkId"];
+                
+                NSArray<NSString *>  *unitIdList = dic[@"unitIdList"];
+                
+                if(networkId != nil && networkId != [NSNull null]){
+                    filter.equalTo(WaterfallFilterKeyChannelId,networkId.stringValue);
+                }
+                
+                if(unitIdList!=nil && unitIdList!=[NSNull null]){
+                    if (unitIdList.count>0) {
+                        filter.inFilter(WaterfallFilterKeyAdnId,unitIdList);
+                    }
+                }
+                
+                filter.orFilter;
+            }
+            
+            [WindMillAds addFilter:filter];
+        }
+    }
+    
     result(nil);
 }
 
 - (void) networkPreInitMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
+    
     NSArray<NSDictionary *> *networkConfigList = call.arguments[@"networksMap"];
     
     sdkConfigures = [[NSMutableArray alloc] init];
@@ -214,15 +257,16 @@ NSMutableArray * sdkConfigures;
         if(networkId != nil && networkId != [NSNull null]){
             
             AWMSDKConfigure * conf = [[AWMSDKConfigure alloc] initWithAdnId:[networkId integerValue] appid:appId appKey:appKey];
-
+            
             NSLog(@"networkId %ld appId %@ appKey %@",conf.adnId,conf.appId,conf.appKey);
-
+            
             [sdkConfigures addObject:conf];
             
         }
     }
+    
+    result(nil);
 }
-
 
 - (void)getUidMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     result([WindMillAds getUid]);
@@ -237,10 +281,10 @@ NSMutableArray * sdkConfigures;
 -(void)setWxOpenAppIdAndUniversalLinkMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *wxAppId = call.arguments[@"wxAppId"];
     NSString *universalLink = call.arguments[@"universalLink"];
-    [WindMillAds setExt:@{
-        WindMillWXAppId:wxAppId,
-        WindMillWXUniversalLink:universalLink
-    }];   
+    //    [WindMillAds setExt:@{
+    //        WindMillWXAppId:wxAppId,
+    //        WindMillWXUniversalLink:universalLink
+    //    }];
     result(nil);
 }
 

@@ -2,6 +2,7 @@ package com.windmill.windmill_ad_plugin.core;
 
 import android.app.Activity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAd;
@@ -88,6 +89,7 @@ public class WindmillAd<T> {
                 case Native: {
                     Double width = (Double) arguments.get("width");
                     options.put(WMConstants.AD_WIDTH, width.intValue());// 针对于模版广告有效、单位dp
+                    Log.d("TAG", "createAdInstance: " + arguments);
                     if (arguments.containsKey("height")) {
                         Double height = (Double) arguments.get("height");
                         options.put(WMConstants.AD_HEIGHT, height.intValue());// 自适应高度

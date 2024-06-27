@@ -117,7 +117,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     }
     _adView = nil;
     self.adinfo = nil;
-    self.nativeAd = nil;
+    // self.nativeAd = nil;
     [self.nativeAdManager loadAdDataWithCount:1];
 
     result(nil);
@@ -141,6 +141,8 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 
 - (void)showAd:(UIView *)adContainer args:(NSDictionary *)args{
     
+    [self.adView removeFromSuperview];
+    
 //    (WindMillNativeAd *)nativeAd
     UIViewController *rootViewController = [WindmillUtil getCurrentController];
     [adContainer addSubview:self.adView];
@@ -152,10 +154,10 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
     CGSize adSize = [WindmillFeedAdViewStyle layoutWithNativeAd:_nativeAd adView:self.adView args:args];
     if (_nativeAd.feedADMode != WindMillFeedADModeNativeExpress) {
         self.adView.frame = CGRectMake(0, 0, adSize.width, adSize.height);
-//        [self.channel invokeMethod:kWindmillEventAdRenderSuccess arguments:@{
-//            @"width": @(adSize.width),
-//            @"height": @(adSize.height),
-//        }];
+        [self.channel invokeMethod:kWindmillEventAdRenderSuccess arguments:@{
+            @"width": @(adSize.width),
+            @"height": @(adSize.height),
+        }];
     }
 }
 
@@ -258,7 +260,6 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 }
 
 - (void) destroy {
-    NSLog(@"---22 dealloc -- %@", self);
     if(self.nativeAdManager != nil){
         self.nativeAdManager.delegate = nil;
     }

@@ -12,6 +12,7 @@ class AdInfo {
   String? loadId;                   /// 每次展示广告时生成的独立 ID，可用于排查问题
   String? userId;                   /// app自己的用户体系的id，开发者传入
   int? adType;                      /// 当前广告类型
+  int? networkAdType;               /// 当前三方广告源广告类型
   String? scene;                    /// 广告场景id，由开发者传入
   Map<String, dynamic>? options;     /// 开发者在request中传入的options
 
@@ -28,6 +29,7 @@ class AdInfo {
     this.loadId,
     this.userId,
     this.adType,
+    this.networkAdType,
     this.scene,
     this.options}) ;
 
@@ -46,7 +48,8 @@ class AdInfo {
         loadId: json["loadId"], 
         userId: json["userId"], 
         adType: json["adType"], 
-        scene: json["scene"], 
+        networkAdType: json["network_adType"], 
+        scene: json["scene"],
         options: json["options"],       
   );
 
@@ -65,6 +68,7 @@ class AdInfo {
     "loadId":loadId,
     "userId":userId,
     "adType":adType,
+    "networkAdType":networkAdType,
     "scene":scene,
     "options":options,
   };

@@ -24,7 +24,7 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *desc;
 @property (nonatomic,strong) UIWindow *splashWindow;
-@property (nonatomic,strong) UIViewController *splashVC;
+//@property (nonatomic,strong) UIViewController *splashVC;
 @property (nonatomic,strong) UIView *bottomView;
 @end
 
@@ -135,9 +135,6 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
         _desc = object;
     }
     
-    
-    
-    
     NSDictionary *extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size)};
     if(_title != nil && _title.length>0){
         _bottomView =  [self getLogoViewWithTitle:_title description:_desc];
@@ -150,22 +147,43 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     }
     _splashView = [[WindMillSplashAd alloc] initWithRequest:self.request extra:extra];
     _splashView.delegate = self;
-    _splashVC = [[UIViewController alloc] init];
-    _splashView.rootViewController = _splashVC;
+//    _splashVC = [[UIViewController alloc] init];
+//    _splashVC.view.backgroundColor=UIColor.redColor;
+    
+     UIWindow * window = [self getKeyWindow];
+    _splashView.rootViewController = window.rootViewController;
     
     self.adinfo = nil;
     [self.splashView loadAd];
     result(nil);
 }
 
+- (UIWindow *) getKeyWindow {
+    UIWindow *keyWindow = nil;
+    if (@available(iOS 13.0, *)) {
+        for (UIWindowScene *windowScene in [UIApplication sharedApplication].connectedScenes) {
+            if (windowScene.activationState == UISceneActivationStateForegroundActive) {
+                keyWindow = windowScene.windows.firstObject;
+                if (keyWindow) {
+                    break;
+                }
+            }
+        }
+    } else {
+        keyWindow = [UIApplication sharedApplication].keyWindow;
+    }
+    return keyWindow;
+}
+
 - (void)showAdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     
-    _splashWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    _splashWindow =  [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    _splashWindow.rootViewController = _splashVC;
-    [_splashWindow makeKeyAndVisible];
-    
-    [_splashView showAdInWindow:_splashWindow withBottomView:_bottomView];
+//    _splashWindow.rootViewController = _splashVC;
+//    [_splashWindow makeKeyAndVisible];
+    UIWindow * window = [self getKeyWindow];
+//    window.rootViewController = _splashVC;
+    [_splashView showAdInWindow:window withBottomView:_bottomView];
     
     result(nil);
     
@@ -323,14 +341,15 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
 - (void)onSplashAdClosed:(WindMillSplashAd *)splashAd {
     NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    if(_splashVC != nil){
-        _splashVC = nil;
-    }
+//    if(_splashVC != nil){
+//        _splashVC = nil;
+//    }
     
-    if(_splashWindow != nil){
-        [_splashWindow resignKeyWindow];
-        _splashWindow = nil;
-    }
+//    if(_splashWindow != nil){
+//        [_splashWindow resignKeyWindow];
+//        _splashWindow = nil;
+//    }
+    
 //    if(_splashWindow != nil&&splashAd.adInfo.networkId!=WindMillAdnKs){
 //        [_splashWindow resignKeyWindow];
 //        _splashWindow = nil;
@@ -349,7 +368,7 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
 - (void)dealloc {
     NSLog(@"--- dealloc -- %@", self);
     self.splashView.delegate = nil;
-    self.splashVC = nil;
+//    self.splashVC = nil;
     self.splashWindow = nil;
     self.splashView = nil;
     self.channel = nil;

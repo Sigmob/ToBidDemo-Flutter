@@ -241,6 +241,7 @@ class NativeAdWidgetState extends State<NativeAdWidget>
       valueListenable: widget.sizeNotify,
       child: _buildUIKitView(),
       builder: (ctx, size, child) {
+        
         return SizedBox.fromSize(size: size, child: child);
       },
     );
@@ -254,10 +255,18 @@ class NativeAdWidgetState extends State<NativeAdWidget>
         if (optSize.height < 1) {
           optSize = Size(size.width, 1);
         }
+
         return SizedBox.fromSize(
           size: optSize,
           child: child,
         );
+
+        // return Container(
+        //   width: optSize.width,
+        //   height: optSize.height,
+        //   // size: optSize,
+        //   child: child,
+        // );
       },
       valueListenable: widget.sizeNotify,
       child: _buildAndroidView(),
@@ -286,6 +295,8 @@ class NativeAdWidgetState extends State<NativeAdWidget>
     creationParams = <String, dynamic>{
       "uniqId": widget.nativeAd.hashCode.toString(),
       "nativeCustomViewConfig": widget.nativeCustomViewConfig,
+      "width":widget.width,
+      "height":widget.height,
     };
   }
 

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
 import com.windmill.sdk.models.AdInfo;
@@ -56,8 +57,10 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
     protected boolean isShowAd;
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
+    private int width = 0;
 
     public NativeAd() {
+
     }
 
     public NativeAd(Activity activity, FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
@@ -74,8 +77,18 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         this.nativeAdRequest = (WMNativeAdRequest) adRequest;
         this.activity = activity;
         this.nativeAd = new WMNativeAd(activity, nativeAdRequest);
+        try {
+            Map<String, Object> options = nativeAdRequest.getOptions();
+            if (options != null) {
+                Object o = options.get(WMConstants.AD_WIDTH);
+                if (o != null) {
+                    width = (int) o;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 
     public void onAttachedToEngine() {
         Log.d("ToBid", "onAttachedToEngine");
@@ -217,17 +230,41 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
             wmNativeContainer.addView(expressAdView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             WMNativeAdRender adRender;
-            if (customViewConfig == null || !customViewConfig.has("mainAdView")) {
-                adRender = new NativeAdRender();
+            if (customViewConfig == null || !customViewConfig.has("mainAdView")) {//走自己内部的模板
+                android.util.Log.d("lance", "showAd: --------111---------");
+                adRender = new NativeAdRender(width);
             } else {
+                android.util.Log.d("lance", "showAd: -------222-------");
                 adRender = new NativeAdRenderCustomView(customViewConfig);
             }
 
             wmNativeAdData.connectAdToView(activity, wmNativeContainer, adRender);
+            wmNativeContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    // 指定宽高测量规范，例如AT_MOST、EXACTLY或UNSPECIFIED
+                    int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
+                    // 调用measure方法进行测量
+                    wmNativeContainer.measure(widthMeasureSpec, heightMeasureSpec);
+
+                    int view_width = wmNativeContainer.getMeasuredWidth();
+                    int view_height = wmNativeContainer.getMeasuredHeight();
+
+                    Map<String, Object> args = new HashMap<String, Object>();
+                    args.put("width", view_width);
+                    args.put("height", view_height);
+
+                    android.util.Log.d("lance", "444--------onADRenderSuccess: " + view_width + ":" + view_height);
+
+                    adChannel.invokeMethod(kWindmillEventAdRenderSuccess, args);
+                }
+            });
         }
 
-
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         view.addView(wmNativeContainer, layoutParams);
     }
 }
@@ -302,49 +339,51 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
 
     @Override
     public void onADExposed(final AdInfo adInfo) {
-
         this.nativeAd.adInfo = adInfo;
         channel.invokeMethod(kWindmillEventAdOpened, null);
-
     }
 
     @Override
     public void onADClicked(final AdInfo adInfo) {
         channel.invokeMethod(kWindmillEventAdClicked, null);
-
     }
 
     @Override
     public void onADRenderSuccess(final AdInfo adInfo, final View view, final float width, final float height) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                final int view_width = view.getWidth();
-                final int view_height = view.getHeight();
+        try {
+            android.util.Log.d("lance", "111--------onADRenderSuccess: " + view.getWidth() + ":" + view.getHeight());
 
-                Map<String, Object> args = new HashMap<String, Object>();
-                args.put("width", view_width);
-                args.put("height", view_height);
+            android.util.Log.d("lance", "222--------onADRenderSuccess: " + width + ":" + height);
 
-                if (view_width > 0 && view_height > 0) {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) nativeAd.wmNativeContainer.getLayoutParams();
-                    layoutParams.width = view.getWidth();
-                    layoutParams.height = view.getHeight();
-                    layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+            view.post(new Runnable() {
+                @Override
+                public void run() {
 
+                    // 指定宽高测量规范，例如AT_MOST、EXACTLY或UNSPECIFIED
+                    int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 
-                    nativeAd.wmNativeContainer.setLayoutParams(layoutParams);
+                    // 调用measure方法进行测量
+                    view.measure(widthMeasureSpec, heightMeasureSpec);
+
+                    final int view_width = view.getMeasuredWidth();
+                    final int view_height = view.getMeasuredHeight();
+
+                    Map<String, Object> args = new HashMap<String, Object>();
+                    args.put("width", view_width);
+                    args.put("height", view_height);
+
+                    android.util.Log.d("lance", "333--------onADRenderSuccess: " + view_width + ":" + view_height);
+
+                    nativeAd.adInfo = adInfo;
+
+                    channel.invokeMethod(kWindmillEventAdRenderSuccess, args);
                 }
+            });
 
-
-                nativeAd.adInfo = adInfo;
-
-                channel.invokeMethod(kWindmillEventAdRenderSuccess, args);
-
-            }
-        });
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

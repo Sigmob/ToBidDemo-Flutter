@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.text.TextUtils;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.windmill.sdk.WMAdConfig;
 import com.windmill.sdk.WMAdnInitConfig;
 import com.windmill.sdk.WMCustomController;
 import com.windmill.sdk.WMNetworkConfig;
+import com.windmill.sdk.WMWaterfallFilter;
 import com.windmill.sdk.WindMillAd;
 import com.windmill.sdk.WindMillConsentStatus;
 import com.windmill.sdk.WindMillUserAgeStatus;
@@ -288,6 +290,8 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
             String placementId = call.argument("placementId");
             List<String> networkFirmIdList = call.argument("networkFirmIdList");
             WindMillAd.sharedAds().setFilterNetworkFirmIdList(placementId, networkFirmIdList);
+        } else if (call.method.equals("addFilter")) {
+            addFilter(call, result);
         } else {
             result.notImplemented();
         }
@@ -311,11 +315,9 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
         PlatformViewRegistry platformViewRegistry = this.flutterPluginBinding.getPlatformViewRegistry();
 
-        platformViewRegistry.registerViewFactory(WindmillAdPlugin.kWindmillBannerAdViewId,
-                new WindMillNativeAdViewFactory(WindmillAdPlugin.kWindmillBannerAdViewId, this.bannerAd, this.activity));
+        platformViewRegistry.registerViewFactory(WindmillAdPlugin.kWindmillBannerAdViewId, new WindMillNativeAdViewFactory(WindmillAdPlugin.kWindmillBannerAdViewId, this.bannerAd, this.activity));
 
-        platformViewRegistry.registerViewFactory(WindmillAdPlugin.kWindmillFeedAdViewId,
-                new WindMillNativeAdViewFactory(WindmillAdPlugin.kWindmillFeedAdViewId, this.nativeAd, this.activity));
+        platformViewRegistry.registerViewFactory(WindmillAdPlugin.kWindmillFeedAdViewId, new WindMillNativeAdViewFactory(WindmillAdPlugin.kWindmillFeedAdViewId, this.nativeAd, this.activity));
     }
 
     public void onDetachedFromActivity() {
@@ -328,6 +330,48 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
     private void getSdkVersion(MethodCall call, MethodChannel.Result result) {
         result.success(WindMillAd.getVersion());
+    }
+
+    private void addFilter(MethodCall call, MethodChannel.Result result) {
+
+        String placementId = call.argument("placementId");
+
+        ArrayList<HashMap<String, Object>> list = call.argument("filterInfoList");
+
+        Log.d(TAG, "----------addFilter----------" + placementId + ":" + list);
+
+        if (!TextUtils.isEmpty(placementId)) {
+
+            if (list != null && !list.isEmpty()) {
+
+                WMWaterfallFilter filter = new WMWaterfallFilter(placementId);
+
+                for (HashMap map : list) {
+                    int networkId = -1;
+                    List<String> unitIdList = null;
+
+                    Object obj = map.get("networkId");
+                    if (obj instanceof Integer) {
+                        networkId = (int) obj;
+                    }
+
+                    obj = map.get("unitIdList");
+                    if (obj instanceof List) {
+                        unitIdList = (List<String>) obj;
+                    }
+
+                    if (networkId != -1) {
+                        filter.equalTo(WMWaterfallFilter.KEY_CHANNEL_ID, String.valueOf(networkId));
+                    }
+                    if (unitIdList != null && !unitIdList.isEmpty()) {
+                        filter.in(WMWaterfallFilter.KEY_ADN_PLACEMENT_ID, unitIdList);
+                    }
+                    filter.or();
+                }
+
+                WindMillAd.sharedAds().addFilter(filter);
+            }
+        }
     }
 
     private void networkPreInit(MethodCall call, MethodChannel.Result result) {

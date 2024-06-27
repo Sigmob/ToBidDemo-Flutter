@@ -43,8 +43,10 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
     private TextView text_title;
     private Button mCTAButton;
 
-    NativeAdRender() {
+    private int width = 0;
 
+    NativeAdRender(int width) {
+        this.width = width;
     }
 
     /**
@@ -67,12 +69,26 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
         return developView;
     }
 
+    public int dp2px(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
     @Override
     public void renderAdView(View view, final WMNativeAdData adData) {
 
         if (view == null || adData == null) return;
 
         Context context = view.getContext();
+
+        if (width != 0) {
+            width = dp2px(context, width);
+        } else {
+            width = context.getResources().getDisplayMetrics().widthPixels - dp2px(context, 20);
+        }
+
+        view.setLayoutParams(new FrameLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         Log.d(TAG, "renderAdView:" + adData.getTitle());
         img_logo = view.findViewById(ResourceUtil.getId(context, "img_logo"));
         ad_logo = view.findViewById(ResourceUtil.getId(context, "channel_ad_logo"));
@@ -153,17 +169,7 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
         //gromore需要绑定资源ID
         //在bindViewForInteraction之前注册
         if (adData.getNetworkId() == 22) {//gromore
-            WMViewBinder viewBinder = new WMViewBinder.Builder(view.getId())
-                    .titleId(text_title.getId())
-                    .descriptionTextId(text_desc.getId())
-                    .callToActionId(mCTAButton.getId())
-                    .iconImageId(img_logo.getId())
-                    .mainImageId(mImagePoster.getId())
-                    .mediaViewIdId(mMediaViewLayout.getId())
-                    .groupImage1Id(img_1.getId())
-                    .groupImage2Id(img_2.getId())
-                    .groupImage3Id(img_3.getId())
-                    .build();
+            WMViewBinder viewBinder = new WMViewBinder.Builder(view.getId()).titleId(text_title.getId()).descriptionTextId(text_desc.getId()).callToActionId(mCTAButton.getId()).iconImageId(img_logo.getId()).mainImageId(mImagePoster.getId()).mediaViewIdId(mMediaViewLayout.getId()).groupImage1Id(img_1.getId()).groupImage2Id(img_2.getId()).groupImage3Id(img_3.getId()).build();
             adData.registerViewBidder(viewBinder);
         }
 
