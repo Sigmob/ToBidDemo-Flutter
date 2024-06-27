@@ -134,7 +134,7 @@ class HomePage extends StatelessWidget {
       customGroup2["qa"] = "test";
       WindmillAd.initCustomGroupForPlacement(customGroup2, placementId);
 
-      // await WindmillAd.init(adSetting.appId!.toString());
+      await WindmillAd.init(adSetting.appId!.toString());
     }
 
     print("sdkVersion: ${await WindmillAd.sdkVersion()}");
