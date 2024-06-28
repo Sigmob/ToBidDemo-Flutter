@@ -81,9 +81,7 @@ public class NativeAdRender implements WMNativeAdRender<WMNativeAdData> {
 
         Context context = view.getContext();
 
-        if (width != 0) {
-            width = dp2px(context, width);
-        } else {
+        if (width == 0) {
             width = context.getResources().getDisplayMetrics().widthPixels - dp2px(context, 20);
         }
 
