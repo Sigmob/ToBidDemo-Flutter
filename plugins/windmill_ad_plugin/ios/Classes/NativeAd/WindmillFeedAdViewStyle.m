@@ -164,6 +164,19 @@ static UIEdgeInsets const padding = {0, 0, 10, 10};
         [WindmillFeedAdViewStyle updateViewProperty:adView.dislikeButton ViewConfig:dislikeButton disableAutoreSize:isDisableAutoresize];
     }
     
+    // 互动组件
+    config = [args objectForKey:@"interactiveView"];
+    if (config) {
+        ViewConfigItem *viewConfig = [[ViewConfigItem alloc] initWithDic:config];
+        if (adView.interactiveView) {
+            [WindmillFeedAdViewStyle updateViewProperty:adView.interactiveView ViewConfig:viewConfig disableAutoreSize:isDisableAutoresize];
+            if ([viewConfig isCtaClick]) {
+                [clickViewSet addObject:adView.interactiveView];
+            }
+        }
+        
+    }
+    
     [adView setClickableViews:clickViewSet];
     
     return h;

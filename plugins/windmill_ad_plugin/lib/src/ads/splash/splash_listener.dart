@@ -3,6 +3,7 @@ import 'package:windmill_ad_plugin/src/models/error.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_enum.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 abstract class WindmillSplashListener<T> extends WindmillInterface<T> {
   void onAdSkiped(T ad);
@@ -111,5 +112,35 @@ class IWindmillSplashListener with WindmillAdEvent {
     }
 
     listener.onAdDidCloseOtherController(splashAd!, interactionType);
+  }
+  @override
+  void onBidAdSourceStart(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+    listener.onBidAdSourceStart(splashAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+    listener.onBidAdSourceSuccess(splashAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceFailed
+    listener.onBidAdSourceFailed(splashAd!, adInfo, error);
+  }
+  @override
+  void onAdSourceStartLoading(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+    listener.onAdSourceStartLoading(splashAd!, adInfo);
+  }
+  @override
+  void onAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+    listener.onAdSourceSuccess(splashAd!, adInfo);
+  }
+  @override
+  void onAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceFailed
+    listener.onAdSourceFailed(splashAd!, adInfo, error);
   }
 }

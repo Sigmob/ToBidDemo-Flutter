@@ -36,6 +36,12 @@ class NativeController extends GetxController {
     }
     return null;
   }
+
+  void removeWindmillNativeAd(String placementId) {
+     if (_adMap.containsKey(placementId)) {
+      _adMap.remove(placementId);
+     }
+  }
   
   void onClose() {
     super.onClose();

@@ -33,6 +33,10 @@ class WindmillRewardAd with WindmillEventHandler {
     delegate = IWindmillRewardListener(this, _listener);
     _adChannel = MethodChannel('com.windmill/reward.$_uniqId');
     _adChannel.setMethodCallHandler(handleEvent);
+    _channel.invokeMethod("initRequest", {
+      "uniqId": _uniqId,
+      "request": request.toJson(),
+    });
   }
 
   Future<bool> isReady() async {
@@ -76,7 +80,7 @@ class WindmillRewardAd with WindmillEventHandler {
   Future<void> loadAdData() async {
     await _channel.invokeMethod('load', {
       "uniqId": _uniqId,
-      'request': request.toJson()
+      // 'request': request.toJson()
     });
   }
 

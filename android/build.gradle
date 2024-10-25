@@ -1,12 +1,29 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.7.10'
     repositories {
         google()
         mavenCentral()
+        // ironSource
+        maven {
+            url 'https://android-sdk.is.com/'
+        }
+
+        //上架GP市场应用 安卓X版本
+        maven {
+            url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+        }
+
+        //pangle
+        maven {
+            url 'https://artifact.bytedance.com/repository/pangle'
+        }
+
+        //applovin
+        maven { url 'https://artifacts.applovin.com/android' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:8.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -15,6 +32,23 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // ironSource
+        maven {
+            url 'https://android-sdk.is.com/'
+        }
+
+        //上架GP市场应用 安卓X版本
+        maven {
+            url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+        }
+
+        //pangle
+        maven {
+            url 'https://artifact.bytedance.com/repository/pangle'
+        }
+
+        //applovin
+        maven { url 'https://artifacts.applovin.com/android' }
     }
 }
 

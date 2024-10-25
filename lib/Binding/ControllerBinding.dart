@@ -41,7 +41,6 @@ class NativeBinding implements Bindings {
   void dependencies() {
     Get.put(NativeController());
   }
-
 }
 
 class NativeListBinding implements Bindings {
@@ -63,8 +62,4 @@ class SplashBinding implements Bindings {
   void dependencies() {
     Get.put(SplashController());
   }
-
 }
-
-
-

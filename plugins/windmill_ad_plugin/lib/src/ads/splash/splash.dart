@@ -40,6 +40,10 @@ class WindmillSplashAd with WindmillEventHandler{
     delegate = IWindmillSplashListener(this, _listener);
     _adChannel = MethodChannel('com.windmill/splash.$_uniqId');
     _adChannel.setMethodCallHandler(handleEvent);
+    _channel.invokeMethod("initRequest", {
+      "uniqId": _uniqId,
+      'request': request.toJson()
+    });
   }
 
 
@@ -70,7 +74,7 @@ class WindmillSplashAd with WindmillEventHandler{
       "height": optHeight,
       "title": title,
       "desc": desc,
-      'request': request.toJson()
+      // 'request': request.toJson()
     });
   }
 

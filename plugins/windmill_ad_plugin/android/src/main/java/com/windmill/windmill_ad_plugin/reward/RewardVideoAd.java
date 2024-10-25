@@ -19,6 +19,8 @@ import com.windmill.sdk.reward.WMRewardAd;
 import com.windmill.sdk.reward.WMRewardAdListener;
 import com.windmill.sdk.reward.WMRewardAdRequest;
 import com.windmill.sdk.reward.WMRewardInfo;
+import com.windmill.windmill_ad_plugin.core.IWMAdAutoLoad;
+import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 
@@ -63,6 +65,8 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         this.activity = activity;
         this.rewardAd = new WMRewardAd(activity, new WMRewardAdRequest(adRequest.getPlacementId(), adRequest.getUserId(), adRequest.getOptions()));
         this.rewardAd.setRewardedAdListener(new IWMRewardAdListener(this, channel));
+        this.rewardAd.setAdSourceStatusListener(new IWMAdSourceStatus(channel));
+        this.rewardAd.setAutoLoadListener(new IWMAdAutoLoad(channel));
     }
 
 
@@ -87,6 +91,10 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         WindmillBaseAd rewardVideoAd = this.ad.getAdInstance(uniqId);
         if (rewardVideoAd == null) {
             rewardVideoAd = this.ad.createAdInstance(RewardVideoAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Reward, activity);
+        }
+        if (call.method.equals("initRequest")) {
+            // 实例化adRequest对象
+            return;
         }
         if (rewardVideoAd != null) {
             rewardVideoAd.excuted(call, result);

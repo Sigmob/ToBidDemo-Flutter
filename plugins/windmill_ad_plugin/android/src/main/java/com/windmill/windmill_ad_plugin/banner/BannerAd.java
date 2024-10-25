@@ -20,7 +20,7 @@ import com.windmill.sdk.WindMillError;
 import com.windmill.sdk.banner.WMBannerAdListener;
 import com.windmill.sdk.banner.WMBannerAdRequest;
 import com.windmill.sdk.banner.WMBannerView;
-import com.windmill.windmill_ad_plugin.WindmillAdPlugin;
+import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.sdk.models.AdInfo;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
@@ -72,6 +72,7 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
         this.activity = activity;
         this.bannerAdView = new WMBannerView(activity);
         this.bannerAdView.setAdListener(new IWMBannerAdListener(channel, this));
+        this.bannerAdView.setAdSourceStatusListener(new IWMAdSourceStatus(channel));
     }
 
     public void onAttachedToEngine() {
@@ -104,6 +105,10 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
         if (bannerAd == null) {
 
             bannerAd = this.ad.createAdInstance(BannerAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Banner, activity);
+        }
+        if (call.method.equals("initRequest")) {
+            // 实例化adRequest对象
+            return;
         }
         bannerAd.excuted(call, result);
     }

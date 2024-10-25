@@ -1,12 +1,48 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:convert' as convert;
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 AdSetting adSettingFromJson(String str) => AdSetting.fromJson(json.decode(str));
 
 String adSettingToJson(AdSetting data) => json.encode(data.toJson());
 
+extension WindMillFilterModelExtension on WindMillFilterModel {
+  static WindMillFilterModel fromJson(Map<String, dynamic> json) {
+    return WindMillFilterModel(
+      channelIdList: List<int>.from(json['channelIdList']),
+      adnIdList:  List<String>.from(json['adnIdList']),
+      bidTypeList: List<int>.from(json['bidTypeList']),
+      ecpmList: List<WindMillFilterEcpmModel>.from(json['ecpmList'].map((value) => WindMillFilterEcpmModelExtension.fromJson(value))),
+    );
+  }
+}
+
+extension WindMillFilterEcpmModelExtension on WindMillFilterEcpmModel {
+  static WindMillFilterEcpmModel fromJson(Map<String, dynamic> json) {
+    return WindMillFilterEcpmModel(
+      operatorType: OperatorTypeExtension.fromOperator(json['operator']),
+      ecpm: json['ecpm']
+    );
+  }
+}
+
+extension OperatorTypeExtension on OperatorType {
+  static fromOperator(String operator) {
+    switch (operator) {
+      case '>':
+      return OperatorType.greaterThan;
+      case '>=':
+      return OperatorType.greaterThanOrEqual;
+      case '<':
+      return OperatorType.lessThan;
+      case '<=':
+      return OperatorType.lessThanOrEqual;
+    }
+  }
+}
 class AdSetting {
   AdSetting(
       {this.id,
@@ -15,7 +51,9 @@ class AdSetting {
       this.slotIds,
       this.udid,
       this.displayName,
-      this.otherSetting});
+      this.otherSetting,
+      this.filterModelList,
+      });
 
   int? id;
   int? appId;
@@ -24,6 +62,7 @@ class AdSetting {
   String? udid;
   String? displayName;
   OtherSetting? otherSetting;
+  List<WindMillFilterModel>? filterModelList;
 
   static Future<String> _path() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -37,9 +76,10 @@ class AdSetting {
       var file = File(path);
       String contents = await file.readAsString();
       var json = convert.jsonDecode(contents);
+      print('adSettingJson = $json');
       return AdSetting.fromJson(json);
     } catch (err) {
-
+      print('adSettingJsonError = $err');
         /* adType:
         * 1:激励广告
         * 2:开屏广告 
@@ -76,7 +116,7 @@ class AdSetting {
       print('contents: $contents');
       file.writeAsString(contents);
     } catch (error) {
-      print(error);
+      print('saveError: $error');
     }
   }
 
@@ -91,6 +131,7 @@ class AdSetting {
             : OtherSetting.fromJson(json['otherSetting']),
         udid: json["udid"],
         displayName: json["displayName"],
+        filterModelList: json['otherSetting'] == null ? [] : List<WindMillFilterModel>.from(json['filterModelList'].map((json) => WindMillFilterModelExtension.fromJson(json))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -103,6 +144,7 @@ class AdSetting {
         "otherSetting": otherSetting == null ? null : otherSetting!.toJson(),
         "udid": udid,
         "displayName": displayName,
+        "filterModelList": filterModelList == null ? <dynamic>[] : List.from(filterModelList!.map((value) => value.toJson()))
       };
 }
 
@@ -146,7 +188,12 @@ class OtherSetting {
       this.isCanUseIdfa = true,
       this.isCanUseLocation = true,
       this.isCanUsePhoneState = true,
-      this.customAndoidId = "",
+      this.isCanUseAppList = true,
+      this.isCanUseWifiState = true,
+      this.isCanUseWriteExternal = true,
+      this.isCanUsePermissionRecordAudio = true,
+      this.customMacAddress = "",
+      this.customAndroidId = "",
       this.customIDFA = "",
       this.customIMEI = "",
       this.customLocation = "",
@@ -161,8 +208,14 @@ class OtherSetting {
   bool isCanUseIdfa;
   bool isCanUseAndroidId;
   bool isCanUsePhoneState;
-  
-  String? customAndoidId;
+
+  bool isCanUseAppList;
+  bool isCanUseWifiState;
+  bool isCanUseWriteExternal;
+  bool isCanUsePermissionRecordAudio;
+
+  String? customMacAddress;
+  String? customAndroidId;
   String? customOAID;
   String? customIMEI;
   String? customIDFA;
@@ -196,13 +249,18 @@ class OtherSetting {
         isCanUsePhoneState: json["isCanUsePhoneState"], 
         isCanUseIdfa: json["isCanUseIdfa"],
         isCanUseLocation: json["isCanUseLocation"],
-        customAndoidId: json["customAndoidId"],
+        isCanUseAppList: json["isCanUseAppList"],
+        isCanUseWifiState: json["isCanUseWifiState"], 
+        isCanUseWriteExternal: json["isCanUseWriteExternal"],
+        isCanUsePermissionRecordAudio: json["isCanUsePermissionRecordAudio"],
+        customMacAddress: json["customMacAddress"],
+        customAndroidId: json["customAndroidId"],
         customOAID: json["customOAID"],
         customIMEI: json["customIMEI"],
         customIDFA: json["customIDFA"],
         customLocation: json["customLocation"],
         customGroup: json["customGroup"],
-
+        
       );
 
   Map<String, dynamic> toJson() => {
@@ -221,7 +279,12 @@ class OtherSetting {
         "isCanUsePhoneState": isCanUsePhoneState,
         "isCanUseLocation": isCanUseLocation,
         "isCanUseIdfa": isCanUseIdfa,
-        "customAndoidId": customAndoidId,
+        "isCanUseAppList": isCanUseAppList,
+        "isCanUseWifiState": isCanUseWifiState,
+        "isCanUseWriteExternal": isCanUseWriteExternal,
+        "isCanUsePermissionRecordAudio": isCanUsePermissionRecordAudio,
+        "customMacAddress": customMacAddress,
+        "customAndroidId": customAndroidId,
         "customOAID": customOAID,
         "customIMEI": customIMEI,
         "customIDFA": customIDFA,

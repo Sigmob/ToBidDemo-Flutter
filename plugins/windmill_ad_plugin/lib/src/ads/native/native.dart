@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:windmill_ad_plugin/src/ads/native/native_listener.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/models/ad_request.dart';
@@ -32,6 +34,12 @@ class WindmillNativeAd with WindmillEventHandler {
     delegate = IWindmillNativeListener(this, _listener);
     _adChannel = MethodChannel('com.windmill/native.$_uniqId');
     _adChannel.setMethodCallHandler(handleEvent);
+    _channel.invokeMethod("initRequest", {
+      "uniqId": _uniqId,
+      "width": width,
+      "height": height,
+      'request': request.toJson()
+    });
   }
 
   void updateAdSize(Size size) {
@@ -52,7 +60,7 @@ class WindmillNativeAd with WindmillEventHandler {
       "uniqId": _uniqId,
       "width": width,
       "height": height,
-      'request': request.toJson()
+      // 'request': request.toJson()
     });
   }
 
@@ -165,6 +173,11 @@ class CustomNativeAdConfig {
     return 'dislikeButton';
   }
 
+  /// 互动组件 [410版本仅支持sigmob渠道]
+  static String interactiveView() {
+    return 'interactiveView';
+  }
+
   static Map createNativeSubViewAttribute(double width, double height,
       {double x = 0,
       double y = 0,
@@ -225,6 +238,7 @@ class NativeAdWidgetState extends State<NativeAdWidget>
   // 创建参数
   late Map<String, dynamic> creationParams;
   NativeAdWidgetState() : super() {}
+  final UniqueKey _detectorKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -237,14 +251,31 @@ class NativeAdWidgetState extends State<NativeAdWidget>
   }
 
   Widget _buildIOSWidget() {
-    return ValueListenableBuilder<Size>(
-      valueListenable: widget.sizeNotify,
-      child: _buildUIKitView(),
-      builder: (ctx, size, child) {
-        
-        return SizedBox.fromSize(size: size, child: child);
-      },
-    );
+    return  ValueListenableBuilder<Size>(
+        valueListenable: widget.sizeNotify,
+        child: VisibilityDetector(
+            key: _detectorKey,
+            child:_buildUIKitView(),
+            onVisibilityChanged: (info) {
+              if (!mounted) return;
+              final bool isCovered = info.visibleFraction != 1.0;
+              final Offset offset = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+              final MethodChannel channel = widget.nativeAd._adChannel;
+              channel.invokeMethod("updateVisibleBounds",{
+                "isCovered": isCovered,
+                "x": offset.dx + info.visibleBounds.left,
+                "y": offset.dy + info.visibleBounds.top,
+                "width": info.visibleBounds.width,
+                "height": info.visibleBounds.height,
+              });
+            },
+        ),
+        builder: (ctx, size, child) {
+          
+          return SizedBox.fromSize(size: size, child: child);
+        },
+      );
+     
   }
 
   Widget _buildAndroidWidget() {
@@ -298,6 +329,8 @@ class NativeAdWidgetState extends State<NativeAdWidget>
       "width":widget.width,
       "height":widget.height,
     };
+    VisibilityDetectorController.instance.updateInterval =
+        const Duration(milliseconds: 100);
   }
 
   @override

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
+import 'package:windmill_ad_plugin_example/controller/controller.dart';
 
 class NativeInfo {
   int type = 0;
@@ -41,9 +42,12 @@ class NativeListController extends GetxController {
   // 加载原生广告load
   Future<void> adLoad(String placementId, Size size) async {
     print('codi -- adLoad: ${placementId} - ${size}}');
+    final c = Get.find<NativeListController>();
+    final adcontroller = Get.find<Controller>();
+
     WindmillNativeAd ad = createWindmillNativeAd(
         placementId: placementId,
-        userId: "codi",
+        userId: adcontroller.adSetting.value.otherSetting?.userId,
         size: Size(size.width, size.height),
         listener: WindMillNativeListener());
     ad.loadAd();
@@ -105,7 +109,6 @@ class NativeListController extends GetxController {
       },
     );
     this.datas.add(data);
-    
   }
 }
 
@@ -115,7 +118,7 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
 
   @override
   void onAdFailedToLoad(WindmillNativeAd ad, WMError error) {
-    print('codi -- onAdFailedToLoad: ${ad.request.placementId}');
+    print('onAdRenderFail -- ${ad.request.placementId} error: ${error.toJson()}');
     c.notifyFinished.value = !c.notifyFinished.value;
   }
 
@@ -124,6 +127,11 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
     print('codi -- onAdLoaded: ${ad.request.placementId}');
     c.adPlay(ad, Size(ad.width, ad.height));
     c.notifyFinished.value = !c.notifyFinished.value;
+
+    ad.getCacheAdInfoList().then((adinfos) => adinfos?.forEach((element) {
+          print(
+              'codi -- onAdLoaded -- : ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+        }));
   }
 
   @override
@@ -174,5 +182,45 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   @override
   void onAdShowError(WindmillNativeAd ad, WMError error) {
     print('codi -- onAdShowError: ${ad.request.placementId}');
+  }
+  
+  @override
+  void onAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
+    // TODO: implement onAdSourceFailed
+  }
+  
+  @override
+  void onAdSourceStartLoading(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+  }
+  
+  @override
+  void onAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+  }
+  
+  @override
+  void onBidAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
+    // TODO: implement onBidAdSourceFailed
+  }
+  
+  @override
+  void onBidAdSourceStart(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+  }
+  
+  @override
+  void onBidAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+  }
+  
+  @override
+  void onAdAutoLoadFailed(WindmillNativeAd ad, WMError error) {
+    // TODO: implement onAdAutoLoadFailed
+  }
+  
+  @override
+  void onAdAutoLoadSuccess(WindmillNativeAd ad) {
+    // TODO: implement onAdAutoLoadSuccess
   }
 }

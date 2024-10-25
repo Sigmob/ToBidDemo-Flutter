@@ -41,7 +41,11 @@ class NativeListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  Scaffold(
+      appBar: AppBar(
+        title: const Text("原生List广告"),
+      ),
+      body:  Container(
         color: Colors.white,
         child: Obx(
           () => EasyRefresh(
@@ -96,6 +100,8 @@ class NativeListPage extends StatelessWidget {
                       );
                     }
                   })),
-        ));
+        )
+     ),
+    );
   }
 }

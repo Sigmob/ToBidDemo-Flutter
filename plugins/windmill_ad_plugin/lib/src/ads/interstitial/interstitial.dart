@@ -25,6 +25,10 @@ class WindmillInterstitialAd with WindmillEventHandler {
     delegate = IWindmillInterstitalListener(this, _listener);
     _adChannel = MethodChannel('com.windmill/interstitial.$_uniqId');
     _adChannel.setMethodCallHandler(handleEvent);
+    _channel.invokeMethod("initRequest", {
+      "uniqId": _uniqId,
+      "request": request.toJson()
+    });
   }
 
   Future<bool> isReady() async {
@@ -69,7 +73,7 @@ class WindmillInterstitialAd with WindmillEventHandler {
   Future<void> loadAdData() async {
     await _channel.invokeMethod('load', {
       "uniqId": _uniqId,
-      'request': request.toJson()
+      // 'request': request.toJson()
     });
   }
 

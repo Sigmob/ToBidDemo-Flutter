@@ -7,11 +7,13 @@ import 'package:windmill_ad_plugin_example/models/ad_setting.dart';
 import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 
 class IntersititialPage extends StatelessWidget {
+  const IntersititialPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('插屏广告'),
+        title: const Text('插屏广告'),
       ),
       body: _buildBody(context),
     );
@@ -147,5 +149,60 @@ class IWindMillInterstitialListener
     print('onAdDidCloseOtherController');
     c.callbacks.add(
         'onAdDidCloseOtherController -- ${ad.request.placementId},interactionType: ${interactionType.toString()}');
+  }
+  @override
+  void onAdAutoLoadSuccess(WindmillInterstitialAd ad) {
+    // TODO: implement onAdAutoLoadSuccess
+    print('onAdAutoLoadSuccess');
+    c.callbacks.add('onAdAutoLoadSuccess -- ${ad.request.placementId}');
+  }
+  @override
+  void onAdAutoLoadFailed(WindmillInterstitialAd ad, WMError error) {
+    // TODO: implement onAdAutoLoadFailed
+    print('onAdAutoLoadFailed');
+    c.callbacks.add(
+        'onAdAutoLoadFailed -- ${ad.request.placementId},error: ${error.toJson()}');
+  }
+  @override
+  void onAdSourceFailed(WindmillInterstitialAd ad, AdInfo? adInfo, WMError error) {
+    // TODO: implement onAdSourceFailed
+    print('onAdSourceFailed,adInfo:${adInfo?.toJson()}');
+     c.callbacks.add(
+        'onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+  }
+  
+  @override
+  void onAdSourceStartLoading(WindmillInterstitialAd ad, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+    print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  
+  @override
+  void onAdSourceSuccess(WindmillInterstitialAd ad, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+    print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  
+  @override
+  void onBidAdSourceFailed(WindmillInterstitialAd ad, AdInfo? adInfo, WMError error) {
+    // TODO: implement onBidAdSourceFailed
+    print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+  }
+  
+  @override
+  void onBidAdSourceStart(WindmillInterstitialAd ad, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+    print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  
+  @override
+  void onBidAdSourceSuccess(WindmillInterstitialAd ad, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+    print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
 }

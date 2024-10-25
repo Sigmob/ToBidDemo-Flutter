@@ -33,6 +33,12 @@ class WindmillBannerAd with WindmillEventHandler{
     delegate = IWindmillBannerListener(this, _listener);
     _adChannel = MethodChannel('com.windmill/banner.$_uniqId');
     _adChannel.setMethodCallHandler(handleEvent);
+    _channel.invokeMethod("initRequest", {
+      "uniqId": _uniqId,
+      "width":  width,
+      "height": height,
+      "request": request.toJson()
+    });
   }
 
 
@@ -56,7 +62,7 @@ class WindmillBannerAd with WindmillEventHandler{
       "uniqId": _uniqId,
       "width":  width,
       "height": height,
-      'request': request.toJson()
+      // 'request': request.toJson()
     });
   }
 

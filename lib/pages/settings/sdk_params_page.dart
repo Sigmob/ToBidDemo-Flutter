@@ -59,7 +59,7 @@ class SDKPages extends StatelessWidget {
             val?.otherSetting?.userId = text;
           });
         })),
-         Obx(() => _leftTitleAndRightSubTitle(title: 'Uustom-Group：', text: c.adSetting.value.otherSetting!.customGroup, keyboardType: TextInputType.text, onSubmit: (text){
+         Obx(() => _leftTitleAndRightSubTitle(title: 'Custom-Group：', text: c.adSetting.value.otherSetting!.customGroup, keyboardType: TextInputType.text, onSubmit: (text){
           c.adSetting.update((val) {
             val?.otherSetting?.customGroup = text;
           });
@@ -133,6 +133,42 @@ class SDKPages extends StatelessWidget {
               });
             })),
           Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取AppList',
+            value: c.adSetting.value.otherSetting!.isCanUseAppList?1:0, 
+            segments: {'1': '允许', '0': '不允许'},
+            onChange: (value) {
+              c.adSetting.update((val) {
+                val?.otherSetting?.isCanUseAppList = int.parse(value) == 1;
+              });
+            })),
+          Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取WifiState',
+            value: c.adSetting.value.otherSetting!.isCanUseWifiState?1:0, 
+            segments: {'1': '允许', '0': '不允许'},
+            onChange: (value) {
+              c.adSetting.update((val) {
+                val?.otherSetting?.isCanUseWifiState = int.parse(value) == 1;
+              });
+            })),
+          Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取WriteExternal',
+            value: c.adSetting.value.otherSetting!.isCanUseWriteExternal?1:0, 
+            segments: {'1': '允许', '0': '不允许'},
+            onChange: (value) {
+              c.adSetting.update((val) {
+                val?.otherSetting?.isCanUseWriteExternal = int.parse(value) == 1;
+              });
+            })),
+          Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取PermissionRecordAudio',
+            value: c.adSetting.value.otherSetting!.isCanUsePermissionRecordAudio?1:0, 
+            segments: {'1': '允许', '0': '不允许'},
+            onChange: (value) {
+              c.adSetting.update((val) {
+                val?.otherSetting?.isCanUsePermissionRecordAudio = int.parse(value) == 1;
+              });
+            })),
+          Obx(() => _leftTitleAndRightSeg(
             title: '是否允许获取IMEI',
             value: c.adSetting.value.otherSetting!.isCanUsePhoneState?1:0,  
             segments: {'1': '允许', '0': '不允许'},
@@ -151,9 +187,14 @@ class SDKPages extends StatelessWidget {
                 val?.otherSetting?.customIDFA = text;
               });
            })),
-          Obx(() => _leftTitleAndRightSubTitle(title: '自定义AndroidID：', text: c.adSetting.value.otherSetting!.customAndoidId, keyboardType: TextInputType.text, onSubmit: (text){
+          Obx(() => _leftTitleAndRightSubTitle(title: '自定义AndroidID：', text: c.adSetting.value.otherSetting!.customAndroidId, keyboardType: TextInputType.text, onSubmit: (text){
               c.adSetting.update((val) {
-                val?.otherSetting?.customAndoidId = text;
+                val?.otherSetting?.customAndroidId = text;
+              });
+           })),
+          Obx(() => _leftTitleAndRightSubTitle(title: '自定义MacAddress：', text: c.adSetting.value.otherSetting!.customMacAddress, keyboardType: TextInputType.text, onSubmit: (text){
+              c.adSetting.update((val) {
+                val?.otherSetting?.customMacAddress = text;
               });
            })),
           Obx(() => _leftTitleAndRightSubTitle(title: '自定定义IMEI：', text: c.adSetting.value.otherSetting!.customIMEI, keyboardType: TextInputType.text, onSubmit: (text){

@@ -30,6 +30,22 @@ extern NSString *const kWindmillEventAdRenderSuccess;
 extern NSString *const kWindmillEventAdDidDislike;
 extern NSString *const kWindmillEventAdDetailViewOpened;
 extern NSString *const kWindmillEventAdDetailViewClosed;
+/// 广告播放中加载成功回调
+extern NSString *const kWindmillEventAdAutoLoadSuccess;
+/// 广告播放中加载失败回调
+extern NSString *const kWindmillEventAdAutoLoadFailed;
+/// 竞价广告源开始竞价回调
+extern NSString * const kWindmillEventBidAdSourceStart;
+/// 竞价广告源竞价成功回调
+extern NSString * const kWindmillEventBidAdSourceSuccess;
+/// 竞价广告源竞价失败回调
+extern NSString * const kWindmillEventBidAdSourceFailed;
+/// 广告源开始加载回调
+extern NSString * const kWindmillEventAdSourceStartLoading;
+/// 广告源广告填充回调
+extern NSString * const kWindmillEventAdSourceSuccess;
+/// 广告源加载失败回调
+extern NSString * const kWindmillEventAdSourceFailed;
 @end
 
 NS_ASSUME_NONNULL_END

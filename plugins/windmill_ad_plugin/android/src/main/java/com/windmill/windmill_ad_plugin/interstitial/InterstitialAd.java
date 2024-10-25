@@ -18,6 +18,8 @@ import com.windmill.sdk.interstitial.WMInterstitialAd;
 import com.windmill.sdk.interstitial.WMInterstitialAdListener;
 import com.windmill.sdk.interstitial.WMInterstitialAdRequest;
 import com.windmill.sdk.models.AdInfo;
+import com.windmill.windmill_ad_plugin.core.IWMAdAutoLoad;
+import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 
@@ -57,6 +59,8 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
         this.activity = activity;
         this.interstitialAd = new WMInterstitialAd(activity, new WMInterstitialAdRequest(adRequest.getPlacementId(), adRequest.getUserId(), adRequest.getOptions()));
         this.interstitialAd.setInterstitialAdListener(new IWMInterstitialAdListener(this, channel));
+        this.interstitialAd.setAdSourceStatusListener(new IWMAdSourceStatus(channel));
+        this.interstitialAd.setAutoLoadListener(new IWMAdAutoLoad(channel));
     }
 
     public void onAttachedToEngine() {
@@ -100,6 +104,10 @@ public class InterstitialAd extends WindmillBaseAd implements MethodChannel.Meth
         WindmillBaseAd interstitialAd = this.ad.getAdInstance(uniqId);
         if (interstitialAd == null) {
             interstitialAd = this.ad.createAdInstance(InterstitialAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Interstitial, activity);
+        }
+        if (call.method.equals("initRequest")) {
+            // 实例化adRequest对象
+            return;
         }
         if (interstitialAd != null) {
             interstitialAd.excuted(call, result);

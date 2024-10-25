@@ -4,6 +4,7 @@ import 'package:windmill_ad_plugin/src/ads/reward/reward.dart';
 import 'package:windmill_ad_plugin/src/models/error.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 abstract class WindmillRewardListener<T> extends WindmillInterface<T> {
   void onAdSkiped(T ad);
@@ -86,5 +87,45 @@ class IWindmillRewardListener with WindmillAdEvent {
   @override
   void onAdClosed(Map<String, dynamic>? arguments) {
     listener.onAdClosed(rewardAd!);
+  }
+  @override
+  void onAdAutoLoadSuccess(Map<String, dynamic>? arguments) {
+    // TODO: implement onAdAutoLoadSuccess
+    listener.onAdAutoLoadSuccess(rewardAd!);
+  }
+  @override
+  void onAdAutoLoadFailed(WMError error, Map<String, dynamic>? arguments) {
+    // TODO: implement onAdAutoLoadFailed
+    listener.onAdAutoLoadFailed(rewardAd!, error);
+  }
+  @override
+  void onBidAdSourceStart(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+    listener.onBidAdSourceStart(rewardAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+    listener.onBidAdSourceSuccess(rewardAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceFailed
+    listener.onBidAdSourceFailed(rewardAd!, adInfo, error);
+  }
+  @override
+  void onAdSourceStartLoading(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+    listener.onAdSourceStartLoading(rewardAd!, adInfo);
+  }
+  @override
+  void onAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+    listener.onAdSourceSuccess(rewardAd!, adInfo);
+  }
+  @override
+  void onAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceFailed
+    listener.onAdSourceFailed(rewardAd!, adInfo, error);
   }
 }

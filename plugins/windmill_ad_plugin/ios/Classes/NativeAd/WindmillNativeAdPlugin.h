@@ -9,6 +9,7 @@
 #import <Flutter/Flutter.h>
 
 @interface WindmillNativeAdPlugin : NSObject<FlutterPlugin>
+@property (nonatomic, strong, readonly) FlutterMethodChannel *channel;
 + (WindmillNativeAdPlugin *)getPluginWithUniqId:(NSString *)uniqId;
 - (void)showAd:(UIView *)adContainer args:(NSDictionary *)args;
 

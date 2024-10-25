@@ -20,14 +20,53 @@ class TestIdPageState extends State<TestIdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('广告位参数'),
+       title: Text('测试Id'),
+        actions: [
+          GestureDetector(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: Icon(Icons.add_chart),
+            ),
+            onTap: _testIdOnTap,
+          )
+        ],
        
       ),
       body: _builderBody(),
     );
   }
 
+  void _testIdOnTap() async {
+   final texts = await showTextInputDialog(
+       context: context,
+       textFields: [
+         DialogTextField(),
+       ],
+     title: '请输入测试Id'
+   );
+   _getData(texts!.first);
+  }
 
+  void _getData(String id) async {
+    HttpRequest.get<Map<String, dynamic>>('http://qatool.sigmob.cn/getSdkParam', params: {'id': id}).then((value) {
+      if(value['code'] as int != 0) {
+        Fluttertoast.showToast(msg: value['msg']);
+      }else {
+        var data = value['data'];
+        AdSetting adSetting = AdSetting.fromJson(data);
+        adSetting.saveToFile();
+        Controller c = Get.find();
+        c.adSetting.update((val) {
+          val!.slotIds = adSetting.slotIds;
+          val.appId = adSetting.appId;
+          val.id = adSetting.id;
+        });
+        setState(() {
+          _initItem(adSetting);
+        });
+      }
+    });
+  }
  
   
   Widget _builderBody() {
@@ -62,6 +101,7 @@ class TestIdPageState extends State<TestIdPage> {
 
   void _initItem(AdSetting adSetting) {
     _items = [
+      {'title': '测试Id', 'subTitle': adSetting.id},
       {'title': 'AppId', 'subTitle': adSetting.appId},
       {'title': '激励视频广告位', 'type': 1, 'slots': adSetting.slotIds!.where((e) => e.adType == 1).toList()},
       {'title': '开屏广告位', 'type': 1, 'slots': adSetting.slotIds!.where((e) => e.adType == 2).toList()},

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class AdInfo {
   int? networkId;                   /// 渠道id
   String? networkName;              /// 渠道名称
@@ -14,9 +16,19 @@ class AdInfo {
   int? adType;                      /// 当前广告类型
   int? networkAdType;               /// 当前三方广告源广告类型
   String? scene;                    /// 广告场景id，由开发者传入
-  Map<String, dynamic>? options;     /// 开发者在request中传入的options
+  Map<String, dynamic>? options;    /// 开发者在request中传入的options
+  Map<String, dynamic>? networkOptions; /// 渠道传入的options
+  String? aggrWaterfallId;          /// ToBid 平台定义广告源id，开发者可用于排序
+  String? ruleId;                   /// 定向包ID
+  int? rewardTiming;                /// 多类型广告优选，发放激励时机 激励视频类型：0  默认激励时机（三方渠道的激励回调）插屏/开屏： 1  广告关闭时机 2  广告点击时机
+  int? bidType;                     /// bid类型，0：s2s，1：c2c
+  int? adsourceIndex;               /// 广告源序号
+  int? isNativeAdsource;            /// 是否是原生广告源转换的广告
+  String? pecm;                     /// 获取加密广告价格，注意格式为非数字,目前仅支持百度
 
-  AdInfo({this.networkId,
+
+  AdInfo({
+    this.networkId,
     this.networkName,
     this.networkPlacementId,
     this.groupId,
@@ -31,7 +43,16 @@ class AdInfo {
     this.adType,
     this.networkAdType,
     this.scene,
-    this.options}) ;
+    this.options,
+    this.networkOptions,
+    this.aggrWaterfallId,
+    this.ruleId,
+    this.rewardTiming,
+    this.bidType,
+    this.adsourceIndex,
+    this.isNativeAdsource,
+    this.pecm,
+    }) ;
 
 
   factory AdInfo.fromJson(Map<String, dynamic> json) => AdInfo(
@@ -42,15 +63,23 @@ class AdInfo {
         abFlag: json["abFlag"], 
         loadPriority: json["loadPriority"], 
         playPriority: json["playPriority"], 
-        eCPM: json["eCPM"] is int? json["eCPM"]:int.parse(json["eCPM"]), 
+        eCPM: (json["eCPM"] is int) ? json["eCPM"] : int.parse(json["eCPM"].replaceAll(RegExp(r'[^0-9]'),'')), 
         currency: json["currency"], 
         isHeaderBidding: json["isHeaderBidding"], 
         loadId: json["loadId"], 
         userId: json["userId"], 
         adType: json["adType"], 
-        networkAdType: json["network_adType"], 
+        networkAdType: json.containsKey('network_adType') ? json["network_adType"] : json['networkAdtype'], 
         scene: json["scene"],
-        options: json["options"],       
+        options: json["options"],
+        networkOptions: json.containsKey('networkOptions') ? json['networkOptions'] : json['netWorkOptions'],
+        aggrWaterfallId: json.containsKey('aggrWaterfallId') ? json['aggrWaterfallId'] : json['aggreWaterfallId'].toString(),
+        ruleId: json['ruleId'],
+        rewardTiming: json.containsKey('rewardTiming') ? json['rewardTiming'] : json['reward_timing'],
+        bidType: json['bidType'],
+        adsourceIndex: json.containsKey('adsourceIndex') ? json['adsourceIndex'] : json['adSourceIndex'],
+        isNativeAdsource: json.containsKey('isNativeAdsource') ? json['isNativeAdsource'] : json['isNativeAdSource'],
+        pecm: json['pecm'],   
   );
 
   
@@ -71,6 +100,14 @@ class AdInfo {
     "networkAdType":networkAdType,
     "scene":scene,
     "options":options,
+    'networkOptions':networkOptions,
+    'aggrWaterfallId':aggrWaterfallId,
+    'ruleId':ruleId,
+    'rewardTiming':rewardTiming,
+    'bidType':bidType,
+    'adsourceIndex':adsourceIndex,
+    'isNativeAdsource':isNativeAdsource,
+    'pecm':pecm
   };
 
 

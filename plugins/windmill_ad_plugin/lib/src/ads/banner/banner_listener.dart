@@ -6,6 +6,7 @@ import 'package:windmill_ad_plugin/src/ads/banner/banner.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/models/error.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 abstract class WindmillBannerListener<T> extends WindmillInterface<T> {
   void onAdAutoRefreshFail(T ad, WMError error);
@@ -84,5 +85,36 @@ class IWindmillBannerListener with WindmillAdEvent {
     }
 
     listener.onAdAutoRefreshed(bannerAd!);
+  }
+
+  @override
+  void onBidAdSourceStart(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+    listener.onBidAdSourceStart(bannerAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+    listener.onBidAdSourceSuccess(bannerAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceFailed
+    listener.onBidAdSourceFailed(bannerAd!, adInfo, error);
+  }
+  @override
+  void onAdSourceStartLoading(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+    listener.onAdSourceStartLoading(bannerAd!, adInfo);
+  }
+  @override
+  void onAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+    listener.onAdSourceSuccess(bannerAd!, adInfo);
+  }
+  @override
+  void onAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceFailed
+    listener.onAdSourceFailed(bannerAd!, adInfo, error);
   }
 }

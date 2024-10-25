@@ -3,6 +3,7 @@ import 'package:windmill_ad_plugin/src/models/error.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_enum.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 abstract class WindmillInterstitialListener<T> extends WindmillInterface<T> {
   void onAdSkiped(T ad);
@@ -126,5 +127,45 @@ class IWindmillInterstitalListener with WindmillAdEvent {
     }
 
     listener.onAdDidCloseOtherController(interstitialAd!, interactionType);
+  }
+  @override
+  void onAdAutoLoadSuccess(Map<String, dynamic>? arguments) {
+    // TODO: implement onAdAutoLoadSuccess
+    listener.onAdAutoLoadSuccess(interstitialAd!);
+  }
+  @override
+  void onAdAutoLoadFailed(WMError error, Map<String, dynamic>? arguments) {
+    // TODO: implement onAdAutoLoadFailed
+    listener.onAdAutoLoadFailed(interstitialAd!, error);
+  }
+  @override
+  void onBidAdSourceStart(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+    listener.onBidAdSourceStart(interstitialAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+    listener.onBidAdSourceSuccess(interstitialAd!, adInfo);
+  }
+  @override
+  void onBidAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceFailed
+    listener.onBidAdSourceFailed(interstitialAd!, adInfo, error);
+  }
+  @override
+  void onAdSourceStartLoading(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+    listener.onAdSourceStartLoading(interstitialAd!, adInfo);
+  }
+  @override
+  void onAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+    listener.onAdSourceSuccess(interstitialAd!, adInfo);
+  }
+  @override
+  void onAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {
+    // TODO: implement onAdSourceFailed
+    listener.onAdSourceFailed(interstitialAd!, adInfo, error);
   }
 }

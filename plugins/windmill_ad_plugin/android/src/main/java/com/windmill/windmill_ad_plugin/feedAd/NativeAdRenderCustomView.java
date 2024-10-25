@@ -50,6 +50,7 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
     private TextView text_title;
     private JSONObject mCustomViewConfig;
     private Button mCTAButton;
+    private View interactiveView;
 
 
     NativeAdRenderCustomView(JSONObject customViewConfig) {
@@ -407,6 +408,27 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
                 lp.setMargins(item.getX(), item.getY(), 0, 0);
                 rootView.addView(mCTAButton, lp);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONObject config = mCustomViewConfig.getJSONObject("interactiveView");
+            if (config != null) {
+                ViewConfigItem item = new ViewConfigItem(config);
+                interactiveView = adData.getInteractionWidgetView(item.getWidth(), item.getHeight(), 0, new WMNativeAdData.AdShakeViewListener() {
+                    @Override
+                    public void onDismiss() {
+                        Log.d("Sigmob", "renderShakeView onDismiss");
+                    }
+                });
+                if (interactiveView != null) {
+                    updateViewProperty(interactiveView, item);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(item.getWidth(), item.getHeight());
+                    lp.setMargins(item.getX(), item.getY(), 0, 0);
+                    rootView.addView(interactiveView, lp);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

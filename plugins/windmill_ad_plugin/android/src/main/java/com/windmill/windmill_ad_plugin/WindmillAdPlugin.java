@@ -35,6 +35,22 @@ public class WindmillAdPlugin implements FlutterPlugin, ActivityAware {
     public static final String kWindmillEventAdDidDislike = "onAdDidDislike";
     public static final String kWindmillEventAdDetailViewOpened = "onAdDetailViewOpened";
     public static final String kWindmillEventAdDetailViewClosed = "onAdDetailViewClosed";
+    /// 广告播放中加载成功回调
+    public static final String kWindmillEventAdAutoLoadSuccess = "onAdAutoLoadSuccess";
+    /// 广告播放中加载失败回调
+    public static final String kWindmillEventAdAutoLoadFailed = "onAdAutoLoadFailed";
+    // 竞价广告源开始竞价回调
+    public static final String kWindmillEventBidAdSourceStart = "onBidAdSourceStart";
+    // 竞价广告源竞价成功回调
+    public static final String  kWindmillEventBidAdSourceSuccess = "onBidAdSourceSuccess";
+    /// 竞价广告源竞价失败回调
+    public static final String kWindmillEventBidAdSourceFailed = "onBidAdSourceFailed";
+    /// 广告源开始加载回调
+    public static final String kWindmillEventAdSourceStartLoading = "onAdSourceStartLoading";
+    /// 广告源广告填充回调
+    public static final String kWindmillEventAdSourceSuccess = "onAdSourceSuccess";
+    /// 广告源加载失败回调
+    public static final String kWindmillEventAdSourceFailed = "onAdSourceFailed";
 
     private MethodChannel channel;
     // 插件代理

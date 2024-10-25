@@ -54,6 +54,10 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [call.arguments objectForKey:@"uniqId"];
     WindmillRewardVideoAdPlugin *rewardAd = [self getRewardAdPluginWithUniqId:uniqId arguments:call.arguments];
+    if ([call.method isEqualToString:@"initRequest"]) {
+        // 实例化adRequest对象
+        return;
+    }
     NSString *func = [NSString stringWithFormat:@"%@MethodCall:result:", call.method];
     SEL selector = NSSelectorFromString(func);
     BOOL isImplementSel = NO;
@@ -189,6 +193,73 @@
         @"message": error.localizedDescription
     }];   
 }
+
+- (void)rewardVideoAdDidAutoLoad:(WindMillRewardVideoAd *)rewardVideoAd {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdAutoLoadSuccess arguments:@{}];
+}
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didAutoLoadFailWithError:(NSError *)error {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdAutoLoadFailed arguments:@{
+        @"code": @(error.code),
+        @"message": error.localizedDescription
+    }];
+}
+/// 竞价广告源开始竞价回调
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didStartBidADSource:(WindMillAdInfo *)adInfo {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventBidAdSourceStart arguments:@{
+        @"adInfo": [adInfo toJson]
+    }];
+}
+
+/// 竞价广告源竞价成功回调
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didFinishBidADSource:(WindMillAdInfo *)adInfo {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventBidAdSourceSuccess arguments:@{
+        @"adInfo": [adInfo toJson]
+    }];
+}
+
+/// 竞价广告源竞价失败回调，以及失败原因
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didFailBidADSource:(WindMillAdInfo *)adInfo error:(NSError *)error {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventBidAdSourceFailed arguments:@{
+        @"code": @(error.code),
+        @"message": error.localizedDescription,
+        @"adInfo": [adInfo toJson]
+    }];
+}
+
+/// 广告源开始加载回调
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didStartLoadingADSource:(WindMillAdInfo *)adInfo {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdSourceStartLoading arguments:@{
+        @"adInfo": [adInfo toJson]
+    }];
+}
+
+/// 广告源广告填充回调
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didFinishLoadingADSource:(WindMillAdInfo *)adInfo {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdSourceSuccess arguments:@{
+        @"adInfo": [adInfo toJson]
+    }];
+}
+
+/// 广告源加载失败回调，以及失败原因
+/// - Parameters:
+///   - rewardVideoAd: WindMillRewardVideoAd 实例对象
+///   - error: 具体错误信息
+- (void)rewardVideoAd:(WindMillRewardVideoAd *)rewardVideoAd didFailToLoadADSource:(WindMillAdInfo *)adInfo error:(NSError *)error {
+    NSLog(@"%@", NSStringFromSelector(_cmd));
+    [self.channel invokeMethod:kWindmillEventAdSourceFailed arguments:@{
+        @"code": @(error.code),
+        @"message": error.localizedDescription,
+        @"adInfo": [adInfo toJson]
+    }];
+}
+
 
 - (void)dealloc {
     NSLog(@"--- dealloc -- %@", self);

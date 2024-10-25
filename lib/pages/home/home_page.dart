@@ -20,29 +20,31 @@ class HomePage extends StatelessWidget {
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生draw广告'},
   ];
 
+   HomePage({Key? key}) : super(key: key);
+
   void _initSDK() async {
     DeviceUtil.initialize();
     AdSetting? adSetting = await AdSetting.fromFile();
     if (adSetting != null) {
-      WindmillAd.requestPermission();
 
-      WindmillAd.adult(adSetting.otherSetting!.adultState == 0
-          ? Adult.adult
-          : Adult.children);
+       WindmillAd.requestPermission(); 
 
-      WindmillAd.setUserId(adSetting.otherSetting!.userId);
+       WindmillAd.adult(adSetting.otherSetting!.adultState == 0? Adult.adult:Adult.children);
 
-      //Tobid 渠道预初始化
-      //  List<WindmillNetworkInfo> infolist = <WindmillNetworkInfo>[];
+       WindmillAd.setUserId(adSetting.otherSetting!.userId);
+
+       List<WindmillNetworkInfo> infolist = <WindmillNetworkInfo>[];
+        
+      
       //  var sigAppId = Platform.isIOS?"21193":"1282";
-      //  var csjAppId = Platform.isIOS?"5000546":"5001121";
+      //  var groAppId = Platform.isIOS?"5002048":"5002970";
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Mintegral,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Vungle,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Applovin,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.UnityAds,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Ironsource,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Admob,appId: "",appKey: ""));
-      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.CSJ,appId: csjAppId,appKey: ""));
+      // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.GroMore,appId: groAppId,appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Sigmob,appId: sigAppId,appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.KuaiShou,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Klevin,appId: "",appKey: ""));
@@ -52,89 +54,96 @@ class HomePage extends StatelessWidget {
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.TapTap,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Pangle,appId: "",appKey: ""));
       // infolist.add(WindmillNetworkInfo(networkId: WindmillNetworkId.Pangle,appId: "",appKey: ""));
-      //  WindmillAd.networkPreInit(infolist);
 
-      //Tobid 预置策略目录设置 ios: bundle文件名称，android: assets下的目录名称
-      //  var path = Platform.isIOS? "localstrategy":"localStrategy";
-      //  WindmillAd.setPresetLocalStrategyPath(path);
+       WindmillAd.networkPreInit(infolist);
 
-      WindmillAd.personalizedAdvertisin(
-          adSetting.otherSetting!.personalizedAdvertisingState == 0
-              ? Personalized.on
-              : Personalized.off);
+
+       var path = Platform.isIOS? "localstrategy":"localStrategy";
+       WindmillAd.setPresetLocalStrategyPath(path);
+       WindmillAd.personalizedAdvertisin(adSetting.otherSetting!.personalizedAdvertisingState == 0? Personalized.on:Personalized.off);
 
       switch (adSetting.otherSetting!.gdprIndex) {
-        case 0:
-          WindmillAd.gdpr(GDPR.unknow);
+          case 0:
+                 WindmillAd.gdpr( GDPR.unknow);
           break;
-        case 1:
-          WindmillAd.gdpr(GDPR.accepted);
+          case 1:
+                 WindmillAd.gdpr( GDPR.accepted);
           break;
-        case 2:
-          WindmillAd.gdpr(GDPR.denied);
+          case 2:
+                 WindmillAd.gdpr( GDPR.denied);
           break;
 
         default:
-      }
+      } 
 
       switch (adSetting.otherSetting!.coppaIndex) {
         case 0:
-          WindmillAd.coppa(COPPA.unknow);
-
+            WindmillAd.coppa(COPPA.unknow);
+ 
           break;
-        case 1:
-          WindmillAd.coppa(COPPA.accepted);
+            case 1:
+            WindmillAd.coppa(COPPA.accepted);
           break;
-        case 2:
-          WindmillAd.coppa(COPPA.denied);
+          case 2:
+            WindmillAd.coppa(COPPA.denied);
           break;
         default:
       }
 
-      var locationStr = adSetting.otherSetting?.customLocation;
-      var location;
-      if (locationStr != null) {
-        var list = locationStr.split(',');
-        if (list.length == 2) {
-          location = Location(
-              longitude: double.parse(list[0]),
-              latitude: double.parse(list[1]));
-        }
-      }
+       var locationStr = adSetting.otherSetting?.customLocation;
+       var location;
+       if(locationStr != null){
+
+          var list = locationStr.split(',');
+          if(list.length == 2){
+             location = Location(longitude: double.parse(list[0]),latitude:double.parse(list[1]));
+          }
+       }
 
       var customDevice = CustomDevice(
-          isCanUseAndroidId: adSetting.otherSetting?.isCanUseAndroidId,
-          isCanUseIdfa: adSetting.otherSetting?.isCanUseIdfa,
-          isCanUseLocation: adSetting.otherSetting?.isCanUseLocation,
-          isCanUsePhoneState: adSetting.otherSetting?.isCanUsePhoneState,
-          customAndroidId: adSetting.otherSetting?.customAndoidId,
-          customIDFA: adSetting.otherSetting?.customIDFA,
-          customIMEI: adSetting.otherSetting?.customIMEI,
-          customOAID: adSetting.otherSetting?.customOAID,
-          customLocation: location);
+      isCanUseAndroidId: adSetting.otherSetting?.isCanUseAndroidId,
+      isCanUseIdfa: adSetting.otherSetting?.isCanUseIdfa,
+      isCanUseLocation: adSetting.otherSetting?.isCanUseLocation,
+      isCanUsePhoneState: adSetting.otherSetting?.isCanUsePhoneState,
+      isCanUseAppList: adSetting.otherSetting?.isCanUseAppList,
+      isCanUseWifiState: adSetting.otherSetting?.isCanUseWifiState,
+      isCanUseWriteExternal: adSetting.otherSetting?.isCanUseWriteExternal,
+      isCanUsePermissionRecordAudio: adSetting.otherSetting?.isCanUsePermissionRecordAudio,
+      customMacAddress: adSetting.otherSetting?.customMacAddress,
+      customAndroidId: adSetting.otherSetting?.customAndroidId,
+      customIDFA: adSetting.otherSetting?.customIDFA,
+      customIMEI: adSetting.otherSetting?.customIMEI,
+      customOAID: adSetting.otherSetting?.customOAID,
+      customLocation: location);
       WindmillAd.setCustomDevice(customDevice);
 
-      WindmillAd.age(adSetting.otherSetting!.age);
+      WindmillAd.age( adSetting.otherSetting!.age);
 
       var customGroupStr = adSetting.otherSetting?.customGroup;
-      Map customGroup = Map();
-      if (customGroupStr != null) {
-        var list = customGroupStr.split(',');
-        for (var custom in list) {
-          var group = custom.split('-');
-          if (group.length == 2) {
-            customGroup[group[0]] = group[1];
-          }
-        }
-      }
-      var placementId =
-          Platform.isIOS ? "9966371082635223" : "7373760992206247";
-      WindmillAd.initCustomGroup(customGroup);
-      Map customGroup2 = Map();
-      customGroup2["qa"] = "test";
-      WindmillAd.initCustomGroupForPlacement(customGroup2, placementId);
+      Map customGroup = {};
+      if(customGroupStr != null){
 
+         var list = customGroupStr.split(',');
+         for (var custom in list) {
+            var group = custom.split('-');
+            if(group.length == 2){
+             customGroup[group[0]]= group[1];
+            }
+         }
+      }
+      var placementId = Platform.isIOS?"9966371082635223":"7373760992206247";
+      WindmillAd.initCustomGroup(customGroup);
+      Map customGroup2 = {};
+      customGroup2["qa"] = "test";
+      WindmillAd.initCustomGroupForPlacement(customGroup2,placementId);
+
+      WindmillAd.setSupportMultiProcess(true);
+      WindmillAd.setWxOpenAppIdAndUniversalLink("wxdb34fba95bb9c942","https://8car0x2emn.1rtb.com/mssdkdemo/");
+      WindmillAd.setDebugEnable(true);
+      
       await WindmillAd.init(adSetting.appId!.toString());
+      
+    
     }
 
     print("sdkVersion: ${await WindmillAd.sdkVersion()}");
@@ -145,7 +154,7 @@ class HomePage extends StatelessWidget {
     _initSDK();
     return Scaffold(
       appBar: AppBar(
-        title: Text('首页'),
+        title: const Text('首页'),
       ),
       body: ListView.separated(
           itemBuilder: _itemBuilder,
@@ -159,7 +168,7 @@ class HomePage extends StatelessWidget {
       leading: Icon(_items[index]['icon'], size: 30, color: Colors.redAccent),
       title: Text(
         _items[index]['title'],
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
       trailing: null,
       onTap: () => _itemOnTap(index),
@@ -167,7 +176,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _separatorBuilder(BuildContext ctx, int index) {
-    return Divider(
+    return const Divider(
       indent: 20,
     );
   }

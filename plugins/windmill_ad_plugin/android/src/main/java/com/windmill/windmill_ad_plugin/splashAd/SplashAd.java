@@ -19,6 +19,7 @@ import com.windmill.sdk.splash.WMSplashAd;
 import com.windmill.sdk.splash.WMSplashAdListener;
 import com.windmill.sdk.splash.WMSplashAdRequest;
 import com.windmill.windmill_ad_plugin.WindmillAdPlugin;
+import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 
@@ -36,7 +37,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     private MethodChannel channel;
     private MethodChannel adChannel;
 
-    private Activity activity;
+    public Activity activity;
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private WMSplashAdRequest splashAdRequest;
     private Map<String, Object> params;
@@ -44,7 +45,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
     private WindowManager.LayoutParams layoutParams;
-
+    public ViewGroup viewGroup;
     public SplashAd() {
     }
 
@@ -68,6 +69,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         this.adChannel = channel;
         this.activity = activity;
         this.splashAdView = new WMSplashAd(activity, this.splashAdRequest, new IWMSplashAdListener(this, channel));
+        this.splashAdView.setAdSourceStatusListener(new IWMAdSourceStatus(channel));
 
     }
 
@@ -109,6 +111,10 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
             splashAd = this.ad.createAdInstance(SplashAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Splash, activity);
         }
+        if (call.method.equals("initRequest")) {
+            // 实例化adRequest对象
+            return;
+        }
         if (splashAd != null) {
             splashAd.excuted(call, result);
         }
@@ -143,9 +149,11 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         Window _window = this.activity.getWindow();
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(_window.getAttributes());
+        viewGroup =new FrameLayout(this.activity);
+        _window.getWindowManager().addView(viewGroup,layoutParams);
 
-
-        this.splashAdView.showAd(null);
+        this.splashAdView.showAd(viewGroup);
+        viewGroup.setLayoutParams(layoutParams);
         return null;
     }
 
@@ -157,6 +165,9 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         if (this.adChannel != null) {
             this.adChannel.setMethodCallHandler(null);
         }
+        if (this.splashAdView != null) {
+            this.splashAdView.destroy();
+        }
         return null;
     }
 
@@ -166,7 +177,6 @@ class IWMSplashAdListener implements WMSplashAdListener {
 
     private MethodChannel channel;
     private SplashAd splashAd;
-
     public IWMSplashAdListener(final SplashAd splashAd, final MethodChannel channel) {
         this.channel = channel;
         this.splashAd = splashAd;
@@ -203,6 +213,13 @@ class IWMSplashAdListener implements WMSplashAdListener {
     public void onSplashClosed(final AdInfo adInfo, final IWMSplashEyeAd iwmSplashEyeAd) {
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdClosed, null);
         splashAd.restoreNavigationBar();
+        if (splashAd.viewGroup != null) {
+            splashAd.viewGroup.removeAllViews();
+            if (splashAd.activity != null) {
+                splashAd.activity.getWindow().getWindowManager().removeView(splashAd.viewGroup);
+            }
+        }
+
 
     }
 }

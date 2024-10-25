@@ -26,6 +26,8 @@ import com.windmill.sdk.natives.WMNativeAdContainer;
 import com.windmill.sdk.natives.WMNativeAdData;
 import com.windmill.sdk.natives.WMNativeAdRender;
 import com.windmill.sdk.natives.WMNativeAdRequest;
+import com.windmill.windmill_ad_plugin.core.IWMAdAutoLoad;
+import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
@@ -82,6 +84,8 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         this.nativeAdRequest = (WMNativeAdRequest) adRequest;
         this.activity = activity;
         this.nativeAd = new WMNativeAd(activity, nativeAdRequest);
+        this.nativeAd.setAdSourceStatusListener(new IWMAdSourceStatus(channel));
+        this.nativeAd.setAutoLoadListener(new IWMAdAutoLoad(channel));
         try {
             Map<String, Object> options = nativeAdRequest.getOptions();
             if (options != null) {
@@ -131,6 +135,10 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         WindmillBaseAd nativeAd = this.ad.getAdInstance(uniqId);
         if (nativeAd == null) {
             nativeAd = this.ad.createAdInstance(NativeAd.class, getArguments(call.arguments), flutterPluginBinding, WindmillAd.AdType.Native, activity);
+        }
+        if (call.method.equals("initRequest")) {
+            // 实例化adRequest对象
+            return;
         }
         if (nativeAd != null) {
             nativeAd.excuted(call, result);
@@ -188,7 +196,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     @Override
     public Object isReady(MethodCall o) {
-        return wmNativeAdData != null;
+        return nativeAd.isReady();
     }
 
     public Object getAdInfo(MethodCall call) {

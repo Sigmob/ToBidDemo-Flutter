@@ -11,9 +11,11 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.windmill.sdk.WMAdConfig;
 import com.windmill.sdk.WMAdnInitConfig;
@@ -292,6 +294,10 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
             WindMillAd.sharedAds().setFilterNetworkFirmIdList(placementId, networkFirmIdList);
         } else if (call.method.equals("addFilter")) {
             addFilter(call, result);
+        } else if (call.method.equals("addWaterfallFilter")) {
+            addWaterfallFilter(call, result);
+        } else if (call.method.equals("removeFilter")) {
+            WindMillAd.sharedAds().removeFilters();
         } else {
             result.notImplemented();
         }
@@ -372,6 +378,97 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
                 WindMillAd.sharedAds().addFilter(filter);
             }
         }
+    }
+
+    private void addWaterfallFilter(MethodCall call, MethodChannel.Result result) {
+        String placementId = call.argument("placementId");
+        ArrayList<HashMap<String, Object>> list = call.argument("modelList");
+        Log.d(TAG, "----------addWaterfallFilter----------" + placementId + ":" + list);
+        if (!TextUtils.isEmpty(placementId)) {
+            if (list != null && !list.isEmpty()) {
+                WMWaterfallFilter filter = new WMWaterfallFilter(placementId);
+                for (HashMap<String, Object> map : list) {
+                    if (map == null) continue;
+                    // 渠道
+                    Object obj = map.get("channelIdList");
+                    List<Integer> channelIdList = castList(obj, Integer.class);
+                    if (channelIdList != null && !channelIdList.isEmpty()) {
+                        List<String> channelIds = new ArrayList<>();
+                        for (Integer channelId : channelIdList) {
+                            channelIds.add(String.valueOf(channelId));
+                        }
+                        filter.in(WMWaterfallFilter.KEY_CHANNEL_ID, channelIds);
+                    }
+                    // 渠道广告位id
+                    obj = map.get("adnIdList");
+                    List<String> adnIdList = castList(obj, String.class);
+                    if (adnIdList != null && !adnIdList.isEmpty()) {
+                        filter.in(WMWaterfallFilter.KEY_ADN_PLACEMENT_ID, adnIdList);
+                    }
+                    // 渠道ecpm
+                    obj = map.get("ecpmList");
+                    List<HashMap> ecpmList = castList(obj, HashMap.class);
+                    if (ecpmList != null && !ecpmList.isEmpty()) {
+                        for (HashMap<String, Object> hashMap : ecpmList) {
+                            if (hashMap == null) continue;
+                            Object operator = hashMap.get("operator");
+                            Object ecpmObj = hashMap.get("ecpm");
+                            String ecpm = null;
+                            if (ecpmObj != null && ecpmObj instanceof Double) {
+                                ecpm = String.valueOf(ecpmObj);
+                            }
+                            String[]  operatorList = new String[]{">", "<", ">=", "<="};
+                            boolean isOperatorValid = operator != null && operator instanceof String && Arrays.asList(operatorList).contains(operator);
+                            boolean isEcpmValid = ecpm != null;
+                            if (isOperatorValid && isEcpmValid) {
+                                if (operator.equals(">")) {
+                                    filter.greaterThan(WMWaterfallFilter.KEY_E_CPM, ecpm);
+                                } else if (operator.equals("<")) {
+                                    filter.lessThan(WMWaterfallFilter.KEY_E_CPM, ecpm);
+                                } else if (operator.equals(">=")) {
+                                    filter.greaterThanEqual(WMWaterfallFilter.KEY_E_CPM, ecpm);
+                                } else if (operator.equals("<=")) {
+                                    filter.lessThanEqual(WMWaterfallFilter.KEY_E_CPM, ecpm);
+                                }
+                            }
+
+                        }
+                    }
+
+                    // 竞价类型
+                    obj = map.get("bidTypeList");
+                    List<Integer> bidTypeList = castList(obj, Integer.class);
+                    if (bidTypeList != null && !bidTypeList.isEmpty()) {
+                        List<String> bidTypes = new ArrayList<>();
+                        for (Integer type : bidTypeList) {
+                            if (type == 0) {
+                                bidTypes.add(WMWaterfallFilter.S2S);
+                            } else if (type == 1) {
+                                bidTypes.add(WMWaterfallFilter.C2S);
+                            } else if (type == 2) {
+                                bidTypes.add(WMWaterfallFilter.NORMAL);
+                            }
+                        }
+                        filter.in(WMWaterfallFilter.KEY_BIDDING_TYPE, bidTypes);
+                    }
+
+                    //开启新表达式
+                    filter.or();
+                }
+                WindMillAd.sharedAds().addFilter(filter);
+            }
+        }
+    }
+
+    private static <T> List<T> castList(Object obj, Class<T> cls) {
+        List<T> result = new ArrayList<>();
+        if (obj instanceof List<?>) {
+            for (Object o : (List<?>) obj) {
+                result.add(cls.cast(o));
+            }
+            return result;
+        }
+        return null;
     }
 
     private void networkPreInit(MethodCall call, MethodChannel.Result result) {

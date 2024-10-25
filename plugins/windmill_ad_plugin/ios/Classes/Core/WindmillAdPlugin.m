@@ -242,6 +242,85 @@ NSMutableArray * sdkConfigures;
     result(nil);
 }
 
+- (void)addWaterfallFilterMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSDictionary *param = call.arguments;
+    if (!param || ![param isKindOfClass:[NSDictionary class]]) return;
+    
+    NSString *placementId = param[@"placementId"];
+    NSLog(@"addWaterfallFilterMethodCall: %@", placementId);
+    if (!placementId || ![placementId isKindOfClass:[NSString class]] || placementId.length == 0) return;
+    
+    NSArray *modelList = param[@"modelList"];
+    if (!modelList || ![modelList isKindOfClass:[NSArray class]]) return;
+    
+    WindMillWaterfallFilter *filter = [[WindMillWaterfallFilter alloc] initWithPlacementId:placementId];
+    
+    // 过滤表达式
+    for (NSDictionary *dic in modelList) {
+        if (![dic isKindOfClass:[NSDictionary class]]) continue;
+        // 渠道
+        NSArray *channelIdList = dic[@"channelIdList"];
+        if (channelIdList && [channelIdList isKindOfClass:[NSArray class]] && channelIdList.count) {
+            NSMutableArray *tempArr = [NSMutableArray arrayWithCapacity:channelIdList.count];
+            for (NSNumber *num in channelIdList) {
+                if ([num isKindOfClass:[NSNumber class]]) {
+                    [tempArr addObject:[num stringValue]];
+                }
+            }
+            filter.inFilter(WaterfallFilterKeyChannelId, tempArr);
+        }
+        // 渠道广告位id
+        NSArray *adnIdList = dic[@"adnIdList"];
+        if (adnIdList && [adnIdList isKindOfClass:[NSArray class]] && adnIdList.count) {
+            filter.inFilter(WaterfallFilterKeyAdnId, adnIdList);
+        }
+        // 渠道ecpm
+        NSArray *ecpmList = dic[@"ecpmList"];
+        if (ecpmList && [ecpmList isKindOfClass:[NSArray class]] && ecpmList.count) {
+            for (NSDictionary *ecpmDic in ecpmList) {
+                if (![ecpmDic isKindOfClass:[NSDictionary class]]) continue;
+                NSString *operator = ecpmDic[@"operator"];
+                NSNumber *ecpm = ecpmDic[@"ecpm"];
+                BOOL isOperatorValid = operator && [operator isKindOfClass:[NSString class]] && [@[@">", @"<", @">=", @"<="] containsObject:operator];
+                BOOL isEcmpValid = ecpm && [ecpm isKindOfClass:[NSNumber class]];
+                if (isOperatorValid && isEcmpValid) {
+                    if ([operator isEqualToString:@">"]) {
+                        filter.greaterThan(WaterfallFilterKeyECPM, ecpm);
+                    } else if ([operator isEqualToString:@"<"]) {
+                        filter.lessThan(WaterfallFilterKeyECPM, ecpm);
+                    } else if ([operator isEqualToString:@">="]) {
+                        filter.greaterThanOrEqualTo(WaterfallFilterKeyECPM, ecpm);
+                    } else if ([operator isEqualToString:@"<="]) {
+                        filter.lessThanOrEqualTo(WaterfallFilterKeyECPM, ecpm);
+                    }
+                }
+            }
+        }
+
+        // 竞价类型
+        NSArray *bidTypeList = dic[@"bidTypeList"];
+        if (bidTypeList && [bidTypeList isKindOfClass:[NSArray class]] && bidTypeList.count) {
+            NSMutableArray *tempArr = [NSMutableArray arrayWithCapacity:bidTypeList.count];
+            for (NSNumber *num in bidTypeList) {
+                if ([num isKindOfClass:[NSNumber class]]) {
+                    [tempArr addObject:[num stringValue]];
+                }
+            }
+            filter.inFilter(WaterfallFilterKeyBiddingType, tempArr);
+        }
+        //开启新表达式
+        [filter orFilter];
+    }
+    
+    [WindMillAds addFilter:filter];
+    
+    result(nil);
+}
+
+- (void)removeFilterMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [WindMillAds removeFilter];
+}
+
 - (void) networkPreInitMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     
     NSArray<NSDictionary *> *networkConfigList = call.arguments[@"networksMap"];

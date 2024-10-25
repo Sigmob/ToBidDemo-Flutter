@@ -7,16 +7,19 @@ import 'package:windmill_ad_plugin_example/extension/num_extension.dart';
 import 'package:windmill_ad_plugin_example/utils/device_util.dart';
 import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 
+// ignore: must_be_immutable
 class NativePage extends StatelessWidget {
 
 
-  Size adSize = Size(300, 350);
+  Size adSize = const Size(300, 0);
+
+  NativePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('原生广告'),
+        title: const Text('原生广告'),
       ),
       body: _buildContent(),
     );
@@ -40,9 +43,9 @@ class NativePage extends StatelessWidget {
   }
     Widget _customAdSize(){
 
-      TextEditingController _controllter = new TextEditingController(text:"${adSize.width}x${adSize.height}");
+      TextEditingController _controllter = TextEditingController(text:"${adSize.width}x${adSize.height}");
       return  Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextField(
             controller:_controllter, 
             onChanged: (text) {
@@ -51,7 +54,7 @@ class NativePage extends StatelessWidget {
                   adSize = Size(double.parse(list[0]), double.parse(list[1]));
               }
             },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               hintText: '自定义宽x高',
             ),
@@ -69,7 +72,7 @@ class NativePage extends StatelessWidget {
     final c = Get.find<NativeController>();
     return Column(
         children: List.generate(
-            c.callbacks.length, (index) => Text('${c.callbacks[index]}')));
+            c.callbacks.length, (index) => Text(c.callbacks[index])));
   }
 
   Widget _buildAdSlotWidget() {
@@ -138,6 +141,9 @@ class NativePage extends StatelessWidget {
                       x:260,
                       y: 210,
                     ),
+                     CustomNativeAdConfig.interactiveView():
+        CustomNativeAdConfig.createNativeSubViewAttribute(80, 80,
+                x: 40, y: 40),
               },
       );
       
@@ -232,6 +238,7 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
     ad.destroy();
     c.adItems.removeLast();
     c.update();
+    c.removeWindmillNativeAd(ad.request.placementId);
 
   }
   @override
@@ -239,5 +246,53 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
     // TODO: implement onAdShowError
      print('onAdShowError');
     c.callbacks.add('onAdShowError -- ${ad.request.placementId},error: ${error.toJson()}');
+  }
+  void onAdAutoLoadSuccess(WindmillNativeAd ad) {
+    // TODO: implement onAdAutoLoadSuccess
+    print('onAdAutoLoadSuccess');
+    c.callbacks.add('onAdAutoLoadSuccess -- ${ad.request.placementId}');
+  }
+  @override
+  void onAdAutoLoadFailed(WindmillNativeAd ad, WMError error) {
+    // TODO: implement onAdAutoLoadFailed
+    print('onAdAutoLoadFailed');
+    c.callbacks.add(
+        'onAdAutoLoadFailed -- ${ad.request.placementId},error: ${error.toJson()}');
+  }
+  @override
+  void onBidAdSourceStart(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceStart
+    print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  @override
+  void onBidAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onBidAdSourceSuccess
+    print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  @override
+  void onBidAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
+    // TODO: implement onBidAdSourceFailed
+    print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+  }
+  @override
+  void onAdSourceStartLoading(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onAdSourceStartLoading
+    print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  @override
+  void onAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
+    // TODO: implement onAdSourceSuccess
+    print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+  }
+  @override
+  void onAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
+    // TODO: implement onAdSourceFailed
+    print('onAdSourceFailed,adInfo:${adInfo?.toJson()}');
+    c.callbacks.add('onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
 }

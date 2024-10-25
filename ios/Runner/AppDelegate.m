@@ -2,6 +2,8 @@
 #import "GeneratedPluginRegistrant.h"
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/AdSupport.h>
+#import <WindMillSDK/WindMillSDK.h>
+
 @implementation AppDelegate
 
  -(void) requestTrackingPermissions {

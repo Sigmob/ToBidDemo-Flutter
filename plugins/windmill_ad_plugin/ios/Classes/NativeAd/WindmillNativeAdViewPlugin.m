@@ -12,10 +12,11 @@
 #import "WindmillPluginContant.h"
 #import <WindMillSDK/WindMillSDK.h>
 #import <WindFoundation/WindFoundation.h>
+#import "WindmIllNativeIntercptPenetrateView.h"
 
 
 @interface WindmillNativeAdViewPlugin ()
-@property (nonatomic, strong) UIView *contentView;
+@property (nonatomic, strong) WindmIllNativeIntercptPenetrateView *contentView;
 @end
 
 @implementation WindmillNativeAdViewPlugin
@@ -25,18 +26,17 @@
     self = [super init];
     if (self) {
 
-        _contentView = [[UIView alloc] init];
-        _contentView.backgroundColor = UIColor.clearColor;
-        _contentView.clipsToBounds = YES;
         
         NSString *uniqId = [args objectForKey:@"uniqId"];
         NSDictionary *nativeCustomViewConfig = [args objectForKey:@"nativeCustomViewConfig"];
         NSNumber *width = [args objectForKey:@"width"];
         NSNumber *height = [args objectForKey:@"height"];
 
-        _contentView.frame =  CGRectMake(0, 0, width.intValue, height.intValue);
-        WindmillNativeAdPlugin * plugin = [WindmillNativeAdPlugin getPluginWithUniqId:uniqId];
-        
+        frame =  CGRectMake(0, 0, width.intValue, height.intValue);
+        WindmillNativeAdPlugin *plugin = [WindmillNativeAdPlugin getPluginWithUniqId:uniqId];
+        _contentView = [[WindmIllNativeIntercptPenetrateView alloc] initWithFrame:frame methodChannel:plugin.channel];
+        _contentView.backgroundColor = UIColor.clearColor;
+        _contentView.clipsToBounds = YES;
         [plugin showAd:_contentView args:nativeCustomViewConfig];
         NSLog(@"WindmillNativeAdPlugin init...");
     }

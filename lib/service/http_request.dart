@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-
+import 'package:dio/adapter.dart';
+import 'dart:io';
 class HttpRequest {
   static final BaseOptions baseOptions = BaseOptions(
       connectTimeout: 5000
@@ -41,6 +42,20 @@ class HttpRequest {
     } on DioError catch(e) {
       return Future.error(e);
     }
+  }
+  static initporxy(String? proxy) {
+
+      
+      print("use proxy  $proxy");
+      if (proxy == null){
+        return;
+      }
+      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (HttpClient client) {
+          client.findProxy = (uri) {
+            return 'PROXY $proxy';
+          };
+      };
   }
 
   static Future<T> get<T>(String url,

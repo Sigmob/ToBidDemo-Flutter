@@ -31,6 +31,21 @@ NSString *const kWindmillEventAdRenderSuccess=@"onAdRenderSuccess";
 NSString *const kWindmillEventAdDidDislike=@"onAdDidDislike";
 NSString *const kWindmillEventAdDetailViewOpened=@"onAdDetailViewOpened";
 NSString *const kWindmillEventAdDetailViewClosed=@"onAdDetailViewClosed";
-
+/// 广告播放中加载成功回调
+NSString *const kWindmillEventAdAutoLoadSuccess = @"onAdAutoLoadSuccess";
+/// 广告播放中加载失败回调
+NSString *const kWindmillEventAdAutoLoadFailed = @"onAdAutoLoadFailed";
+/// 竞价广告源开始竞价回调
+NSString * const kWindmillEventBidAdSourceStart = @"onBidAdSourceStart";
+/// 竞价广告源竞价成功回调
+NSString * const kWindmillEventBidAdSourceSuccess = @"onBidAdSourceSuccess";
+/// 竞价广告源竞价失败回调
+NSString * const kWindmillEventBidAdSourceFailed = @"onBidAdSourceFailed";
+/// 广告源开始加载回调
+NSString * const kWindmillEventAdSourceStartLoading = @"onAdSourceStartLoading";
+/// 广告源广告填充回调
+NSString * const kWindmillEventAdSourceSuccess = @"onAdSourceSuccess";
+/// 广告源加载失败回调
+NSString * const kWindmillEventAdSourceFailed = @"onAdSourceFailed";
 
 @end

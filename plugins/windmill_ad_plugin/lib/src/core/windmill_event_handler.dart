@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 import '../models/error.dart';
 
@@ -19,6 +22,22 @@ abstract class WindmillAdEvent {
   void onAdDetailViewOpened(Map<String, dynamic>? arguments){}
   void onAdDetailViewClosed(Map<String, dynamic>? arguments){}
   void onAdShowError(WMError? error, Map<String, dynamic>? arguments) {}
+  // 广告播放中加载成功回调
+  void onAdAutoLoadSuccess(Map<String, dynamic>? arguments) {}
+  // 广告播放中加载失败回调
+  void onAdAutoLoadFailed(WMError error, Map<String, dynamic>? arguments) {}
+  // 竞价广告源开始竞价回调
+  void onBidAdSourceStart(Map<String, dynamic>? arguments, AdInfo? adInfo) {}
+  // 竞价广告源竞价成功回调
+  void onBidAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {}
+  // 竞价广告源竞价失败回调
+  void onBidAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {}
+  // 广告源开始加载回调
+  void onAdSourceStartLoading(Map<String, dynamic>? arguments, AdInfo? adInfo) {}
+  // 广告源广告填充回调
+  void onAdSourceSuccess(Map<String, dynamic>? arguments, AdInfo? adInfo) {}
+  // 广告源加载失败回调
+  void onAdSourceFailed(WMError error, Map<String, dynamic>? arguments, AdInfo? adInfo) {}
 }
 
 abstract class WindmillEventHandler {
@@ -37,6 +56,11 @@ abstract class WindmillEventHandler {
         var errorCode = arguments['code'] as int;
         var msg = arguments['message'] as String;
         error = WMError(errorCode, msg);
+      }
+      AdInfo? adInfo;
+      if (arguments.containsKey('adInfo'))  {
+        var adInfoStr = arguments['adInfo'] as String;
+        adInfo = AdInfo.fromJson(jsonDecode(adInfoStr));
       }
       switch (call.method) {
         case 'onAdLoaded':
@@ -86,6 +110,30 @@ abstract class WindmillEventHandler {
           break;
         case 'onAdShowError':
           delegate!.onAdShowError(error!,arguments);
+          break;
+        case 'onAdAutoLoadSuccess':
+          delegate!.onAdAutoLoadSuccess(arguments);
+          break;
+        case 'onAdAutoLoadFailed':
+          delegate!.onAdAutoLoadFailed(error!, arguments);
+          break;
+        case 'onBidAdSourceStart':
+          delegate!.onBidAdSourceStart(arguments, adInfo);
+          break;
+        case 'onBidAdSourceSuccess':
+          delegate!.onBidAdSourceSuccess(arguments, adInfo);
+          break;
+        case 'onBidAdSourceFailed':
+          delegate!.onBidAdSourceFailed(error!, arguments, adInfo);
+          break;
+        case 'onAdSourceStartLoading':
+          delegate!.onAdSourceStartLoading(arguments, adInfo);
+          break;
+        case 'onAdSourceSuccess':
+          delegate!.onAdSourceSuccess(arguments, adInfo);
+          break;
+        case 'onAdSourceFailed':
+          delegate!.onAdSourceFailed(error!, arguments, adInfo);
           break;
     
       }

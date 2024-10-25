@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../models/ad_setting.dart';
@@ -15,16 +18,24 @@ class AdSlotWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        alignment: Alignment.topLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(items.length, (index) => _buildSlotWidget(index)),
-        ),
-      ),
-    );
+    // return Card(
+    //   child: Container(
+    //     padding: EdgeInsets.all(10),
+    //     alignment: Alignment.topLeft,
+    //     child: Column(
+    //       crossAxisAlignment: CrossAxisAlignment.start,
+    //       children: List.generate(items.length, (index) => _buildSlotWidget(index)),
+    //     ),
+    //   ),
+    // );
+    return ListView.builder(
+          itemBuilder: (context, index) {
+            return _buildSlotWidget(index);
+          },
+          itemCount: items.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+      );
   }
 
   Widget _buildSlotWidget(int index) {

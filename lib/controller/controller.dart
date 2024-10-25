@@ -24,6 +24,7 @@ class Controller extends GetxController {
       val.appId = adSetting?.appId;
       val.id = adSetting?.id;
       val.otherSetting = adSetting == null ? OtherSetting() : adSetting.otherSetting;
+      val.filterModelList = adSetting?.filterModelList;
     });
   }
 }
