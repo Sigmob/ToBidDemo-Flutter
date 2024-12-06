@@ -65,4 +65,28 @@
     return vc;
 }
 
+
+
++ (BOOL)isValidStr:(NSString *)str {
+    if (str == nil || ![str isKindOfClass:[NSString  class]] || str.length == 0) {
+        return NO;
+    }
+    return YES;
+}
+
++ (BOOL)isValidArr:(NSArray *)arr {
+    if (arr == nil || ![arr isKindOfClass:[NSArray class]] || arr.count == 0) {
+        return NO;
+    }
+    return YES;
+}
+
++ (BOOL)isValidDic:(NSDictionary *)dic {
+    if (dic == nil || ![dic isKindOfClass:[NSDictionary class]] || dic.count == 0) {
+        return NO;
+    }
+    return YES;
+}
+
+
 @end

@@ -321,6 +321,15 @@ NSMutableArray * sdkConfigures;
     [WindMillAds removeFilter];
 }
 
+- (void)removeFilterWithPlacementIdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSDictionary *param = call.arguments;
+    if (![WindmillUtil isValidDic:param]) return;
+    NSString *placementId = param[@"placementId"];
+    NSLog(@"removeFilterWithPlacementIdMethodCall: %@", placementId);
+    if (![WindmillUtil isValidStr:placementId]) return;
+    [WindMillAds removeFilterWithPlacementId:placementId];
+}
+
 - (void) networkPreInitMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     
     NSArray<NSDictionary *> *networkConfigList = call.arguments[@"networksMap"];

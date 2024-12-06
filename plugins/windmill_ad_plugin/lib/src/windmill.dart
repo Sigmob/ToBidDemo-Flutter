@@ -151,6 +151,13 @@ class WindmillAd {
     return _channel.invokeMethod('removeFilter');
   }
 
+  /// 根据placementId取消过滤
+  static Future<void> removeFilterWithPlacementId(String? placementId) {
+    return _channel.invokeMethod('removeFilterWithPlacementId', {
+      'placementId': placementId ?? ''
+    });
+  }
+
   /// 渠道初始化
   static Future<void> networkPreInit(
       List<WindmillNetworkInfo>? networkInfoList) {

@@ -163,11 +163,11 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   }
 
   @override
-  void onAdLoaded(WindmillNativeAd ad) {
+  void onAdLoaded(WindmillNativeAd ad, WindMillNativeInfo? nativeInfo) {
     print('onAdLoaded');
 
     c.isReady = true;
-    c.callbacks.add('onAdLoaded -- ${ad.request.placementId} }');
+    c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- nativeInfo -- ${nativeInfo?.toJson()}');
     ad.getCacheAdInfoList().then((adinfos) => adinfos?.forEach((element) {
           c.callbacks.add(
               'onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
@@ -240,36 +240,36 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onBidAdSourceStart(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceStart
     print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   @override
   void onBidAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceSuccess
     print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   @override
   void onBidAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onBidAdSourceFailed
     print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}, error: ${error.toJson()}');
+    // c.callbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}, error: ${error.toJson()}');
   }
   @override
   void onAdSourceStartLoading(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceStartLoading
     print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   @override
   void onAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceSuccess
     print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   @override
   void onAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onAdSourceFailed
     print('onAdSourceFailed,adInfo:${adInfo?.toJson()}');
-     c.callbacks.add('onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}, error: ${error.toJson()}');
+    //  c.callbacks.add('onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}, error: ${error.toJson()}');
   }
 }

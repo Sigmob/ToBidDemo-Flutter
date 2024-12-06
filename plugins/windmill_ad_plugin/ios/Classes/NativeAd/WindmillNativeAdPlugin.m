@@ -16,6 +16,7 @@
 #import <WindSDK/WindSDK.h>
 
 #import <WindFoundation/WindFoundation.h>
+#import "WindMillNativeAd+WMCategory.h"
 
 @interface WindmillNativeAdPlugin()<WindMillNativeAdsManagerDelegate,WindMillNativeAdViewDelegate>
 @property (nonatomic, strong) FlutterMethodChannel *channel;
@@ -191,10 +192,12 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 #pragma mark - ----- WindMillNativeAdsManagerDelegate -----
 - (void)nativeAdsManagerSuccessToLoad:(WindMillNativeAdsManager *)adsManager {
     NSLog(@"%@", NSStringFromSelector(_cmd));
-    [self.channel invokeMethod:kWindmillEventAdLoaded arguments:@{}];
     NSArray<WindMillNativeAd *> *nativeAdList = [self.nativeAdManager getAllNativeAds];
-    if (nativeAdList.count == 0) return;
+//    if (nativeAdList.count == 0) return;
     self.nativeAd = nativeAdList.firstObject;
+    [self.channel invokeMethod:kWindmillEventAdLoaded arguments:@{
+        @"nativeInfo": [self.nativeAd wm_JsonString]
+    }];
 }
 
 - (void)nativeAdsManager:(WindMillNativeAdsManager *)adsManager didFailWithError:(NSError *)error {

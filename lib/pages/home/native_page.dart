@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
@@ -72,7 +74,20 @@ class NativePage extends StatelessWidget {
     final c = Get.find<NativeController>();
     return Column(
         children: List.generate(
-            c.callbacks.length, (index) => Text(c.callbacks[index])));
+            c.callbacks.length, (index) => _RichTextWidegt(c.callbacks[index])));
+  }
+
+  Widget _RichTextWidegt(String text) {
+    List<String> list = text.split(' -- ');
+    List<Color> colors = [Colors.black, Colors.blue, Colors.red, Colors.orange, Colors.green];
+    return RichText(
+      text:  TextSpan(
+      style: const TextStyle(color: Colors.black),
+      children: List.generate(list.length, (index) => TextSpan(
+        text: list[index] + '\n',
+        style: TextStyle(color: colors[index % colors.length])
+      ))
+    ));
   }
 
   Widget _buildAdSlotWidget() {
@@ -169,16 +184,16 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   @override
   void onAdFailedToLoad(WindmillNativeAd ad, WMError error) {
     print('onAdFailedToLoad');
-    c.callbacks.add('onAdFailedToLoad -- ${ad.request.placementId} error: ${error.toJson()} ');
+    c.callbacks.add('onAdFailedToLoad -- placementId: ${ad.request.placementId} -- error: ${error.toJson()} ');
   }
 
   @override
-  void onAdLoaded(WindmillNativeAd ad) {
+  void onAdLoaded(WindmillNativeAd ad, WindMillNativeInfo? nativeInfo) {
     print('onAdLoaded');
-    c.callbacks.add('onAdLoaded -- ${ad.request.placementId}');
+    c.callbacks.add('onAdLoaded -- placementId: ${ad.request.placementId} -- nativeInfo: ${nativeInfo?.toJson()}');
     ad.getCacheAdInfoList().then((adinfos) => 
           adinfos?.forEach((element) {
-              c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
+              c.callbacks.add('onAdLoaded -- placementId: ${ad.request.placementId} -- adInfo: ${element.toJson()}');
     })
     );
   }
@@ -187,19 +202,19 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onAdOpened(WindmillNativeAd ad) {
     print('onAdOpened');
     ad.getAdInfo().then((adinfo) => 
-        c.callbacks.add('onAdOpened -- ${ad.request.placementId} --  adInfo -- ${ adinfo.toJson()}')
+        c.callbacks.add('onAdOpened -- placementId: ${ad.request.placementId} -- adInfo: ${ adinfo.toJson()}')
     );
 
     ad.getAppInfo().then((appInfo) => 
        
-        c.callbacks.add('onAdOpened -- ${ad.request.placementId} --  appInfo -- ${ appInfo?.toString()}')
+        c.callbacks.add('onAdOpened -- placementId: ${ad.request.placementId} -- appInfo: ${ appInfo?.toString()}')
     );
   }
 
   @override
   void onAdRenderFail(WindmillNativeAd ad, WMError error) {
     print('onAdRenderFail');
-    c.callbacks.add('onAdRenderFail -- ${ad.request.placementId} error: ${error.toJson()}');
+    c.callbacks.add('onAdRenderFail -- placementId: ${ad.request.placementId} -- error: ${error.toJson()}');
   }
 
   @override
@@ -210,31 +225,31 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
 
     
     widget.updateAdSize(ad.adSize!);
-    c.callbacks.add('onAdRenderSuccess -- ${ad.request.placementId} - width : ${ad.adSize?.width} , height : ${ad.adSize?.height}');
+    c.callbacks.add('onAdRenderSuccess -- placementId: ${ad.request.placementId} -- width : ${ad.adSize?.width} , height : ${ad.adSize?.height}');
   }
 
   @override
   void onAdClicked(WindmillNativeAd ad) {
     print('onAdClicked');
-    c.callbacks.add('onAdClicked -- ${ad.request.placementId}');
+    c.callbacks.add('onAdClicked -- placementId: ${ad.request.placementId}');
   }
 
   @override
   void onAdDetailViewClosed(WindmillNativeAd ad) {
     print('onAdDetailViewClosed');
-    c.callbacks.add('onAdDetailViewClosed -- ${ad.request.placementId}');
+    c.callbacks.add('onAdDetailViewClosed -- placementId: ${ad.request.placementId}');
   }
 
   @override
   void onAdDetailViewOpened(WindmillNativeAd ad) {
     print('onAdDetailViewOpened');
-    c.callbacks.add('onAdDetailViewOpened -- ${ad.request.placementId}');
+    c.callbacks.add('onAdDetailViewOpened -- placementId: ${ad.request.placementId}');
   }
 
   @override
   void onAdDidDislike(WindmillNativeAd ad, String reason) {
     print('onAdDidDislike');
-    c.callbacks.add('onAdDidDislike -- ${ad.request.placementId}');
+    c.callbacks.add('onAdDidDislike -- placementId: ${ad.request.placementId}');
     ad.destroy();
     c.adItems.removeLast();
     c.update();
@@ -245,54 +260,54 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onAdShowError(WindmillNativeAd ad,WMError error) {
     // TODO: implement onAdShowError
      print('onAdShowError');
-    c.callbacks.add('onAdShowError -- ${ad.request.placementId},error: ${error.toJson()}');
+    c.callbacks.add('onAdShowError -- placementId: ${ad.request.placementId} -- error: ${error.toJson()}');
   }
   void onAdAutoLoadSuccess(WindmillNativeAd ad) {
     // TODO: implement onAdAutoLoadSuccess
     print('onAdAutoLoadSuccess');
-    c.callbacks.add('onAdAutoLoadSuccess -- ${ad.request.placementId}');
+    c.callbacks.add('onAdAutoLoadSuccess -- placementId: ${ad.request.placementId}');
   }
   @override
   void onAdAutoLoadFailed(WindmillNativeAd ad, WMError error) {
     // TODO: implement onAdAutoLoadFailed
     print('onAdAutoLoadFailed');
     c.callbacks.add(
-        'onAdAutoLoadFailed -- ${ad.request.placementId},error: ${error.toJson()}');
+        'onAdAutoLoadFailed -- placementId: ${ad.request.placementId} -- error: ${error.toJson()}');
   }
   @override
   void onBidAdSourceStart(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceStart
     print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onBidAdSourceStart -- placementId: ${ad.request.placementId} -- adInfo: ${adInfo?.toJson()}');
   }
   @override
   void onBidAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceSuccess
     print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onBidAdSourceSuccess -- placementId: ${ad.request.placementId} -- adInfo: ${adInfo?.toJson()}');
   }
   @override
   void onBidAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onBidAdSourceFailed
     print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+    // c.callbacks.add('onBidAdSourceFailed -- placementId: ${ad.request.placementId} -- adInfo: ${adInfo?.toJson()} -- error: ${error.toJson()}');
   }
   @override
   void onAdSourceStartLoading(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceStartLoading
     print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onAdSourceStartLoading -- placementId: ${ad.request.placementId} -- adInfo: ${adInfo?.toJson()}');
   }
   @override
   void onAdSourceSuccess(WindmillNativeAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceSuccess
     print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onAdSourceSuccess -- placementId: ${ad.request.placementId} -- adInfo: ${adInfo?.toJson()}');
   }
   @override
   void onAdSourceFailed(WindmillNativeAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onAdSourceFailed
     print('onAdSourceFailed,adInfo:${adInfo?.toJson()}');
-    c.callbacks.add('onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+    // c.callbacks.add('onAdSourceFailed -- placementId: ${ad.request.placementId} -- adInfo: ${adInfo?.toJson()} -- error: ${error.toJson()}');
   }
 }

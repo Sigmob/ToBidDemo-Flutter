@@ -141,9 +141,10 @@ class RewardPage extends StatelessWidget {
     );
     // WindmillAd.addWaterfallFilter(placementId, list);
      list = adcontroller.adSetting.value.filterModelList ?? [];
-     WindmillAd.addWaterfallFilter(placementId, list);
+    //  WindmillAd.addWaterfallFilter(placementId, list);
     
     // WindmillAd.removeFilter();
+    // WindmillAd.removeFilterWithPlacementId(placementId);
 
     WindmillRewardAd ad = c.getOrCreateWindmillRewardAd(
         placementId: placementId,
@@ -265,43 +266,41 @@ class IWindMillRewardListener extends WindmillRewardListener<WindmillRewardAd> {
   void onAdSourceFailed(WindmillRewardAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onAdSourceFailed
     print('onAdSourceFailed');
-    c.rwCallbacks.add(
-        'onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+    // c.rwCallbacks.add('onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
   
   @override
   void onAdSourceStartLoading(WindmillRewardAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceStartLoading
     print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
-    c.rwCallbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.rwCallbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onAdSourceSuccess(WindmillRewardAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceSuccess
     print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
-    c.rwCallbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.rwCallbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onBidAdSourceFailed(WindmillRewardAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onBidAdSourceFailed
     print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
-    c.rwCallbacks.add(
-        'onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+    // c.rwCallbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
   
   @override
   void onBidAdSourceStart(WindmillRewardAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceStart
     print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
-    c.rwCallbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.rwCallbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onBidAdSourceSuccess(WindmillRewardAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceSuccess
     print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
-    c.rwCallbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.rwCallbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
 }

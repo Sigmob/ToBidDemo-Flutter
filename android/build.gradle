@@ -20,6 +20,10 @@ buildscript {
 
         //applovin
         maven { url 'https://artifacts.applovin.com/android' }
+
+
+        maven { url 'https://developer.hihonor.com/repo' }
+
     }
 
     dependencies {
@@ -49,6 +53,10 @@ allprojects {
 
         //applovin
         maven { url 'https://artifacts.applovin.com/android' }
+
+
+        maven { url 'https://developer.hihonor.com/repo' }
+        
     }
 }
 

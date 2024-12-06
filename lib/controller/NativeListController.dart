@@ -123,8 +123,8 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   }
 
   @override
-  void onAdLoaded(WindmillNativeAd ad) {
-    print('codi -- onAdLoaded: ${ad.request.placementId}');
+  void onAdLoaded(WindmillNativeAd ad, WindMillNativeInfo? nativeInfo) {
+    print('codi -- onAdLoaded: ${ad.request.placementId} nativeInfo: ${nativeInfo?.toJson()}');
     c.adPlay(ad, Size(ad.width, ad.height));
     c.notifyFinished.value = !c.notifyFinished.value;
 

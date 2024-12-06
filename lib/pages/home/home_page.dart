@@ -18,6 +18,9 @@ class HomePage extends StatelessWidget {
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生list广告'},
     {'icon': Icons.play_circle_outline_outlined, 'title': '原生draw广告'},
+    // {'icon': Icons.play_circle_outline_outlined, 'title': '添加过滤'},
+    // {'icon': Icons.play_circle_outline_outlined, 'title': '移除过滤 - 8618177000518077'},
+    // {'icon': Icons.play_circle_outline_outlined, 'title': '移除过滤'},
   ];
 
    HomePage({Key? key}) : super(key: key);
@@ -204,6 +207,54 @@ class HomePage extends StatelessWidget {
       case 6:
         Get.toNamed(Routes.NATIVE_DRAW);
         break;
+      case 7:
+      _addFilterTest();
+      break;
+      case 8:
+      _removFilterTest('8618177000518077');
+      break;
+      case 9:
+      _removeAllFilter();
+      break;
     }
+  }
+
+  void _addFilterTest() {
+    List<WindMillFilterModel> list = <WindMillFilterModel>[];
+    list.add(
+       WindMillFilterModel(
+        channelIdList: [WindmillNetworkId.Sigmob],
+      )
+    );
+     WindmillAd.addWaterfallFilter('7494199205693422', list);
+     
+    List<WindMillFilterModel> list1 = <WindMillFilterModel>[];
+     list1.add(
+       WindMillFilterModel(
+        bidTypeList: [WindMillBidType.c2s],
+      )
+    );
+    WindmillAd.addWaterfallFilter('8618177000518077', list1);
+
+     List<WindMillFilterModel> list2 = <WindMillFilterModel>[];
+    list2.add(
+      WindMillFilterModel(
+        ecpmList: [
+          WindMillFilterEcpmModel(
+            operatorType: OperatorType.greaterThan,
+            ecpm: 100
+          )
+        ]
+      )
+    );
+    WindmillAd.addWaterfallFilter('9832515539413140', list2);
+  }
+
+  void _removFilterTest(String placementId) {
+    WindmillAd.removeFilterWithPlacementId(placementId);
+  }
+
+  void _removeAllFilter() {
+    WindmillAd.removeFilter();
   }
 }

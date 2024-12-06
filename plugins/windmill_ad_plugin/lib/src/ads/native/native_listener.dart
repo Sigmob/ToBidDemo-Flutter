@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -6,11 +7,12 @@ import 'package:windmill_ad_plugin/src/ads/native/native.dart';
 import 'package:windmill_ad_plugin/src/models/error.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_listener.dart';
 import 'package:windmill_ad_plugin/src/core/windmill_event_handler.dart';
+import 'package:windmill_ad_plugin/src/models/native_info.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
 
 abstract class WindmillNativeListener<T>{
-  void onAdLoaded(T ad);
+  void onAdLoaded(T ad, WindMillNativeInfo? nativeInfo);
   void onAdFailedToLoad(T ad, WMError error);
   void onAdOpened(T ad);
   void onAdShowError(T ad, WMError error);
@@ -45,7 +47,13 @@ class IWindmillNativeListener with WindmillAdEvent {
 
   @override
   void onAdLoaded(Map<String, dynamic>? arguments) {
-    listener.onAdLoaded(nativeAd);
+     WindMillNativeInfo? nativeInfo;
+    if (arguments!.containsKey('nativeInfo')) {
+      String infoStr = arguments['nativeInfo'] as String;
+      print(infoStr);
+      nativeInfo = WindMillNativeInfo.fromJson(jsonDecode(infoStr));
+    }
+    listener.onAdLoaded(nativeAd, nativeInfo);
   }
   @override
   void onAdFailedToLoad(WMError error, Map<String, dynamic>? arguments) {

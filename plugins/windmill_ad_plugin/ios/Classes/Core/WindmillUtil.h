@@ -15,4 +15,12 @@
 
 + (UIViewController *)getCurrentController;
 
+
++ (BOOL)isValidStr:(NSString *)str;
+
++ (BOOL)isValidArr:(NSArray *)arr;
+
++ (BOOL)isValidDic:(NSDictionary *)dic;
+
+
 @end

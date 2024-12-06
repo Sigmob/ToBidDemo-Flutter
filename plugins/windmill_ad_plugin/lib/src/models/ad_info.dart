@@ -1,4 +1,3 @@
-import 'dart:io';
 
 class AdInfo {
   int? networkId;                   /// 渠道id

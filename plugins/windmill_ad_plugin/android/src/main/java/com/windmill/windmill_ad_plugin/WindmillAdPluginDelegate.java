@@ -298,6 +298,11 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
             addWaterfallFilter(call, result);
         } else if (call.method.equals("removeFilter")) {
             WindMillAd.sharedAds().removeFilters();
+        } else if (call.method.equals("removeFilterWithPlacementId")) {
+            String placementId = call.argument("placementId");
+            if (placementId != null) {
+                WindMillAd.sharedAds().removeFilterWithPlacementIds(placementId);
+            }
         } else {
             result.notImplemented();
         }

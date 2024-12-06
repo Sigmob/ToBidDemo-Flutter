@@ -23,17 +23,22 @@ enum Personalized {
 }
 
 enum WindmillInteractionType {
-    interactionTypeCustorm ,
-    interactionTypeNO_INTERACTION,  // pure ad display
-    interactionTypeURL,             // open the webpage using a browser
-    interactionTypePage ,            // open the webpage within the app
-    interactionTypeDownload,        // download the app
-    interactionTypePhone,           // make a call
-    interactionTypeMessage,         // send messages
-    interactionTypeEmail,           // send email
-    interactionTypeVideoAdDetail,    // video ad details page
-
-    interactionTypeMediationOthers  //聚合其他广告sdk返回的类型
+    interactionTypeCustorm(0) ,
+    interactionTypeNO_INTERACTION(1),  // pure ad display
+    interactionTypeURL(2),             // open the webpage using a browser
+    interactionTypePage(3),            // open the webpage within the app
+    interactionTypeDownload(4),        // download the app
+    interactionTypePhone(5),           // make a call
+    interactionTypeMessage(6),         // send messages
+    interactionTypeEmail(7),           // send email
+    interactionTypeVideoAdDetail(8),   // video ad details page
+    interactionTypeWechat(9),          // open wechat
+    interactionTypeDeepLink(10),        // deep link
+    interactionTypeMediationOthers(100),  //聚合其他广告sdk返回的类型
+    ;
+    final int num;
+    const WindmillInteractionType(this.num);
+    static WindmillInteractionType getType(int num) => WindmillInteractionType.values.firstWhere((test) => test.num == num);
 }
 
  class WindmillNetworkId {
@@ -60,7 +65,11 @@ enum WindmillInteractionType {
   static const Pangle =30;
   static const Max =31;
   static const REKLAMUP = 33;
+  static const OPPOADN = 34;
   static const ADMATE = 35;
   static const HONOR = 36;
   static const INMOBI = 37;
+  static const VIVOADN = 38;
+  static const BILLOWLINK = 39;
+  static const TOBIDX = 999;
 }

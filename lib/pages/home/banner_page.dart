@@ -185,53 +185,53 @@ class IWindmillBannerListener extends WindmillBannerListener<WindmillBannerAd> {
   void onAdSourceFailed(WindmillBannerAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onAdSourceFailed
     print("flu-banner --- onAdSourceFailed,adInfo:${adInfo?.toJson()}");
-    c.callbacks.add('onAdShowError -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+    // c.callbacks.add('onAdShowError -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
   
   @override
   void onAdSourceStartLoading(WindmillBannerAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceStartLoading
     print("flu-banner --- onAdSourceStartLoading,adInfo:${adInfo?.toJson()}");
-    c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onAdSourceSuccess(WindmillBannerAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceSuccess
      print("flu-banner --- onAdSourceSuccess,adInfo:${adInfo?.toJson()}");
-     c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    //  c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onBidAdSourceFailed(WindmillBannerAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onBidAdSourceFailed
     print("flu-banner --- onBidAdSourceFailed,adInfo:${adInfo?.toJson()}");
-    c.callbacks.add('onAdShowError -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
+    // c.callbacks.add('onAdShowError -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
   
   @override
   void onBidAdSourceStart(WindmillBannerAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceStart
     print("flu-banner --- onBidAdSourceStart,adInfo:${adInfo?.toJson()}");
-    c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    // c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onBidAdSourceSuccess(WindmillBannerAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceSuccess
      print("flu-banner --- onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}");
-     c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
+    //  c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onAdAutoLoadFailed(WindmillBannerAd ad, WMError error) {
     // TODO: implement onAdAutoLoadFailed
-    c.callbacks.add('onAdAutoLoadFailed -- ${ad.request.placementId},error: ${error.toJson()}');
+    // c.callbacks.add('onAdAutoLoadFailed -- ${ad.request.placementId},error: ${error.toJson()}');
   }
   
   @override
   void onAdAutoLoadSuccess(WindmillBannerAd ad) {
     // TODO: implement onAdAutoLoadSuccess
-     c.callbacks.add('onAdAutoLoadSuccess -- ${ad.request.placementId}');
+    //  c.callbacks.add('onAdAutoLoadSuccess -- ${ad.request.placementId}');
   }
 }

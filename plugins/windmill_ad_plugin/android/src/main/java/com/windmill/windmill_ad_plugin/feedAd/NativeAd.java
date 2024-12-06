@@ -21,9 +21,11 @@ import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
 import com.windmill.sdk.models.AdInfo;
+import com.windmill.sdk.natives.WMImage;
 import com.windmill.sdk.natives.WMNativeAd;
 import com.windmill.sdk.natives.WMNativeAdContainer;
 import com.windmill.sdk.natives.WMNativeAdData;
+import com.windmill.sdk.natives.WMNativeAdDataType;
 import com.windmill.sdk.natives.WMNativeAdRender;
 import com.windmill.sdk.natives.WMNativeAdRequest;
 import com.windmill.windmill_ad_plugin.core.IWMAdAutoLoad;
@@ -32,9 +34,11 @@ import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -242,12 +246,10 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
             wmNativeContainer.setBackgroundColor(Color.parseColor(rootViewItem.getBackgroundColor()));
         }
 
-        wmNativeAdData.setInteractionListener(new IWMNativeAdListener(this, this.adChannel, mWidth));
+        wmNativeAdData.setInteractionListener(new IWMNativeAdListener(this, this.adChannel, mWidth, wmNativeContainer));
         wmNativeAdData.setDislikeInteractionCallback(this.activity, new IWMNativeDislikeListener(this.adChannel));
         if (wmNativeAdData.isExpressAd()) {
             wmNativeAdData.render();
-            View expressAdView = wmNativeAdData.getExpressAdView();
-            wmNativeContainer.addView(expressAdView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             WMNativeAdRender adRender;
             if (customViewConfig == null || !customViewConfig.has("mainAdView")) {//走自己内部的模板
@@ -352,11 +354,13 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     private MethodChannel channel;
     private NativeAd nativeAd;
     private int mWidth;
+    private  ViewGroup viewGroup;
 
-    public IWMNativeAdListener(final NativeAd nativeAd, final MethodChannel channel, int width) {
+    public IWMNativeAdListener(final NativeAd nativeAd, final MethodChannel channel, int width, ViewGroup viewGroup) {
         this.channel = channel;
         this.nativeAd = nativeAd;
         this.mWidth = width;
+        this.viewGroup = viewGroup;
     }
 
     @Override
@@ -376,7 +380,7 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
             android.util.Log.d("lance", "111--------onADRenderSuccess: " + view.getWidth() + ":" + view.getHeight());
 
             android.util.Log.d("lance", "222--------onADRenderSuccess: " + width + ":" + height);
-
+            viewGroup.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             view.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -505,9 +509,87 @@ class IWMNativeAdLoadListener implements WMNativeAd.NativeAdLoadListener {
             if (nativeADDataList != null && nativeADDataList.size() > 0) {
                 this.nativeAd.fillAd(nativeADDataList.get(0));
             }
-            channel.invokeMethod(kWindmillEventAdLoaded, null);
+            Map<String, Object> args = new HashMap<String, Object>();
+            String dataStr = nativeDataToString();
+            args.put("nativeInfo", dataStr);
+            channel.invokeMethod(kWindmillEventAdLoaded, args);
         }
 
+    }
+
+    private String nativeDataToString() {
+        JSONObject var1 = new JSONObject();
+        WMNativeAdData adData = this.nativeAd.wmNativeAdData;
+        try {
+            var1.put("title", adData.getTitle());
+            var1.put("desc", adData.getDesc());
+            var1.put("iconUrl", adData.getIconUrl());
+            var1.put("callToAction", adData.getCTAText());
+            if (adData.getImageList() != null && !adData.getImageList().isEmpty()) {
+                JSONArray jsonArray = new JSONArray();
+                for(int i = 0; i < adData.getImageList().size(); i++) {
+                    WMImage image = adData.getImageList().get(i);
+                    JSONObject imageJSONObject = new JSONObject();
+                    imageJSONObject.put("imageURL", image.getImageUrl());
+                    imageJSONObject.put("width", image.getWidth());
+                    imageJSONObject.put("height", image.getHeight());
+                    jsonArray.put(imageJSONObject);
+                }
+                var1.put("imageModelList", jsonArray);
+            }
+
+            var1.put("networkId", adData.getNetworkId());
+            
+            //广告模式； 双端枚举不一致，转换iOS
+            int feedADMode = 0;
+            switch (adData.getAdPatternType()) {
+                case WMNativeAdDataType.NATIVE_SMALL_IMAGE_AD:
+                {
+                    feedADMode = 2;
+                }
+                break;
+                case WMNativeAdDataType.NATIVE_BIG_IMAGE_AD:
+                {
+                    feedADMode = 3;
+                }
+                break;
+                case WMNativeAdDataType.NATIVE_GROUP_IMAGE_AD: {
+                    feedADMode = 4;
+                }
+                break;
+                case WMNativeAdDataType.NATIVE_VIDEO_AD:
+                {
+                    feedADMode = 14;
+                }
+                break;
+            }
+            if (adData.isExpressAd()) {
+                feedADMode = 5;
+            }
+            var1.put("feedADMode", feedADMode);
+
+            // 广告类型 转换为枚举值
+            int adType = 1;
+            if (adData.isNativeDrawAd()) {
+                adType = 2;
+            }
+            var1.put("adType", adType);
+
+            //交互类型； 双端枚举不一致，转换iOS
+            int interactionType = 0;
+            if ( adData.getInteractionType() == 1) {
+                interactionType = 4;
+            } else if (adData.getInteractionType() == 2) {
+                interactionType = 2;
+            }
+            var1.put("interactionType", interactionType);
+
+
+        } catch (Throwable var3) {
+            var3.printStackTrace();
+        }
+
+        return var1.toString();
     }
 
 

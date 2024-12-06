@@ -17,4 +17,5 @@ export 'src/models/location.dart';
 export 'src/models/error.dart';
 export 'src/models/network_info.dart';
 export 'src/models/filter_info.dart';
+export 'src/models/native_info.dart';
 
