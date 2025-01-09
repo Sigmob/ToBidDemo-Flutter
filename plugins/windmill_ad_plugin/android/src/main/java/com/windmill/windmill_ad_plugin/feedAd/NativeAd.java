@@ -200,7 +200,7 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     @Override
     public Object isReady(MethodCall o) {
-        return nativeAd.isReady();
+        return wmNativeAdData != null && wmNativeAdData.isReady();
     }
 
     public Object getAdInfo(MethodCall call) {

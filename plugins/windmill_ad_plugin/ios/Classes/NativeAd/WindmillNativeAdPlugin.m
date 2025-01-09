@@ -111,7 +111,7 @@ static NSMutableDictionary<NSString *, WindmillNativeAdPlugin *> *pluginMap;
 }
 #pragma mark - ----- Method -----
 - (void)isReadyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    result(@(self.nativeAdManager.isAdReady));
+    result(@(self.nativeAd.isAdReady));
 }
 - (void)loadMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     

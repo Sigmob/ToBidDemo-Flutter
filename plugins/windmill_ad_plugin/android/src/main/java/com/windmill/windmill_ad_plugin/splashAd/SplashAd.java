@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -41,7 +42,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     private FlutterPlugin.FlutterPluginBinding flutterPluginBinding;
     private WMSplashAdRequest splashAdRequest;
     private Map<String, Object> params;
-    private WMSplashAd splashAdView;
+    public WMSplashAd splashAdView;
     private WindmillAd<WindmillBaseAd> ad;
     protected AdInfo adInfo;
     private WindowManager.LayoutParams layoutParams;
@@ -149,11 +150,9 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         Window _window = this.activity.getWindow();
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(_window.getAttributes());
-        viewGroup =new FrameLayout(this.activity);
-        _window.getWindowManager().addView(viewGroup,layoutParams);
 
-        this.splashAdView.showAd(viewGroup);
-        viewGroup.setLayoutParams(layoutParams);
+        this.splashAdView.showAd(null);
+
         return null;
     }
 
@@ -213,14 +212,9 @@ class IWMSplashAdListener implements WMSplashAdListener {
     public void onSplashClosed(final AdInfo adInfo, final IWMSplashEyeAd iwmSplashEyeAd) {
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdClosed, null);
         splashAd.restoreNavigationBar();
-        if (splashAd.viewGroup != null) {
-            splashAd.viewGroup.removeAllViews();
-            if (splashAd.activity != null) {
-                splashAd.activity.getWindow().getWindowManager().removeView(splashAd.viewGroup);
-            }
+        if (splashAd.splashAdView != null) {
+            splashAd.splashAdView.destroy();
         }
-
-
     }
 }
 

@@ -12,7 +12,7 @@ import '../../widgets/adslot_widget.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({Key? key}) : super(key: key);
-
+  static var lastPopTime = null;
   @override
   Widget build(BuildContext context) {
     print("splash_page --- build");
@@ -59,6 +59,8 @@ class SplashPage extends StatelessWidget {
   }
 
   void _adPlay(String placementId) async {
+    if(lastPopTime != null && DateTime.now().difference(lastPopTime) < Duration(seconds: 2)) return;
+
     final SplashController c = Get.find<SplashController>();
 
     WindmillSplashAd? ad = c.getWindmillSplashAd(placementId);
@@ -68,6 +70,7 @@ class SplashPage extends StatelessWidget {
     if (isReady) {
       ad.showAd();
     }
+    lastPopTime = DateTime.now();
   }
 
   void _adLoad(String placementId) {
@@ -157,42 +160,42 @@ class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
   @override
   void onAdSourceFailed(WindmillSplashAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onAdSourceFailed
-    print('onAdSourceFailed,adInfo:${adInfo?.toJson()}');
+    // print('onAdSourceFailed,adInfo:${adInfo?.toJson()}');
     //  c.callbacks.add('onAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
   
   @override
   void onAdSourceStartLoading(WindmillSplashAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceStartLoading
-    print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
+    // print('onAdSourceStartLoading,adInfo:${adInfo?.toJson()}');
     // c.callbacks.add('onAdSourceStartLoading -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onAdSourceSuccess(WindmillSplashAd ad, AdInfo? adInfo) {
     // TODO: implement onAdSourceSuccess
-    print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
+    // print('onAdSourceSuccess,adInfo:${adInfo?.toJson()}');
     // c.callbacks.add('onAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onBidAdSourceFailed(WindmillSplashAd ad, AdInfo? adInfo, WMError error) {
     // TODO: implement onBidAdSourceFailed
-    print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
+    // print('onBidAdSourceFailed,adInfo:${adInfo?.toJson()}');
     // c.callbacks.add('onBidAdSourceFailed -- ${ad.request.placementId},adInfo:${adInfo?.toJson()},error: ${error.toJson()}');
   }
   
   @override
   void onBidAdSourceStart(WindmillSplashAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceStart
-    print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
+    // print('onBidAdSourceStart,adInfo:${adInfo?.toJson()}');
     // c.callbacks.add('onBidAdSourceStart -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   
   @override
   void onBidAdSourceSuccess(WindmillSplashAd ad, AdInfo? adInfo) {
     // TODO: implement onBidAdSourceSuccess
-    print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
+    // print('onBidAdSourceSuccess,adInfo:${adInfo?.toJson()}');
     // c.callbacks.add('onBidAdSourceSuccess -- ${ad.request.placementId},adInfo:${adInfo?.toJson()}');
   }
   

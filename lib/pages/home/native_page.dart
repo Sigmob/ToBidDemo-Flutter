@@ -13,7 +13,7 @@ import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 class NativePage extends StatelessWidget {
 
 
-  Size adSize = const Size(300, 0);
+  Size adSize = const Size(300, 300);
 
   NativePage({Key? key}) : super(key: key);
 

@@ -21,17 +21,35 @@ class IntersititialPage extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     final c = Get.find<IntersititialController>();
-    return Column(
-      children: [
-        Container(
+    // return Column(
+    //   children: [
+    //     Container(
+    //       child: Obx(() => _buildAdSlotWidget()),
+    //     ),
+    //     Expanded(
+    //         child: Obx(() => ListView.builder(
+    //             itemCount: c.callbacks.length,
+    //             itemBuilder: (ctx, index) {
+    //               return Text(c.callbacks[index]);
+    //             })))
+    //   ],
+    // );
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
           child: Obx(() => _buildAdSlotWidget()),
         ),
-        Expanded(
-            child: Obx(() => ListView.builder(
+        SliverToBoxAdapter(
+          child: Obx(() => ListView.builder(
                 itemCount: c.callbacks.length,
                 itemBuilder: (ctx, index) {
                   return Text(c.callbacks[index]);
-                })))
+                },
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+               ),
+             ),
+        )
       ],
     );
   }
