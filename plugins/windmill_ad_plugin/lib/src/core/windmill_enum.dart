@@ -71,5 +71,6 @@ enum WindmillInteractionType {
   static const INMOBI = 37;
   static const VIVOADN = 38;
   static const BILLOWLINK = 39;
+  static const JADYun = 40; 
   static const TOBIDX = 999;
 }

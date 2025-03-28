@@ -11,6 +11,8 @@ class DeviceUtil {
   static double rpx = 0;
   static double px = 0;
 
+  static double bodyHeight = 0;
+
   static void initialize({double standardSize = 750}) {
     // 1.手机的物理分辨率
 

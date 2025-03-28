@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
-
+class NativeDrawInfo {
+  Object? ad;
+  bool isReady = false;
+}
 class NativeDrawController extends GetxController {
 
   var callbacks = <String>[].obs;
@@ -12,6 +15,7 @@ class NativeDrawController extends GetxController {
 
   var isLoaded = false;
   var isReady = false;
+  List<NativeDrawInfo> ads = [];
   @override
   void onInit() {
     super.onInit();
@@ -19,16 +23,16 @@ class NativeDrawController extends GetxController {
   }
 
   WindmillNativeAd getOrCreateWindmillNativeAd({required String placementId,String? userId,required Size size, required WindmillNativeListener<WindmillNativeAd> listener}) {
-    WindmillNativeAd? nativeAd = getWindmillNativeAd(placementId);
-    if (nativeAd != null) return nativeAd;
+    // WindmillNativeAd? nativeAd = getWindmillNativeAd(placementId);
+    // if (nativeAd != null) return nativeAd;
     AdRequest request = AdRequest(placementId: placementId,userId: userId);
-    nativeAd = WindmillNativeAd(
+    var nativeAd = WindmillNativeAd(
       request: request,
       listener: listener,
       width: size.width,
       height: size.height,
     );
-    _adMap[placementId] = nativeAd;
+    // _adMap[placementId] = nativeAd;
     return nativeAd;
   }
 

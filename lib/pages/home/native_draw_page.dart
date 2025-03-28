@@ -13,13 +13,15 @@ import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 // ignore: must_be_immutable
 class NativeDrawPage extends StatelessWidget {
   // int ad_show_count = 0;
-  WindmillNativeAd? ad;
+  // WindmillNativeAd? ad;
 
   NativeDrawPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+   var top = MediaQuery.of(context).padding.top;
     DeviceUtil.initialize();
+    DeviceUtil.bodyHeight = DeviceUtil.screenHeight - kToolbarHeight - top;
     return Scaffold(
       appBar: AppBar(
         title: const Text("原生Draw广告"),
@@ -35,11 +37,11 @@ class NativeDrawPage extends StatelessWidget {
       scrollDirection: Axis.vertical,
       controller: c.pageController,
       itemBuilder: (context, index) {
-        if (!c.isLoaded) {
+        if (index % 2 == 0) {
           c.isLoaded = true;
           c.isReady = false;
-          _adLoad();
-        }
+          _adLoad(index);
+        } 
         if (index % 2 == 0) {
           return Container(
             key: Key("$index"),
@@ -49,13 +51,14 @@ class NativeDrawPage extends StatelessWidget {
             child: const Text("ToBid"),
           );
         } else {
-          if (ad != null && c.isReady) {
+          var draw = c.ads[index];
+          if (draw.ad is WindmillNativeAd && draw.isReady) {
             return Container(
               key: Key("$index"),
               alignment: Alignment.center,
               width: DeviceUtil.screenWidth,
               height: DeviceUtil.screenHeight,
-              child: _adWidget(),
+              child: _adWidget(index),
             );
           }
 
@@ -71,29 +74,30 @@ class NativeDrawPage extends StatelessWidget {
     );
   }
 
-  Widget _adWidget() {
+  Widget _adWidget(int index) {
+    final c = Get.find<NativeDrawController>();
     return NativeAdWidget(
-      nativeAd: ad!,
-      height: DeviceUtil.screenHeight,
+      nativeAd: c.ads[index].ad as WindmillNativeAd ,
+      height: DeviceUtil.bodyHeight,
       width: DeviceUtil.screenWidth,
       nativeCustomViewConfig: {
         CustomNativeAdConfig.rootView():
             CustomNativeAdConfig.createNativeSubViewAttribute(
-                DeviceUtil.screenWidth, DeviceUtil.screenHeight,
+                DeviceUtil.screenWidth, DeviceUtil.bodyHeight,
                 x: 0, y: 0, backgroundColor: '#FFFFFF'),
         CustomNativeAdConfig.iconView():
             CustomNativeAdConfig.createNativeSubViewAttribute(
           50,
           50,
           x: 5,
-          y: DeviceUtil.screenHeight - 130,
+          y: DeviceUtil.bodyHeight - 130,
         ),
         CustomNativeAdConfig.titleView():
             CustomNativeAdConfig.createNativeSubViewAttribute(
           DeviceUtil.screenWidth - 60 - 40 - 10,
           20,
           x: 60,
-          y: DeviceUtil.screenHeight - 130,
+          y: DeviceUtil.bodyHeight - 130,
           fontSize: 15,
           textColor: "#FFFFFF",
         ),
@@ -102,7 +106,7 @@ class NativeDrawPage extends StatelessWidget {
           DeviceUtil.screenWidth - 60 - 40 - 10,
           30,
           x: 60,
-          y: DeviceUtil.screenHeight - 110,
+          y: DeviceUtil.bodyHeight - 110,
           fontSize: 15,
           textColor: "#FFFFFF",
         ),
@@ -110,21 +114,21 @@ class NativeDrawPage extends StatelessWidget {
             CustomNativeAdConfig.createNativeSubViewAttribute(
                 DeviceUtil.screenWidth - 10, 50,
                 x: 5,
-                y: DeviceUtil.screenHeight - 70,
+                y: DeviceUtil.bodyHeight - 70,
                 fontSize: 15,
                 textColor: "#FFFFFF",
                 backgroundColor: "#2576F6"),
         CustomNativeAdConfig.mainAdView():
             CustomNativeAdConfig.createNativeSubViewAttribute(
-                DeviceUtil.screenWidth, DeviceUtil.screenHeight-70,
+                DeviceUtil.screenWidth, DeviceUtil.bodyHeight-70,
                 x: 0, y: 20, backgroundColor: '#000000'),
         CustomNativeAdConfig.adLogoView():
             CustomNativeAdConfig.createNativeSubViewAttribute(20, 20,
-                x: DeviceUtil.screenWidth - 40, y: DeviceUtil.screenHeight - 95),
+                x: DeviceUtil.screenWidth - 40, y: DeviceUtil.bodyHeight - 95),
         CustomNativeAdConfig.dislikeButton():
             CustomNativeAdConfig.createNativeSubViewAttribute(20, 20,
                 x: DeviceUtil.screenWidth - 40,
-                y: DeviceUtil.screenHeight - 130,
+                y: DeviceUtil.bodyHeight - 130,
                 backgroundColor: "#FFFFFF"),
         CustomNativeAdConfig.interactiveView():
         CustomNativeAdConfig.createNativeSubViewAttribute(80, 80,
@@ -133,20 +137,29 @@ class NativeDrawPage extends StatelessWidget {
     );
   }
 
-  void _adLoad() {
+  void _adLoad(int index) {
     final adcontroller = Get.find<NativeDrawController>();
+    if (index < adcontroller.ads.length) {
+      return;
+    }
     final c = Get.find<Controller>();
     SlotId slotId = c.adSetting.value.slotIds!
         .where((element) => element.adType == 5)
         .toList()
         .first;
-    ad ??= adcontroller.getOrCreateWindmillNativeAd(
+    var ad = adcontroller.getOrCreateWindmillNativeAd(
         placementId: slotId.adSlotId ?? "",
         userId: c.adSetting.value.otherSetting?.userId,
-        size: Size(DeviceUtil.screenWidth, DeviceUtil.screenHeight),
+        size: Size(DeviceUtil.screenWidth, DeviceUtil.bodyHeight),
         listener: IWindmillNativeListener());
 
-    ad?.loadAd();
+    ad.loadAd();
+    var drawInfo = NativeDrawInfo();
+    drawInfo.ad = "noData";
+    adcontroller.ads.add(drawInfo);
+     var draw = NativeDrawInfo();
+    draw.ad = ad;
+    adcontroller.ads.add(draw);
   }
 }
 
@@ -167,6 +180,11 @@ class IWindmillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
     print('onAdLoaded');
 
     c.isReady = true;
+    for (var element in c.ads) {
+      if (element.ad is WindmillNativeAd && element.ad == ad)  {
+        element.isReady = true;
+      }
+    }
     c.callbacks.add('onAdLoaded -- ${ad.request.placementId} -- nativeInfo -- ${nativeInfo?.toJson()}');
     ad.getCacheAdInfoList().then((adinfos) => adinfos?.forEach((element) {
           c.callbacks.add(
