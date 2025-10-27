@@ -6,6 +6,7 @@ import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/NativeController.dart';
 import 'package:windmill_ad_plugin_example/controller/controller.dart';
 import 'package:windmill_ad_plugin_example/extension/num_extension.dart';
+import 'package:windmill_ad_plugin_example/utils/Utils.dart';
 import 'package:windmill_ad_plugin_example/utils/device_util.dart';
 import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 
@@ -24,7 +25,15 @@ class NativePage extends StatelessWidget {
         title: const Text('原生广告'),
       ),
       body: _buildContent(),
+       floatingActionButton: FloatingActionButton(
+          child: const Text("清除日志", style: TextStyle(fontSize: 13),),
+          onPressed: _cleanCallback),
     );
+  }
+
+  void _cleanCallback() {
+    final  c = Get.find<NativeController>();
+    c.callbacks.clear();
   }
 
   Widget _buildContent() {
@@ -106,7 +115,10 @@ class NativePage extends StatelessWidget {
     final NativeController c = Get.find<NativeController>();
 
     WindmillNativeAd? ad = c.getWindmillNativeAd(placementId);
-    if(ad == null) return;
+    if(ad == null) {
+      Utils.showToast('无广告数据');
+      return;
+    }
     bool isReady = await ad.isReady();
 
     if(isReady){
@@ -164,6 +176,8 @@ class NativePage extends StatelessWidget {
       
       c.adItems.add(nativeAdWidget);
       c.update();
+    } else {
+       Utils.showToast('广告已过期');
     }
   }
 
@@ -172,7 +186,9 @@ class NativePage extends StatelessWidget {
     final adcontroller = Get.find<Controller>();
 
     WindmillNativeAd ad = c.getOrCreateWindmillNativeAd(placementId: placementId,userId:adcontroller.adSetting.value.otherSetting?.userId,size: adSize, listener: IWindmillNativeListener());
-
+    ad.setCustomGroup({"customKey":"customValue"});
+     List<WindMillFilterModel> list = adcontroller.adSetting.value.filterModelList ?? [];
+    ad.addFilter(list);
     ad.loadAd();
    
   }

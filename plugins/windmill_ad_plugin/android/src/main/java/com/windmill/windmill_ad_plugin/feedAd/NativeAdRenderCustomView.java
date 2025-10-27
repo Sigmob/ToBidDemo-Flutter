@@ -3,7 +3,6 @@ package com.windmill.windmill_ad_plugin.feedAd;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -85,20 +84,6 @@ public class NativeAdRenderCustomView implements WMNativeAdRender<WMNativeAdData
             String backgroundColor = viewConfigItem.getBackgroundColor();
             if (!TextUtils.isEmpty(backgroundColor) && backgroundColor.length() == 7 && backgroundColor.startsWith("#")) {
                 view.setBackgroundColor(Color.parseColor(backgroundColor));
-                //设置view的圆角
-                GradientDrawable shape = new GradientDrawable();
-                shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(16f); // 设置圆角半径
-                shape.setColor(Color.parseColor(backgroundColor));
-// 设置不同角的圆角
-                float[] radii = new float[]{
-                        16, 16,     // 左上
-                        16, 16,     // 右上
-                        16, 16,     // 左上
-                        16, 16,      // 左下
-                };
-                shape.setCornerRadii(radii);
-                view.setBackground(shape);
             }
         } catch (Throwable th) {
 

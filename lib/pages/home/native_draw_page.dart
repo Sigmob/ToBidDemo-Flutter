@@ -26,8 +26,10 @@ class NativeDrawPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("原生Draw广告"),
       ),
-      body: _buildContent(context) );
+      body: _buildContent(context),
+    );
   }
+
 
   Widget _buildContent(BuildContext context) {
     final c = Get.find<NativeDrawController>();
@@ -152,7 +154,9 @@ class NativeDrawPage extends StatelessWidget {
         userId: c.adSetting.value.otherSetting?.userId,
         size: Size(DeviceUtil.screenWidth, DeviceUtil.bodyHeight),
         listener: IWindmillNativeListener());
-
+     ad.setCustomGroup({"customKey":"customValue"});
+      List<WindMillFilterModel> list = c.adSetting.value.filterModelList ?? [];
+    ad.addFilter(list);
     ad.loadAd();
     var drawInfo = NativeDrawInfo();
     drawInfo.ad = "noData";

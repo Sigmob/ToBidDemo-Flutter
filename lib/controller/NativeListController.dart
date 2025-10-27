@@ -177,6 +177,10 @@ class WindMillNativeListener extends WindmillNativeListener<WindmillNativeAd> {
   void onAdDidDislike(WindmillNativeAd ad, String reason) {
     print('codi -- onAdDidDislike: ${ad.request.placementId}');
     ad.destroy();
+    c.datas.removeWhere((element) =>(element.nativeAd != null &&
+          element.widget != null &&
+          element.nativeAd == ad &&
+          ad.adSize != null));
   }
 
   @override

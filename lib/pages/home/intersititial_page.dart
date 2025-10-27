@@ -4,6 +4,7 @@ import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/InterstitialController.dart';
 import 'package:windmill_ad_plugin_example/controller/controller.dart';
 import 'package:windmill_ad_plugin_example/models/ad_setting.dart';
+import 'package:windmill_ad_plugin_example/utils/Utils.dart';
 import 'package:windmill_ad_plugin_example/widgets/adslot_widget.dart';
 
 class IntersititialPage extends StatelessWidget {
@@ -16,7 +17,15 @@ class IntersititialPage extends StatelessWidget {
         title: const Text('插屏广告'),
       ),
       body: _buildBody(context),
+      floatingActionButton: FloatingActionButton(
+          child: const Text("清除日志", style: TextStyle(fontSize: 13),),
+          onPressed: _cleanCallback),
     );
+  }
+
+  void _cleanCallback() {
+    final  c = Get.find<IntersititialController>();
+    c.callbacks.clear();
   }
 
   Widget _buildBody(BuildContext context) {
@@ -75,13 +84,19 @@ class IntersititialPage extends StatelessWidget {
         placementId: placementId,
         userId: adcontroller.adSetting.value.otherSetting?.userId,
         listener: IWindMillInterstitialListener());
+    ad.setCustomGroup({"customKey":"customValue"});
+     List<WindMillFilterModel> list = adcontroller.adSetting.value.filterModelList ?? [];
+    ad.addFilter(list);
     ad.loadAdData();
   }
 
   void _adPlay(String placementId) async {
     final c = Get.find<IntersititialController>();
     WindmillInterstitialAd? ad = c.getWindmillInterstitialAd(placementId);
-    if (ad == null) return;
+    if (ad == null) {
+      Utils.showToast('无广告数据');
+      return;
+    }
     bool isReady = await ad.isReady();
     if (isReady) {
       AdSetting? adSetting = await AdSetting.fromFile();
@@ -93,9 +108,11 @@ class IntersititialPage extends StatelessWidget {
           "AD_SCENE_DESC": adSetting.otherSetting?.adSceneDesc ?? ""
         };
       }
+      print(map);
       ad.showAd(options: map);
     } else {
       print('ad is not ready!!!');
+       Utils.showToast('广告已过期');
     }
   }
 }

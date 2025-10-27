@@ -13,6 +13,7 @@
 #import <WindFoundation/WindFoundation.h>
 #import <Flutter/Flutter.h>
 
+
 @interface WindmillSplashAdPlugin ()<WindMillSplashAdDelegate>
 @property (nonatomic, strong) WindMillSplashAd *splashView;
 @property (nonatomic, strong) UIView *contentView;
@@ -140,18 +141,13 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     
     NSDictionary *extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size)};
     if(_title != nil && _title.length>0){
-//        _bottomView =  [self getLogoViewWithTitle:_title description:_desc];
-//        extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size),
-//                  kWindMillSplashExtraBottomViewSize:NSStringFromCGSize(CGSizeMake(width.doubleValue, 100)),
-//                  kWindMillSplashExtraBottomView:_bottomView
-//        };
-
-        _bottomView =  [self getLogoView];
+        _bottomView =  [self getLogoViewWithTitle:_title description:_desc];
+        
+        
         extra = @{kWindMillSplashExtraAdSize:NSStringFromCGSize(size),
                   kWindMillSplashExtraBottomViewSize:NSStringFromCGSize(CGSizeMake(width.doubleValue, 100)),
                   kWindMillSplashExtraBottomView:_bottomView
         };
-
     }
     _splashView = [[WindMillSplashAd alloc] initWithRequest:self.request extra:extra];
     _splashView.delegate = self;
@@ -355,44 +351,6 @@ static NSMutableDictionary<NSString *, WindmillSplashAdPlugin *> *pluginMap;
     }];
     return bottomView;
 }
-
-/// 自定义底部logo view
-- (UIView *)getLogoView{
-    UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(UIScreen.mainScreen.bounds), 100)];
-    bottomView.backgroundColor = [UIColor whiteColor];
-
-    UIView *backView = [[UIView alloc] init];
-    backView.backgroundColor = [UIColor clearColor];
-    [bottomView addSubview:backView];
-
-    //icon
-    UIImageView *iconImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [iconImgView.layer setMasksToBounds:YES];
-    [iconImgView.layer setCornerRadius:10];
-//    NSDictionary *infoPlist = [[NSBundle mainBundle] infoDictionary];
-//    NSString *icon = [[infoPlist valueForKeyPath:@"CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconFiles"] lastObject];
-    UIImage* image = [UIImage imageNamed:@"img_qidong_bottom_logo"];
-    iconImgView.image = image;
-
-    [backView addSubview:iconImgView];
-
-    [backView sms_remakeConstraints:^(SMSConstraintMaker *make) {
-        make.width.sms_equalTo(bottomView);
-        make.height.sms_equalTo(bottomView);
-        make.centerY.sms_equalTo(bottomView);
-        make.centerX.sms_equalTo(bottomView);
-    }];
-
-    [iconImgView sms_remakeConstraints:^(SMSConstraintMaker *make) {
-        make.width.sms_equalTo(bottomView);
-        make.height.sms_equalTo(bottomView);
-        make.centerY.sms_equalTo(bottomView);
-        make.centerX.sms_equalTo(bottomView);
-    }];
-
-    return bottomView;
-}
-
 
 - (void)onSplashAdClosed:(WindMillSplashAd *)splashAd {
     NSLog(@"%@", NSStringFromSelector(_cmd));

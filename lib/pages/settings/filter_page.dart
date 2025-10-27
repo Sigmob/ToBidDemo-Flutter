@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:math';
 
-// import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -221,11 +221,11 @@ String _selectEcpm = '';
     if (index == 0) {
        _showChannelMultiSelect(context);
     } else if (index == 1) {
-      // _showAdnId(context);
+      _showAdnId(context);
     } else if (index == 2) {
       _showBidTypeMultiSelect(context);
     } else if (index == 3) {
-      // _showEcpm(context);
+      _showEcpm(context);
     }
    
   }
@@ -260,29 +260,26 @@ String _selectEcpm = '';
     );
   }
 
-  // void _showAdnId(BuildContext context) async {
-  //   await showTextInputDialog(
-  //     context: context,
-  //     title: '请输入渠道广告位id',
-  //     okLabel: '确定',
-  //     cancelLabel: '取消',
-  //     textFields: [
-  //        DialogTextField(
-  //         hintText: '多个id请以，隔开',
-  //         initialText: _selectAdnId,
-  //       )
-  //     ],
-  //     onPopInvoked: (didPop,
-  //         // result
-  //         ) {
-  //       setState(() {
-  //         // _selectAdnId = result?.first ?? '';
-  //         _selectAdnId =  '_selectAdnId';
-  //         _items[1].value = _selectAdnId;
-  //       });
-  //     },
-  //   );
-  // }
+  void _showAdnId(BuildContext context) async {
+    await showTextInputDialog(
+      context: context, 
+      title: '请输入渠道广告位id',
+      okLabel: '确定',
+      cancelLabel: '取消',
+      textFields: [
+         DialogTextField(
+          hintText: '多个id请以，隔开',
+          initialText: _selectAdnId,
+        )
+      ],
+      onPopInvokedWithResult: (didPop, result) {
+        setState(() {
+          _selectAdnId = result?.first ?? '';
+          _items[1].value = _selectAdnId;
+        });
+      },
+    );
+  }
 
   void _showBidTypeMultiSelect(BuildContext context) async {
     await showDialog(
@@ -314,50 +311,44 @@ String _selectEcpm = '';
     );
   }
 
-  // void _showEcpm(BuildContext context) async {
-  //   await showTextInputDialog(
-  //     context: context,
-  //     title: '请输入价格',
-  //     okLabel: '确定',
-  //     cancelLabel: '取消',
-  //     textFields: [
-  //        DialogTextField(
-  //         hintText: '多个操作符请以，隔开',
-  //         initialText: _selectOperator,
-  //       ),
-  //        DialogTextField(
-  //         hintText: '多个数值请以，隔开',
-  //         initialText: _selectEcpm,
-  //       ),
-  //     ],
-  //     onPopInvoked:
-  //         (didPop,
-  //         // result
-  //         )
-  //     {
-  //       setState(() {
-  //         // _selectOperator = result?.first ?? '';
-  //         _selectOperator = '_selectOperator';
-  //         // _selectEcpm = result?[1] ?? '';
-  //         _selectEcpm =  '_selectEcpm';
-  //         String value = '';
-  //         List<String> operatorList = _selectOperator.split(',');
-  //         List<String> ecpmList = _selectEcpm.split(',');
-  //         int count = min(operatorList.length, ecpmList.length);
-  //         for (var i = 0; i < count; i++) {
-  //           String operator = operatorList[i];
-  //           String ecpm = ecpmList[i];
-  //           value += operator;
-  //           value += ecpm;
-  //           if (i != count - 1) {
-  //             value += ',';
-  //           }
-  //         }
-  //         _items[3].value = value;
-  //       });
-  //     },
-  //   );
-  // }
+  void _showEcpm(BuildContext context) async {
+    await showTextInputDialog(
+      context: context, 
+      title: '请输入价格',
+      okLabel: '确定',
+      cancelLabel: '取消',
+      textFields: [
+         DialogTextField(
+          hintText: '多个操作符请以，隔开',
+          initialText: _selectOperator,
+        ),
+         DialogTextField(
+          hintText: '多个数值请以，隔开',
+          initialText: _selectEcpm,
+        ),
+      ],
+      onPopInvokedWithResult: (didPop, result) {
+        setState(() {
+          _selectOperator = result?.first ?? '';
+          _selectEcpm = result?[1] ?? '';
+          String value = '';
+          List<String> operatorList = _selectOperator.split(',');
+          List<String> ecpmList = _selectEcpm.split(',');
+          int count = min(operatorList.length, ecpmList.length);
+          for (var i = 0; i < count; i++) {
+            String operator = operatorList[i];
+            String ecpm = ecpmList[i];
+            value += operator;
+            value += ecpm;
+            if (i != count - 1) {
+              value += ',';
+            }
+          }
+          _items[3].value = value;
+        });
+      },
+    );
+  }
 
   void _saveFilterModel() {
     if (_selectChannelStr.isEmpty && _selectAdnId.isEmpty && _selectBidtypeStr.isEmpty && _selectOperator.isEmpty && _selectEcpm.isEmpty) {

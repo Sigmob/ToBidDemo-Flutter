@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/BannerController.dart';
 import 'package:windmill_ad_plugin_example/extension/num_extension.dart';
+import 'package:windmill_ad_plugin_example/utils/Utils.dart';
 
 import '../../controller/controller.dart';
 import '../../widgets/adslot_widget.dart';
@@ -20,7 +21,16 @@ class BannerPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('横幅广告'),
         ),
-        body: _build());
+        body: _build(),
+        floatingActionButton: FloatingActionButton(
+          child: const Text("清除日志", style: TextStyle(fontSize: 13),),
+          onPressed: _cleanCallback),
+      );
+  }
+
+  void _cleanCallback() {
+    final  c = Get.find<BannerController>();
+    c.callbacks.clear();
   }
 
   Widget _build() {
@@ -91,7 +101,10 @@ class BannerPage extends StatelessWidget {
     final BannerController c = Get.find<BannerController>();
 
     WindmillBannerAd? ad = c.getWindmillBannerAd(placementId);
-    if(ad == null) return;
+    if(ad == null) {
+      Utils.showToast('无广告数据');
+      return;
+    }
     bool isReady = await ad.isReady();
 
     if(isReady){
@@ -107,12 +120,19 @@ class BannerPage extends StatelessWidget {
       );
       c.adItems.add(bannerAdWidget);
       c.update();
+    } else {
+      Utils.showToast('广告已过期');
     }
   }
   void _adLoad(String placementId) {
     final BannerController c = Get.find<BannerController>();
+    final adcontroller = Get.find<Controller>();
 
     WindmillBannerAd ad = c.getOrCreateWindmillBannerAd(placementId: placementId, size:adSize,listener: IWindmillBannerListener());
+
+    ad.setCustomGroup({"customKey":"customValue"});
+     List<WindMillFilterModel> list = adcontroller.adSetting.value.filterModelList ?? [];
+    ad.addFilter(list);
 
     ad.loadAd();
   }

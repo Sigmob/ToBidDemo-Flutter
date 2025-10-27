@@ -36,6 +36,8 @@ class HomePage extends StatelessWidget {
 
        WindmillAd.setUserId(adSetting.otherSetting!.userId);
 
+       WindmillAd.sceneExpose(adSetting.otherSetting!.adSceneId, adSetting.otherSetting!.adSceneDesc);
+
        List<WindmillNetworkInfo> infolist = <WindmillNetworkInfo>[];
         
       
@@ -65,6 +67,83 @@ class HomePage extends StatelessWidget {
        WindmillAd.setPresetLocalStrategyPath(path);
        WindmillAd.personalizedAdvertisin(adSetting.otherSetting!.personalizedAdvertisingState == 0? Personalized.on:Personalized.off);
 
+      
+
+       var locationStr = adSetting.otherSetting?.customLocation;
+       var location;
+       if(locationStr != null){
+
+          var list = locationStr.split(',');
+          if(list.length == 2){
+             location = Location(longitude: double.parse(list[0]),latitude:double.parse(list[1]));
+          }
+       }
+
+       var packageStr = adSetting.otherSetting?.customInstalledPackages;
+       List<PackageInfo> appList = [];
+       if (packageStr != null) {
+          var list = packageStr.split(',');
+          if (list.isNotEmpty && list.length % 4 == 0) {
+            for (var i = 0; i < list.length; i += 4) {
+              String packageName = list[i];
+              String appName = list[i + 1];
+              String versionName = list[i + 2];
+              int versionCode = int.parse(list[i + 3]);
+              PackageInfo packageInfo = PackageInfo(packageName: packageName, appName: appName, versionName: versionName, versionCode: versionCode);
+              appList.add(packageInfo);
+            }
+          }
+       }
+
+      var customDevice = CustomDevice(
+      isCanUseLocation: adSetting.otherSetting?.isCanUseLocation,
+      customLocation: location,
+      isCanUseIdfa: adSetting.otherSetting?.isCanUseIdfa,
+      customIDFA: adSetting.otherSetting?.customIDFA,
+      isCanUsePhoneState: adSetting.otherSetting?.isCanUsePhoneState,
+      customIMEI: adSetting.otherSetting?.customIMEI,
+      isCanUseAndroidId: adSetting.otherSetting?.isCanUseAndroidId,
+      customAndroidId: adSetting.otherSetting?.customAndroidId,
+      isCanUseOaid: adSetting.otherSetting?.isCanUseOaid,
+      customOAID: adSetting.otherSetting?.customOAID,
+      isCanUseAppList: adSetting.otherSetting?.isCanUseAppList,
+      customInstalledPackages: appList,
+      isCanUseMacAddress: adSetting.otherSetting?.isCanUseMacAddress,
+      customMacAddress: adSetting.otherSetting?.customMacAddress,
+      isCanUseWifiState: adSetting.otherSetting?.isCanUseWifiState,
+      isCanUseWriteExternal: adSetting.otherSetting?.isCanUseWriteExternal,
+      isCanUsePermissionRecordAudio: adSetting.otherSetting?.isCanUsePermissionRecordAudio,
+      );
+      WindmillAd.setCustomDevice(customDevice);
+
+      WindmillAd.age( adSetting.otherSetting!.age);
+
+      var customGroupStr = adSetting.otherSetting?.customGroup;
+      Map customGroup = {};
+      if(customGroupStr != null){
+
+         var list = customGroupStr.split(',');
+         for (var custom in list) {
+            var group = custom.split('-');
+            if(group.length == 2){
+             customGroup[group[0]]= group[1];
+            }
+         }
+      }
+      var placementId = Platform.isIOS?"9966371082635223":"7373760992206247";
+      WindmillAd.initCustomGroup(customGroup);
+      Map customGroup2 = {};
+      customGroup2["qa"] = "test";
+      WindmillAd.initCustomGroupForPlacement(customGroup2,placementId);
+
+      WindmillAd.setSupportMultiProcess(true);
+      WindmillAd.setWxOpenAppIdAndUniversalLink("wxdb34fba95bb9c942","https://8car0x2emn.1rtb.com/mssdkdemo/");
+      WindmillAd.setDebugEnable(true);
+      
+      NetWorkInit listener = NetWorkInit();
+      WindmillAd.setAdNetworkInitListener(listener);
+      await WindmillAd.init(adSetting.appId!.toString());
+      
       switch (adSetting.otherSetting!.gdprIndex) {
           case 0:
                  WindmillAd.gdpr( GDPR.unknow);
@@ -93,58 +172,6 @@ class HomePage extends StatelessWidget {
         default:
       }
 
-       var locationStr = adSetting.otherSetting?.customLocation;
-       var location;
-       if(locationStr != null){
-
-          var list = locationStr.split(',');
-          if(list.length == 2){
-             location = Location(longitude: double.parse(list[0]),latitude:double.parse(list[1]));
-          }
-       }
-
-      var customDevice = CustomDevice(
-      isCanUseAndroidId: adSetting.otherSetting?.isCanUseAndroidId,
-      isCanUseIdfa: adSetting.otherSetting?.isCanUseIdfa,
-      isCanUseLocation: adSetting.otherSetting?.isCanUseLocation,
-      isCanUsePhoneState: adSetting.otherSetting?.isCanUsePhoneState,
-      isCanUseAppList: adSetting.otherSetting?.isCanUseAppList,
-      isCanUseWifiState: adSetting.otherSetting?.isCanUseWifiState,
-      isCanUseWriteExternal: adSetting.otherSetting?.isCanUseWriteExternal,
-      isCanUsePermissionRecordAudio: adSetting.otherSetting?.isCanUsePermissionRecordAudio,
-      customMacAddress: adSetting.otherSetting?.customMacAddress,
-      customAndroidId: adSetting.otherSetting?.customAndroidId,
-      customIDFA: adSetting.otherSetting?.customIDFA,
-      customIMEI: adSetting.otherSetting?.customIMEI,
-      customOAID: adSetting.otherSetting?.customOAID,
-      customLocation: location);
-      WindmillAd.setCustomDevice(customDevice);
-
-      WindmillAd.age( adSetting.otherSetting!.age);
-
-      var customGroupStr = adSetting.otherSetting?.customGroup;
-      Map customGroup = {};
-      if(customGroupStr != null){
-
-         var list = customGroupStr.split(',');
-         for (var custom in list) {
-            var group = custom.split('-');
-            if(group.length == 2){
-             customGroup[group[0]]= group[1];
-            }
-         }
-      }
-      var placementId = Platform.isIOS?"9966371082635223":"7373760992206247";
-      WindmillAd.initCustomGroup(customGroup);
-      Map customGroup2 = {};
-      customGroup2["qa"] = "test";
-      WindmillAd.initCustomGroupForPlacement(customGroup2,placementId);
-
-      WindmillAd.setSupportMultiProcess(true);
-      WindmillAd.setWxOpenAppIdAndUniversalLink("wxdb34fba95bb9c942","https://8car0x2emn.1rtb.com/mssdkdemo/");
-      WindmillAd.setDebugEnable(true);
-      
-      await WindmillAd.init(adSetting.appId!.toString());
       
     
     }
@@ -257,4 +284,25 @@ class HomePage extends StatelessWidget {
   void _removeAllFilter() {
     WindmillAd.removeFilter();
   }
+}
+
+class NetWorkInit implements WindmillNetWorkInitListener {
+  @override
+  void onNetworkInitBefore(int networkId) {
+    // TODO: implement onNetworkInitBefore
+    print("onNetworkInitBefore networkId = " + networkId.toString());
+  }
+
+  @override
+  void onNetworkInitFaileds(int networkId, WMError? error) {
+    // TODO: implement onNetworkInitFaileds
+     print("onNetworkInitFaileds  networkId = " + networkId.toString());
+  }
+
+  @override
+  void onNetworkInitSuccess(int networkId) {
+    // TODO: implement onNetworkInitSuccess
+     print("onNetworkInitSuccess  networkId = " + networkId.toString());
+  }
+  
 }

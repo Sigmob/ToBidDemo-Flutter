@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
 import 'package:get/get.dart';
+import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/controller.dart';
 import '../../utils/device_util.dart';
 
@@ -72,6 +73,19 @@ class SDKPages extends StatelessWidget {
             onChange: (value) {
               c.adSetting.update((val) {
                 val?.otherSetting?.coppaIndex = int.parse(value);
+                switch (int.parse(value)) {
+                  case 0:
+                        WindmillAd.gdpr( GDPR.unknow);
+                  break;
+                  case 1:
+                        WindmillAd.gdpr( GDPR.accepted);
+                  break;
+                  case 2:
+                        WindmillAd.gdpr( GDPR.denied);
+                  break;
+
+                default:
+              } 
               });
             }
         )),
@@ -105,7 +119,8 @@ class SDKPages extends StatelessWidget {
               });
             }
         )),
-         Obx(() => _leftTitleAndRightSeg(
+        const SizedBox(height: 10,),
+        Obx(() => _leftTitleAndRightSeg(
             title: '是否允许获取位置坐标',
             value: c.adSetting.value.otherSetting!.isCanUseLocation?1:0,
             segments: {'1': '允许', '0': '不允许'},
@@ -114,15 +129,42 @@ class SDKPages extends StatelessWidget {
                 val?.otherSetting?.isCanUseLocation = int.parse(value) == 1;
               });
             })),
-         Obx(() => _leftTitleAndRightSeg(
-            title: '是否允许获取IDFA',
-            value: c.adSetting.value.otherSetting!.isCanUseIdfa?1:0,
+        Obx(() => _leftTitleAndRightSubTitle(title: '自定义位置：', text: c.adSetting.value.otherSetting!.customLocation, keyboardType: TextInputType.text, onSubmit: (text){
+          c.adSetting.update((val) {
+            val?.otherSetting?.customLocation = text;
+          });
+        })),
+        const SizedBox(height: 10,),
+        Obx(() => _leftTitleAndRightSeg(
+          title: '是否允许获取IDFA',
+          value: c.adSetting.value.otherSetting!.isCanUseIdfa?1:0,
+          segments: {'1': '允许', '0': '不允许'},
+          onChange: (value) {
+            c.adSetting.update((val) {
+              val?.otherSetting?.isCanUseIdfa = int.parse(value) == 1;
+            });
+        })),
+        Obx(() => _leftTitleAndRightSubTitle(title: '自定义IDFA：', text: c.adSetting.value.otherSetting!.customIDFA, keyboardType: TextInputType.text, onSubmit: (text){
+          c.adSetting.update((val) {
+            val?.otherSetting?.customIDFA = text;
+          });
+        })),
+        const SizedBox(height: 10,),
+        Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取IMEI',
+            value: c.adSetting.value.otherSetting!.isCanUsePhoneState?1:0,  
             segments: {'1': '允许', '0': '不允许'},
             onChange: (value) {
               c.adSetting.update((val) {
-                val?.otherSetting?.isCanUseIdfa = int.parse(value) == 1;
+                val?.otherSetting?.isCanUsePhoneState = int.parse(value) == 1;
               });
             })),
+        Obx(() => _leftTitleAndRightSubTitle(title: '自定定义IMEI：', text: c.adSetting.value.otherSetting!.customIMEI, keyboardType: TextInputType.text, onSubmit: (text){
+              c.adSetting.update((val) {
+                val?.otherSetting?.customIMEI = text;
+              });
+           })),
+        const SizedBox(height: 10,),
           Obx(() => _leftTitleAndRightSeg(
             title: '是否允许获取AndroidId',
             value: c.adSetting.value.otherSetting!.isCanUseAndroidId?1:0, 
@@ -132,6 +174,27 @@ class SDKPages extends StatelessWidget {
                 val?.otherSetting?.isCanUseAndroidId = int.parse(value) == 1;
               });
             })),
+          Obx(() => _leftTitleAndRightSubTitle(title: '自定义AndroidID：', text: c.adSetting.value.otherSetting!.customAndroidId, keyboardType: TextInputType.text, onSubmit: (text){
+              c.adSetting.update((val) {
+                val?.otherSetting?.customAndroidId = text;
+              });
+           })),
+           const SizedBox(height: 10,),
+           Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取OaId',
+            value: c.adSetting.value.otherSetting!.isCanUseOaid?1:0, 
+            segments: {'1': '允许', '0': '不允许'},
+            onChange: (value) {
+              c.adSetting.update((val) {
+                val?.otherSetting?.isCanUseOaid = int.parse(value) == 1;
+              });
+            })),
+            Obx(() => _leftTitleAndRightSubTitle(title: '自定定义OAID：', text: c.adSetting.value.otherSetting!.customOAID, keyboardType: TextInputType.text, onSubmit: (text){
+              c.adSetting.update((val) {
+                val?.otherSetting?.customOAID = text;
+              });
+           })),
+           const SizedBox(height: 10,),
           Obx(() => _leftTitleAndRightSeg(
             title: '是否允许获取AppList',
             value: c.adSetting.value.otherSetting!.isCanUseAppList?1:0, 
@@ -141,6 +204,27 @@ class SDKPages extends StatelessWidget {
                 val?.otherSetting?.isCanUseAppList = int.parse(value) == 1;
               });
             })),
+          Obx(() => _leftTitleAndRightSubTitle(title: '自定义AppList：', text: c.adSetting.value.otherSetting!.customInstalledPackages, keyboardType: TextInputType.text, onSubmit: (text){
+              c.adSetting.update((val) {
+                val?.otherSetting?.customInstalledPackages = text;
+              });
+           })),
+          const SizedBox(height: 10,),
+          Obx(() => _leftTitleAndRightSeg(
+            title: '是否允许获取MacAdress',
+            value: c.adSetting.value.otherSetting!.isCanUseMacAddress?1:0, 
+            segments: {'1': '允许', '0': '不允许'},
+            onChange: (value) {
+              c.adSetting.update((val) {
+                val?.otherSetting?.isCanUseMacAddress = int.parse(value) == 1;
+              });
+            })),
+          Obx(() => _leftTitleAndRightSubTitle(title: '自定义MacAddress：', text: c.adSetting.value.otherSetting!.customMacAddress, keyboardType: TextInputType.text, onSubmit: (text){
+              c.adSetting.update((val) {
+                val?.otherSetting?.customMacAddress = text;
+              });
+           })),
+           const SizedBox(height: 10,),
           Obx(() => _leftTitleAndRightSeg(
             title: '是否允许获取WifiState',
             value: c.adSetting.value.otherSetting!.isCanUseWifiState?1:0, 
@@ -168,45 +252,9 @@ class SDKPages extends StatelessWidget {
                 val?.otherSetting?.isCanUsePermissionRecordAudio = int.parse(value) == 1;
               });
             })),
-          Obx(() => _leftTitleAndRightSeg(
-            title: '是否允许获取IMEI',
-            value: c.adSetting.value.otherSetting!.isCanUsePhoneState?1:0,  
-            segments: {'1': '允许', '0': '不允许'},
-            onChange: (value) {
-              c.adSetting.update((val) {
-                val?.otherSetting?.isCanUsePhoneState = int.parse(value) == 1;
-              });
-            })),
-          Obx(() => _leftTitleAndRightSubTitle(title: '自定义位置：', text: c.adSetting.value.otherSetting!.customLocation, keyboardType: TextInputType.text, onSubmit: (text){
-              c.adSetting.update((val) {
-                val?.otherSetting?.customLocation = text;
-              });
-           })),
-          Obx(() => _leftTitleAndRightSubTitle(title: '自定义IDFA：', text: c.adSetting.value.otherSetting!.customIDFA, keyboardType: TextInputType.text, onSubmit: (text){
-              c.adSetting.update((val) {
-                val?.otherSetting?.customIDFA = text;
-              });
-           })),
-          Obx(() => _leftTitleAndRightSubTitle(title: '自定义AndroidID：', text: c.adSetting.value.otherSetting!.customAndroidId, keyboardType: TextInputType.text, onSubmit: (text){
-              c.adSetting.update((val) {
-                val?.otherSetting?.customAndroidId = text;
-              });
-           })),
-          Obx(() => _leftTitleAndRightSubTitle(title: '自定义MacAddress：', text: c.adSetting.value.otherSetting!.customMacAddress, keyboardType: TextInputType.text, onSubmit: (text){
-              c.adSetting.update((val) {
-                val?.otherSetting?.customMacAddress = text;
-              });
-           })),
-          Obx(() => _leftTitleAndRightSubTitle(title: '自定定义IMEI：', text: c.adSetting.value.otherSetting!.customIMEI, keyboardType: TextInputType.text, onSubmit: (text){
-              c.adSetting.update((val) {
-                val?.otherSetting?.customIMEI = text;
-              });
-           })),
-           Obx(() => _leftTitleAndRightSubTitle(title: '自定定义OAID：', text: c.adSetting.value.otherSetting!.customOAID, keyboardType: TextInputType.text, onSubmit: (text){
-              c.adSetting.update((val) {
-                val?.otherSetting?.customOAID = text;
-              });
-           })),
+          
+          
+           
       ],
     );
   }

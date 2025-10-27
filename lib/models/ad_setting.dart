@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:convert' as convert;
 import 'package:flutter/foundation.dart';
@@ -97,9 +98,9 @@ class AdSetting {
                       ],otherSetting:  OtherSetting());
 
       }else{
-          return  AdSetting(appId: 63448,slotIds: [
+          return  AdSetting(appId: 16991,slotIds: [
                       SlotId(adSlotId: "9387595158051935",adType: 1), // 激励广告位
-                      SlotId(adSlotId: "7538995191492217",adType: 2), // 开屏广告位
+                      SlotId(adSlotId: "2009470615832232",adType: 2), // 开屏广告位 
                       SlotId(adSlotId: "4753286031006593",adType: 4), // 插屏广告位
                       SlotId(adSlotId: "9224761251541712",adType: 5), // 原生信息流广告位 
                       SlotId(adSlotId: "6426940313333654",adType: 7), // 横幅广告位
@@ -192,6 +193,9 @@ class OtherSetting {
       this.isCanUseWifiState = true,
       this.isCanUseWriteExternal = true,
       this.isCanUsePermissionRecordAudio = true,
+      this.isCanUseOaid = true,
+      this.isCanUseMacAddress = true,
+      this.customInstalledPackages = "",
       this.customMacAddress = "",
       this.customAndroidId = "",
       this.customIDFA = "",
@@ -208,11 +212,13 @@ class OtherSetting {
   bool isCanUseIdfa;
   bool isCanUseAndroidId;
   bool isCanUsePhoneState;
+  bool isCanUseOaid;
 
   bool isCanUseAppList;
   bool isCanUseWifiState;
   bool isCanUseWriteExternal;
   bool isCanUsePermissionRecordAudio;
+  bool isCanUseMacAddress;
 
   String? customMacAddress;
   String? customAndroidId;
@@ -220,6 +226,7 @@ class OtherSetting {
   String? customIMEI;
   String? customIDFA;
   String? customLocation;
+  String? customInstalledPackages;
  
   String? adSceneDesc;
   String? adSceneId;
@@ -260,6 +267,9 @@ class OtherSetting {
         customIDFA: json["customIDFA"],
         customLocation: json["customLocation"],
         customGroup: json["customGroup"],
+        isCanUseOaid: json["isCanUseOaid"],
+        isCanUseMacAddress: json["isCanUseMacAddress"],
+        customInstalledPackages: json["customInstalledPackages"],
         
       );
 
@@ -290,6 +300,9 @@ class OtherSetting {
         "customIDFA": customIDFA,
         "customLocation": customLocation,
         "customGroup": customGroup,
+        "isCanUseOaid": isCanUseOaid,
+        "isCanUseMacAddress": isCanUseMacAddress,
+        "customInstalledPackages": customInstalledPackages,
 
       };
 }

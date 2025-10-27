@@ -6,11 +6,12 @@ import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/SplashController.dart';
 import 'package:windmill_ad_plugin_example/extension/num_extension.dart';
 import 'package:windmill_ad_plugin_example/pages/settings/sdk_params_page.dart';
+import 'package:windmill_ad_plugin_example/utils/Utils.dart';
 import 'dart:ui';
 import '../../controller/controller.dart';
 import '../../widgets/adslot_widget.dart';
 
-class SplashPage extends StatelessWidget with WidgetsBindingObserver {
+class SplashPage extends StatelessWidget {
   const SplashPage({Key? key}) : super(key: key);
   static var lastPopTime = null;
   @override
@@ -20,7 +21,16 @@ class SplashPage extends StatelessWidget with WidgetsBindingObserver {
         appBar: AppBar(
           title: const Text('开屏广告'),
         ),
-        body: _build());
+        body: _build(),
+        floatingActionButton: FloatingActionButton(
+          child: const Text("清除日志", style: TextStyle(fontSize: 13),),
+          onPressed: _cleanCallback),
+    );
+  }
+
+  void _cleanCallback() {
+    final SplashController c = Get.find();
+    c.callbacks.clear();
   }
 
   Widget _build() {
@@ -64,11 +74,16 @@ class SplashPage extends StatelessWidget with WidgetsBindingObserver {
     final SplashController c = Get.find<SplashController>();
 
     WindmillSplashAd? ad = c.getWindmillSplashAd(placementId);
-    if (ad == null) return;
+    if (ad == null) {
+      Utils.showToast('无广告数据');
+      return;
+    } 
     bool isReady = await ad.isReady();
 
     if (isReady) {
       ad.showAd();
+    } else {
+       Utils.showToast('广告已过期');
     }
     lastPopTime = DateTime.now();
   }
@@ -91,6 +106,9 @@ class SplashPage extends StatelessWidget with WidgetsBindingObserver {
         desc: "测试开始",
         listener: IWMSplashListener());
 
+    ad.setCustomGroup({"customKey":"customValue"});
+    List<WindMillFilterModel> list = adcontroller.adSetting.value.filterModelList ?? [];
+    ad.addFilter(list);
     ad.loadAd();
   }
 }
@@ -119,12 +137,12 @@ class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
           c.callbacks.add(
               'onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
         }));
-    c.adPlay(ad.request.placementId);
   }
 
   @override
   void onAdOpened(WindmillSplashAd ad) {
     print('flu-Splash --- onAdOpened');
+    c.callbacks.add('onAdOpened -- ${ad.request.placementId}');
     ad.getAdInfo().then((adinfo) => c.callbacks.add(
         'onAdOpened -- ${ad.request.placementId} -- adInfo -- ${adinfo.toJson()}'));
   }

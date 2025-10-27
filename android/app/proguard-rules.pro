@@ -138,7 +138,6 @@ public static final android.os.Parcelable$Creator *;
 -keep public class * extends android.support.v4.**
 
 # androidx
-
 -keep class com.google.android.material.** {*;}
 -keep class androidx.** {*;}
 -keep public class * extends androidx.**
@@ -160,7 +159,7 @@ public static final android.os.Parcelable$Creator *;
     @android.webkit.JavascriptInterface <methods>;
 }
 
-#oaid
+# OAID
 -dontwarn com.bun.**
 -keep class com.bun.** {*;}
 #-keep, includedescriptorclasses class com.asus.msa.SupplementaryDID.** { *; }
@@ -182,7 +181,7 @@ public static final android.os.Parcelable$Creator *;
 -keep public class com.netease.nis.sdkwrapper.Utils {public <methods>;}
 
 
-#SigMobSdk
+# Sibmob
 -keep class com.sigmob.sdk.common.SDKConfig{public *;}
 -keep class com.sigmob.logger.**{public *;}
 -keep class com.sigmob.sdk.common.Constants{public *;}
@@ -197,8 +196,9 @@ public static final android.os.Parcelable$Creator *;
 -keep class com.sigmob.sdk.SigmobXFileProvider{public *; }
 
 -keep class com.sigmob.sdk.SigmobFileProvider{public *; }
+-keep class com.sigmob.sdk.SigmobFileV4Provider{public *; }
 
-#csj
+# csj
 -keep class com.bytedance.sdk.openadsdk.** { *; }
 -keep class com.bytedance.frameworks.** { *; }
 
@@ -212,17 +212,17 @@ public static final android.os.Parcelable$Creator *;
 
 -keep class com.bykv.vk.** {*;}
 
-#头条gp
+# 头条 gp
 -keep class com.bykv.vk.openvk.** {*;}
 -keep public interface com.bykv.vk.openvk.downloadnew.** {*;}
 -keep class com.pgl.sys.ces.* {*;}
 
-#gdt
+# gdt
 -keep class com.qq.e.** {
     public protected *;
 }
 
-#tapjoy
+# tapjoy
 -keep class com.tapjoy.** { *; }
 -keep class com.moat.** { *; }
 -keepattributes JavascriptInterface
@@ -243,7 +243,7 @@ public static final ** CREATOR;
 -keep class com.google.android.gms.ads.identifier.** { *; }
 -dontwarn com.tapjoy.**
 
-#kuaishou
+# 快手联盟
 -keep class org.chromium.** {*;}
 -keep class org.chromium.** { *; }
 -keep class aegon.chrome.** { *; }
@@ -253,7 +253,7 @@ public static final ** CREATOR;
 -dontwarn com.ksad.**
 -dontwarn aegon.chrome.**
 
-#oppo
+# OPPO
 -keep class com.opos.** { *;}
 -keep class com.heytap.msp.mobad.** { *;}
 -keep class com.heytap.openid.** {*;}
@@ -270,12 +270,12 @@ public static final ** CREATOR;
     public protected
 *; }
 
-#mimo
+# mimo
 # Mediation SDK
 -keep class com.xiaomi.ad.mediation.** { *; }
-#tencent sdk
+# Tencent sdk
 -keep class com.qq.e.** {public *;}
-#Ad SDK
+# Ad SDK
 -keep class com.miui.zeus.mimo.sdk.** { *; }
 -keep class com.google.gson.examples.android.model.** { <fields>; }
 -keep class * implements com.google.gson.TypeAdapterFactory
@@ -285,8 +285,7 @@ public static final ** CREATOR;
     *;
 }
 
-
-#vivo
+# vivo
 -keepattributes SourceFile,LineNumberTable
 -dontwarn com.squareup.okhttp.**
 -dontwarn okhttp3.**
@@ -323,7 +322,7 @@ public *;
 -keep class com.tencent.tgpa.**{*;}
 -keep class com.tencent.klevin.**{*;}
 
-# BaiDu
+# 百度联盟
 -ignorewarnings
 -dontwarn com.baidu.mobads.sdk.api.**
 -keepclassmembers class * extends android.app.Activity {
@@ -341,7 +340,7 @@ public *;
 -keep class com.baidu.ad.magic.flute.** {*;}
 -keep class com.baidu.mobstat.forbes.** {*;}
 
-#Gromore
+# Gromore
 -keep class bykvm*.**
 -keep class com.bytedance.msdk.adapter.**{ public *; }
 -keep class com.bytedance.msdk.api.** {
@@ -359,8 +358,20 @@ public *;
 -keep class com.beizi.fusion.** {*; }
 -keep class com.beizi.ad.** {*; }
 
-# TapTap混淆
+# TapTap 混淆
 -dontwarn com.tapsdk.**
 -dontwarn com.tapadn.**
 -keep class com.tapsdk.** {*; }
 -keep class com.tapadn.** {*; }
+
+# 倍业混淆
+-dontwarn com.mercury.**
+-keep class com.mercury.** {*;}
+
+# 章鱼移动混淆
+-dontwarn com.octopus.**
+-keep class com.octopus.** {*;}
+
+# HuaWei-lite混淆
+-keep class com.huawei.openalliance.ad.** { *; }
+-keep class com.huawei.hms.ads.** { *; }

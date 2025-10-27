@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 import 'package:windmill_ad_plugin_example/controller/RwController.dart';
 import 'package:windmill_ad_plugin_example/models/ad_setting.dart';
+import 'package:windmill_ad_plugin_example/utils/Utils.dart';
 import '../../controller/controller.dart';
 import '../../widgets/adslot_widget.dart';
 
@@ -16,7 +17,14 @@ class RewardPage extends StatelessWidget {
         title: const Text('激励视频广告'),
       ),
       body: _buildBody(context),
+      floatingActionButton: FloatingActionButton(
+          child: const Text("清除日志", style: TextStyle(fontSize: 13),),
+          onPressed: _cleanCallback),
     );
+  }
+  void _cleanCallback() {
+    final RwController c = Get.find<RwController>();
+    c.rwCallbacks.clear();
   }
 
   Widget _buildBody(BuildContext context) {
@@ -150,6 +158,8 @@ class RewardPage extends StatelessWidget {
         placementId: placementId,
         userId: adcontroller.adSetting.value.otherSetting?.userId,
         listener: IWindMillRewardListener());
+    ad.setCustomGroup({"customKey":"customValue"});
+    ad.addFilter(list);
     ad.loadAdData();
   }
 
@@ -160,7 +170,10 @@ class RewardPage extends StatelessWidget {
     // WindmillAd.setFilterNetworkFirmIdList(placementId, networkFirmIdList);
 
     WindmillRewardAd? ad = c.getWindmillRewardAd(placementId);
-    if (ad == null) return;
+    if (ad == null) {
+      Utils.showToast('无广告数据');
+      return;
+    }
     bool isReady = await ad.isReady();
     if (isReady) {
       AdSetting? adSetting = await AdSetting.fromFile();
@@ -171,9 +184,11 @@ class RewardPage extends StatelessWidget {
           "AD_SCENE_DESC": adSetting.otherSetting?.adSceneDesc ?? ""
         };
       }
+      print(map);
       ad.showAd(options: map);
     } else {
       print('ad is not ready!!!');
+       Utils.showToast('广告已过期');
     }
   }
 }
