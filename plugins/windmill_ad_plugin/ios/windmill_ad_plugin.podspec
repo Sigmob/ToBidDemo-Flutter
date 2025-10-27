@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'windmill_ad_plugin'
-  s.version          = '4.3.20'
+  s.version          = '4.6.80'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -17,25 +17,27 @@ A new Flutter project.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
-  # s.static_framework = true
-  s.dependency 'ToBid-iOS', '4.3.20'
-  s.dependency 'ToBid-iOS/TouTiaoAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/CSJMediationAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/AdmobAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/MintegralAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/GDTAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/VungleAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/UnityAdsAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/KSAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/BaiduAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/KlevinAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/AdScopeAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/IronSourceAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/AppLovinAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/MSAdAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/QuMengAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/JADYunAdapter', '4.3.20'
-  s.dependency 'ToBid-iOS/BidResultAdapter', '4.3.20'
+  s.static_framework = true
+  s.dependency 'ToBid-iOS', '4.6.80'
+  s.dependency 'ToBid-iOS/TouTiaoAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/CSJMediationAdapter', '4.6.80'
+#   s.dependency 'ToBid-iOS/AdmobAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/MintegralAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/GDTAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/VungleAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/UnityAdsAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/KSAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/BaiduAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/KlevinAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/AdScopeAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/IronSourceAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/AppLovinAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/MSAdAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/QuMengAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/JADYunAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/MercuryAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/OctopusAdapter', '4.6.80'
+  s.dependency 'ToBid-iOS/BidResultAdapter', '4.6.80'
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
 end

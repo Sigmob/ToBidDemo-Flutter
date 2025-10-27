@@ -71,6 +71,9 @@ enum WindmillInteractionType {
   static const INMOBI = 37;
   static const VIVOADN = 38;
   static const BILLOWLINK = 39;
-  static const JADYun = 40; 
+  static const JADYun = 40;
+  static const Octopus = 41;        // 章鱼
+  static const Mercury = 42;        // 倍业 
+  static const HuaWei_Lite = 43;    
   static const TOBIDX = 999;
 }

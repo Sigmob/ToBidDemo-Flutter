@@ -134,6 +134,16 @@
 
 }
 
+- (void)setCustomGroupMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSDictionary *arguments = call.arguments;
+    if (![WindmillUtil isValidDic:arguments]) return;
+    NSDictionary *customGroup = [arguments objectForKey:@"customGroup"];
+    if ([WindmillUtil isValidDic:customGroup]) {
+        [self.reward setLoadCustomGroup:customGroup];
+    }
+    result(nil);
+}
+
 
 - (void)destroyMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSString *uniqId = [call.arguments objectForKey:@"uniqId"];

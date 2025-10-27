@@ -18,4 +18,5 @@ export 'src/models/error.dart';
 export 'src/models/network_info.dart';
 export 'src/models/filter_info.dart';
 export 'src/models/native_info.dart';
+export 'src/core/windmill_network_listener.dart';
 

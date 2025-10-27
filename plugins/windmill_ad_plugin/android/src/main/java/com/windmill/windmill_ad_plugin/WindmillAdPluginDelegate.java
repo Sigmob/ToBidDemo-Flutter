@@ -1,26 +1,36 @@
 package com.windmill.windmill_ad_plugin;
 
+import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventOnNetworkInitBefore;
+import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventOnNetworkInitFaileds;
+import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventOnNetworkInitSuccess;
+
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
 import com.windmill.sdk.WMAdConfig;
 import com.windmill.sdk.WMAdnInitConfig;
 import com.windmill.sdk.WMCustomController;
 import com.windmill.sdk.WMNetworkConfig;
+import com.windmill.sdk.WMNetworkInitListener;
 import com.windmill.sdk.WMWaterfallFilter;
 import com.windmill.sdk.WindMillAd;
 import com.windmill.sdk.WindMillConsentStatus;
@@ -56,10 +66,12 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
     private BannerAd bannerAd;
     private NativeAd nativeAd;
     private SplashAd splashAd;
+    private MethodChannel channel;
 
-    public WindmillAdPluginDelegate(FlutterPlugin.FlutterPluginBinding flutterPluginBinding, Activity activity) {
+    public WindmillAdPluginDelegate(FlutterPlugin.FlutterPluginBinding flutterPluginBinding, Activity activity, MethodChannel channel) {
         this.activity = activity;
         this.flutterPluginBinding = flutterPluginBinding;
+        this.channel = channel;
     }
 
     @Override
@@ -97,6 +109,9 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
             final String customOAID = call.argument("customOAID");
             final String customMacAddress = call.argument("customMacAddress");
             HashMap customLocation = call.argument("customLocation");
+            final Boolean isCanUseOaid =  call.argument("isCanUseOaid");
+            final Boolean isCanUseMacAddress = call.argument("isCanUseMacAddress");
+            List<HashMap<String, Object>> customInstalledPackages = call.argument("customInstalledPackages");
 
 //            Log.d(TAG, "customDevice: isCanUseAppList:" + isCanUseAppList +
 //                    ":isCanUseWifiState:" + isCanUseWifiState +
@@ -119,6 +134,42 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
                     double latitude = customLocation.get("latitude") == null ? 0 : (Double) customLocation.get("latitude");
                     location.setLongitude(longitude);
                     location.setLatitude(latitude);
+                }
+
+                List<PackageInfo> customPackages = new ArrayList<>();
+                if (customInstalledPackages != null) {
+                    for (HashMap<String, Object> item: customInstalledPackages) {
+                        String packageName = null;
+                        String appName = null;
+                        String versionName = null;
+                        int versionCode = -1;
+                        Object obj =  item.get("packageName");
+                        if (obj instanceof String) {
+                            packageName = (String) obj;
+                        }
+                        obj = item.get("appName");
+                        if (obj instanceof String) {
+                            appName = (String) obj;
+                        }
+                        obj = item.get("versionName");
+                        if (obj instanceof String) {
+                            versionName = (String) obj;
+                        }
+                        obj = item.get("versionCode");
+                        if (obj instanceof Integer) {
+                            versionCode = (int)obj;
+                        }
+                        if (packageName != null && appName != null && versionName != null && versionCode != -1) {
+                            PackageInfo packageInfo = new PackageInfo();
+                            packageInfo.packageName = packageName;
+                            ApplicationInfo applicationInfo = new ApplicationInfo();
+                            applicationInfo.name = appName;
+                            packageInfo.applicationInfo = applicationInfo;
+                            packageInfo.versionName = versionName;
+                            packageInfo.versionCode = versionCode;
+                            customPackages.add(packageInfo);
+                        }
+                    }
                 }
 
                 wmCustomController = new WMCustomController() {
@@ -153,6 +204,11 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
                     }
 
                     @Override
+                    public boolean isCanUseOaid() {
+                        return isCanUseOaid == null ? true : isCanUseOaid;
+                    }
+
+                    @Override
                     public String getDevOaid() {
                         return customOAID;
                     }
@@ -164,10 +220,11 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
 
                     @Override
                     public List<PackageInfo> getInstalledPackages() {
-                        if (isCanUseAppList != null && !isCanUseAppList) {
+                        if (isCanUseAppList != null && isCanUseAppList) {
                             return getAllUserInstalledApps();
                         }
-                        return super.getInstalledPackages();
+//                        return super.getInstalledPackages();
+                        return  customPackages;
                     }
 
                     @Override
@@ -183,6 +240,11 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
                     @Override
                     public boolean isCanUsePermissionRecordAudio() {
                         return isCanUsePermissionRecordAudio == null ? true : isCanUsePermissionRecordAudio;
+                    }
+
+                    @Override
+                    public boolean isCanUseMacAddress() {
+                        return isCanUseMacAddress == null ? true : isCanUseMacAddress;
                     }
 
                     @Override
@@ -303,7 +365,10 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
             if (placementId != null) {
                 WindMillAd.sharedAds().removeFilterWithPlacementIds(placementId);
             }
-        } else {
+        } else if (call.method.equals("setAdNetworkInitListener")) {
+            WindMillAd.sharedAds().setNetworkInitListener(new IWMNetworkInitListener(channel));
+        }
+        else {
             result.notImplemented();
         }
     }
@@ -551,5 +616,55 @@ public class WindmillAdPluginDelegate implements MethodChannel.MethodCallHandler
         }
 
         result.success(null);
+    }
+}
+
+class IWMNetworkInitListener implements WMNetworkInitListener {
+    private  MethodChannel channel;
+
+    public IWMNetworkInitListener(MethodChannel channel) {
+        this.channel = channel;
+    }
+
+    @Override
+    public void onNetworkInitBefore(int channel_id, Object initInstance) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("networkId", channel_id);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                channel.invokeMethod(kWindmillEventOnNetworkInitBefore, args);
+            }
+        });
+    }
+
+    @Override
+    public void onNetworkInitSuccess(int channel_id) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("networkId", channel_id);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                channel.invokeMethod(kWindmillEventOnNetworkInitSuccess, args);
+            }
+        });
+
+    }
+
+    @Override
+    public void onNetworkInitFailed(int channel_id, int error_code, String error_msg) {
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("networkId", channel_id);
+        args.put("code", error_code);
+        args.put("message", error_msg);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                channel.invokeMethod(kWindmillEventOnNetworkInitFaileds, args);
+            }
+        });
     }
 }

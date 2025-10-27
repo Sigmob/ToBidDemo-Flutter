@@ -48,4 +48,8 @@ NSString * const kWindmillEventAdSourceSuccess = @"onAdSourceSuccess";
 /// 广告源加载失败回调
 NSString * const kWindmillEventAdSourceFailed = @"onAdSourceFailed";
 
+NSString * const kWindmillEventonNetworkInitBefore = @"onNetworkInitBefore";
+NSString * const kWindmillEventonNetworkInitSuccess = @"onNetworkInitSuccess";
+NSString * const kWindmillEventonNetworkInitFaileds = @"onNetworkInitFaileds";
+
 @end

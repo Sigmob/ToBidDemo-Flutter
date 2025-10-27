@@ -46,6 +46,10 @@ extern NSString * const kWindmillEventAdSourceStartLoading;
 extern NSString * const kWindmillEventAdSourceSuccess;
 /// 广告源加载失败回调
 extern NSString * const kWindmillEventAdSourceFailed;
+
+extern NSString * const kWindmillEventonNetworkInitBefore;
+extern NSString * const kWindmillEventonNetworkInitSuccess;
+extern NSString * const kWindmillEventonNetworkInitFaileds;
 @end
 
 NS_ASSUME_NONNULL_END

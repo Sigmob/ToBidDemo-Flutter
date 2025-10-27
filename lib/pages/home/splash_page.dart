@@ -10,7 +10,7 @@ import 'dart:ui';
 import '../../controller/controller.dart';
 import '../../widgets/adslot_widget.dart';
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatelessWidget with WidgetsBindingObserver {
   const SplashPage({Key? key}) : super(key: key);
   static var lastPopTime = null;
   @override
@@ -82,6 +82,7 @@ class SplashPage extends StatelessWidget {
       size = Size(window.physicalSize.width / window.devicePixelRatio,
           window.physicalSize.height / window.devicePixelRatio);
     }
+    c.removeSplashAd(placementId);
     WindmillSplashAd ad = c.getOrCreateWindmillSplashAd(
         placementId: placementId,
         userId: adcontroller.adSetting.value.otherSetting?.userId,
@@ -118,6 +119,7 @@ class IWMSplashListener extends WindmillSplashListener<WindmillSplashAd> {
           c.callbacks.add(
               'onAdLoaded -- ${ad.request.placementId} -- adInfo -- ${element.toJson()}');
         }));
+    c.adPlay(ad.request.placementId);
   }
 
   @override

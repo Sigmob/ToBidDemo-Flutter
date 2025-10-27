@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.viva.moto.androidcn"
+        applicationId "com.dxjk.xw"
         minSdkVersion 24
         // You can update the following values to match your application needs. 
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
@@ -96,7 +96,7 @@ dependencies {
     implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/baidu')
     implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/mintegral-cn')
     implementation fileTree(include: ["*.jar", "*.aar"], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/adscope')
-    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/klevin')
+//    implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/klevin')
     implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/qumeng')
     implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/huawei')
     implementation fileTree(include: ["*.jar", '*.aar'], dir: '../../plugins/windmill_ad_plugin/android/libs/AdNetworks/honor')
@@ -138,4 +138,7 @@ dependencies {
 //        all*.exclude group: 'com.squareup.okio'
 //        all*.exclude group: 'com.squareup.okhttp3'
 //    }
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.5.0'
+
 }

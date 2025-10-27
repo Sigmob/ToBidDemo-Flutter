@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:windmill_ad_plugin/src/ads/reward/reward_listener.dart';
@@ -75,7 +76,28 @@ class WindmillRewardAd with WindmillEventHandler {
    
     return null;
   }
+
+  /// 自定义分组
+  Future<void> setCustomGroup(Map<String, String> customGroup) async {
+    await _channel.invokeMethod('setCustomGroup', {
+       "uniqId":_uniqId,
+       "customGroup": customGroup
+    });
+  }
   
+  /// 广告过滤 (仅Android支持)
+  Future<void> addFilter(List<WindMillFilterModel> modelList) async {
+    if (Platform.isAndroid) {
+      List<Map<String, dynamic>> listMap = [];
+      for (WindMillFilterModel model in modelList) {
+        listMap.add(model.toJson());
+      }
+      await _channel.invokeMethod("addFilter", {
+        "uniqId": _uniqId,
+        "modelList": listMap
+      });
+    }
+  }
   
   Future<void> loadAdData() async {
     await _channel.invokeMethod('load', {

@@ -97,9 +97,9 @@ class AdSetting {
                       ],otherSetting:  OtherSetting());
 
       }else{
-          return  AdSetting(appId: 16991,slotIds: [
+          return  AdSetting(appId: 63448,slotIds: [
                       SlotId(adSlotId: "9387595158051935",adType: 1), // 激励广告位
-                      SlotId(adSlotId: "2009470615832232",adType: 2), // 开屏广告位 
+                      SlotId(adSlotId: "7538995191492217",adType: 2), // 开屏广告位
                       SlotId(adSlotId: "4753286031006593",adType: 4), // 插屏广告位
                       SlotId(adSlotId: "9224761251541712",adType: 5), // 原生信息流广告位 
                       SlotId(adSlotId: "6426940313333654",adType: 7), // 横幅广告位

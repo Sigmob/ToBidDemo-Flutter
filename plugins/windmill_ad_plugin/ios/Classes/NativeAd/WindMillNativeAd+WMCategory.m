@@ -25,7 +25,7 @@
 }
 
 - (NSString *)wm_JsonString {
-    return [self sm_JSONString];
+    return [self sigmob_JSONString];
 }
 
 @end

@@ -100,6 +100,28 @@ class WindmillNativeAd with WindmillEventHandler {
     return null;
   }
 
+  /// 自定义分组
+  Future<void> setCustomGroup(Map<String, String> customGroup) async {
+    await _channel.invokeMethod('setCustomGroup', {
+       "uniqId":_uniqId,
+       "customGroup": customGroup
+    });
+  }
+
+  /// 广告过滤 (仅Android支持)
+  Future<void> addFilter(List<WindMillFilterModel> modelList) async {
+    if (Platform.isAndroid) {
+      List<Map<String, dynamic>> listMap = [];
+      for (WindMillFilterModel model in modelList) {
+        listMap.add(model.toJson());
+      }
+      await _channel.invokeMethod("addFilter", {
+        "uniqId": _uniqId,
+        "modelList": listMap
+      });
+    }
+  }
+
   Future<void> destroy() async {
     await _channel.invokeMethod('destroy', {"uniqId": _uniqId});
   }

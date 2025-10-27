@@ -119,6 +119,16 @@
 
 }
 
+- (void)setCustomGroupMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSDictionary *arguments = call.arguments;
+    if (![WindmillUtil isValidDic:arguments]) return;
+    NSDictionary *customGroup = [arguments objectForKey:@"customGroup"];
+    if ([WindmillUtil isValidDic:customGroup]) {
+        [self.intersititialAd setLoadCustomGroup:customGroup];
+    }
+    result(nil);
+}
+
 - (void)showAdMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     UIViewController *rootViewController = [WindmillUtil getCurrentController];
     NSDictionary *options = [call.arguments objectForKey:@"options"];

@@ -155,6 +155,16 @@ static NSMutableDictionary<NSString *, WindmillBannerAdPlugin *> *pluginMap;
 
 }
 
+- (void)setCustomGroupMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSDictionary *arguments = call.arguments;
+    if (![WindmillUtil isValidDic:arguments]) return;
+    NSDictionary *customGroup = [arguments objectForKey:@"customGroup"];
+    if ([WindmillUtil isValidDic:customGroup]) {
+        [self.bannerView setLoadCustomGroup:customGroup];
+    }
+    result(nil);
+}
+
 
 - (void)getAdInfoMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     

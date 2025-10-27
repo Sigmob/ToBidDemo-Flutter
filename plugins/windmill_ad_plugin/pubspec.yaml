@@ -1,6 +1,6 @@
 name: windmill_ad_plugin
 description: A new Flutter project.
-version: 4.4.0
+version: 4.6.80
 homepage: https://www.sigmob.com
 
 environment:
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  visibility_detector: ^0.4.0
+  visibility_detector: ^0.3.3
 
 
 dev_dependencies:

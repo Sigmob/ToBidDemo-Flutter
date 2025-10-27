@@ -22,5 +22,6 @@
 
 + (BOOL)isValidDic:(NSDictionary *)dic;
 
++ (BOOL)isValidNumber:(NSNumber *)number;
 
 @end

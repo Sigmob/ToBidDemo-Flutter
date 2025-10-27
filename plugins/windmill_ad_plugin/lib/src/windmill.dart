@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:windmill_ad_plugin/src/core/windmill_network_listener.dart';
 import 'package:windmill_ad_plugin/windmill_ad_plugin.dart';
 
-class WindmillAd {
+class WindmillAd with WindmillNetWorkInitEventHandler {
   static const _channel = MethodChannel('com.windmill.ad');
 
   /// 获取SDK版本号
@@ -52,24 +53,27 @@ class WindmillAd {
   /// 设置自定义信息
   static Future<void> setCustomDevice(CustomDevice customDevice) {
     return _channel.invokeMethod('customDevice', {
-      'isCanUseAppList': customDevice.isCanUseAppList,
-      'isCanUseWifiState': customDevice.isCanUseWifiState,
-      'isCanUseWriteExternal': customDevice.isCanUseWriteExternal,
-      'isCanUsePermissionRecordAudio':
-          customDevice.isCanUsePermissionRecordAudio,
-      'isCanUseAndroidId': customDevice.isCanUseAndroidId,
-      'isCanUseLocation': customDevice.isCanUseLocation,
-      'isCanUsePhoneState': customDevice.isCanUsePhoneState,
-      'customAndroidId': customDevice.customAndroidId,
-      'customIMEI': customDevice.customIMEI,
-      'customOAID': customDevice.customOAID,
-      'customMacAddress': customDevice.customMacAddress,
       'isCanUseIdfa': customDevice.isCanUseIdfa,
       'customIDFA': customDevice.customIDFA,
+      'isCanUseLocation': customDevice.isCanUseLocation,
       'customLocation': {
         'latitude': customDevice.customLocation?.latitude,
         'longitude': customDevice.customLocation?.longitude
       },
+      'isCanUsePhoneState': customDevice.isCanUsePhoneState,
+      'customIMEI': customDevice.customIMEI,
+      'isCanUseAndroidId': customDevice.isCanUseAndroidId,
+      'customAndroidId': customDevice.customAndroidId,
+      'isCanUseOaid': customDevice.isCanUseOaid,
+      'customOAID': customDevice.customOAID,
+      'isCanUseAppList': customDevice.isCanUseAppList,
+      'customInstalledPackages': customDevice.customInstalledPackages?.map((e) => e.toJson()).toList(),
+      'isCanUseWifiState': customDevice.isCanUseWifiState,
+      'isCanUseMacAddress': customDevice.isCanUseMacAddress,
+      'customMacAddress': customDevice.customMacAddress,
+      'isCanUseWriteExternal': customDevice.isCanUseWriteExternal,
+      'isCanUsePermissionRecordAudio':
+          customDevice.isCanUsePermissionRecordAudio,
     });
   }
 
@@ -207,5 +211,12 @@ class WindmillAd {
   /// 设置广告位预置策略所在的Bundle路径
   static Future<void> setPresetLocalStrategyPath(String path) {
     return _channel.invokeMethod('setPresetLocalStrategyPath', {'path': path});
+  }
+
+  /// 设置渠道初始化代理
+  static Future<void> setAdNetworkInitListener(WindmillNetWorkInitListener listener) {
+    WindmillNetWorkInitEventHandler.delegate = listener;
+    _channel.setMethodCallHandler(WindmillNetWorkInitEventHandler.handleEvent);
+    return _channel.invokeMethod("setAdNetworkInitListener");
   }
 }

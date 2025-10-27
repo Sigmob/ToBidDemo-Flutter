@@ -52,6 +52,10 @@ public class WindmillAdPlugin implements FlutterPlugin, ActivityAware {
     /// 广告源加载失败回调
     public static final String kWindmillEventAdSourceFailed = "onAdSourceFailed";
 
+    public static final String kWindmillEventOnNetworkInitBefore = "onNetworkInitBefore";
+    public static final String kWindmillEventOnNetworkInitSuccess = "onNetworkInitSuccess";
+    public static final String kWindmillEventOnNetworkInitFaileds = "onNetworkInitFaileds";
+
     private MethodChannel channel;
     // 插件代理
     private WindmillAdPluginDelegate delegate;//MethodCallHandler
@@ -73,7 +77,7 @@ public class WindmillAdPlugin implements FlutterPlugin, ActivityAware {
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
-        this.delegate = new WindmillAdPluginDelegate(this.flutterPluginBinding, binding.getActivity());
+        this.delegate = new WindmillAdPluginDelegate(this.flutterPluginBinding, binding.getActivity(), channel);
         channel.setMethodCallHandler(this.delegate);
         this.delegate.onAttachedToActivity(binding);
     }

@@ -12,11 +12,14 @@ import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdR
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.windmill.sdk.WMAdFilter;
 import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
@@ -28,11 +31,13 @@ import com.windmill.sdk.natives.WMNativeAdData;
 import com.windmill.sdk.natives.WMNativeAdDataType;
 import com.windmill.sdk.natives.WMNativeAdRender;
 import com.windmill.sdk.natives.WMNativeAdRequest;
+import com.windmill.windmill_ad_plugin.WindmillAdPlugin;
 import com.windmill.windmill_ad_plugin.core.IWMAdAutoLoad;
 import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.utils.ResourceUtil;
+import com.windmill.windmill_ad_plugin.utils.WindmillUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -216,6 +221,21 @@ public class NativeAd extends WindmillBaseAd implements MethodChannel.MethodCall
         return null;
     }
 
+    public Object setCustomGroup(MethodCall call) {
+        HashMap<String, String> customGroup =  call.argument("customGroup");
+        this.nativeAd.setCustomGroup(customGroup);
+        return null;
+    }
+
+    public Object addFilter(MethodCall call) {
+        ArrayList<HashMap<String, Object>> list = call.argument("modelList");
+        WMAdFilter filter = WindmillUtils.getCurrentFilter(list);
+        if (filter != null) {
+            this.nativeAd.setFilter(filter);
+        }
+        return null;
+    }
+
     public void fillAd(WMNativeAdData nativeAdData) {
         this.wmNativeAdData = nativeAdData;
     }
@@ -366,7 +386,13 @@ class IWMNativeAdListener implements WMNativeAdData.NativeAdInteractionListener 
     @Override
     public void onADExposed(final AdInfo adInfo) {
         this.nativeAd.adInfo = adInfo;
-        channel.invokeMethod(kWindmillEventAdOpened, null);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                channel.invokeMethod(kWindmillEventAdOpened, null);
+            }
+        });
     }
 
     @Override

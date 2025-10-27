@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 
+import com.windmill.sdk.WMAdFilter;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
 import com.windmill.sdk.banner.WMBannerAdListener;
@@ -24,6 +25,7 @@ import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.sdk.models.AdInfo;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
+import com.windmill.windmill_ad_plugin.utils.WindmillUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -143,6 +145,21 @@ public class BannerAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     public Object isReady(MethodCall call) {
         return this.bannerAdView.isReady();
+    }
+
+    public Object setCustomGroup(MethodCall call) {
+        HashMap<String, String> customGroup =  call.argument("customGroup");
+        this.bannerAdView.setCustomGroup(customGroup);
+        return null;
+    }
+
+    public Object addFilter(MethodCall call) {
+        ArrayList<HashMap<String, Object>> list = call.argument("modelList");
+        WMAdFilter filter = WindmillUtils.getCurrentFilter(list);
+        if (filter != null) {
+            this.bannerAdView.setFilter(filter);
+        }
+        return null;
     }
 
     public Object destroy(MethodCall call) {

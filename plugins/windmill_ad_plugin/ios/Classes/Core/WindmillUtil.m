@@ -88,5 +88,11 @@
     return YES;
 }
 
++ (BOOL)isValidNumber:(NSNumber *)number {
+    if (number == nil || ![number isKindOfClass:[NSNumber class]]) {
+        return NO;
+    }
+    return YES;
+}
 
 @end

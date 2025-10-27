@@ -2,8 +2,15 @@ package com.windmill.windmill_ad_plugin.splashAd;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventOnNetworkInitBefore;
+
 import android.app.Activity;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -11,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.windmill.sdk.WMAdFilter;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
 
@@ -19,10 +27,12 @@ import com.windmill.sdk.splash.IWMSplashEyeAd;
 import com.windmill.sdk.splash.WMSplashAd;
 import com.windmill.sdk.splash.WMSplashAdListener;
 import com.windmill.sdk.splash.WMSplashAdRequest;
+import com.windmill.windmill_ad_plugin.R;
 import com.windmill.windmill_ad_plugin.WindmillAdPlugin;
 import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
+import com.windmill.windmill_ad_plugin.utils.WindmillUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +79,16 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
         this.splashAdRequest = (WMSplashAdRequest) adRequest;
         this.adChannel = channel;
         this.activity = activity;
+//        splashAdRequest.setAppTitle("大象驾到Pro");
+//        splashAdRequest.setAppDesc("题 准, 通 过 率 高");
+        // 加载自定义品牌条布局
+//        View brandView = LayoutInflater.from(activity).inflate(R.layout.layout_splash_brand, null);
+//        // 将品牌条添加到广告容器的底部
+//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+//                FrameLayout.LayoutParams.MATCH_PARENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT);
+//        params.gravity= Gravity.BOTTOM;
+//        viewGroup.addView(brandView,params);
         this.splashAdView = new WMSplashAd(activity, this.splashAdRequest, new IWMSplashAdListener(this, channel));
         this.splashAdView.setAdSourceStatusListener(new IWMAdSourceStatus(channel));
 
@@ -140,6 +160,7 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
     }
 
     public Object load(MethodCall call) {
+        Log.d("ToBid", "load");
         this.adInfo = null;
         this.splashAdView.loadAdOnly();
         return null;
@@ -158,6 +179,21 @@ public class SplashAd extends WindmillBaseAd implements MethodChannel.MethodCall
 
     public Object isReady(MethodCall call) {
         return this.splashAdView.isReady();
+    }
+
+    public Object setCustomGroup(MethodCall call) {
+        HashMap<String, String> customGroup =  call.argument("customGroup");
+        this.splashAdView.setCustomGroup(customGroup);
+        return null;
+    }
+
+    public Object addFilter(MethodCall call) {
+        ArrayList<HashMap<String, Object>> list = call.argument("modelList");
+        WMAdFilter filter = WindmillUtils.getCurrentFilter(list);
+        if (filter != null) {
+            this.splashAdView.setFilter(filter);
+        }
+        return null;
     }
 
     public Object destroy(MethodCall call) {
@@ -185,12 +221,28 @@ class IWMSplashAdListener implements WMSplashAdListener {
     @Override
     public void onSplashAdSuccessPresent(final AdInfo adInfo) {
         this.splashAd.adInfo = adInfo;
-        channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdOpened, null);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdOpened, null);
+            }
+        });
 
     }
 
     @Override
+    public void onSplashAdFailToPresent(WindMillError error, String placementId) {
+        Log.d("ToBid", "onSplashAdFailToPresent");
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("code", error.getErrorCode());
+        args.put("message", error.getMessage());
+        channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdRenderFail, null);
+    }
+
+    @Override
     public void onSplashAdSuccessLoad(final String placementId) {
+         Log.d("ToBid", "onSplashAdSuccessLoad");
         channel.invokeMethod(WindmillAdPlugin.kWindmillEventAdLoaded, null);
     }
 

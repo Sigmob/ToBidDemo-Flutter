@@ -11,11 +11,16 @@
 #import "WindMillCustomDevInfo.h"
 #import "WindmillUtil.h"
 
+@interface WindmillAdPlugin ( )<AWMAdNetworkInitDelegate>
+
+@end
 
 @implementation WindmillAdPlugin
 
 static NSString *userId;
 NSMutableArray * sdkConfigures;
+
+static FlutterMethodChannel *_channel;
 
 +(NSString *)getUserId{
     return userId;
@@ -28,6 +33,7 @@ NSMutableArray * sdkConfigures;
                                      binaryMessenger:[registrar messenger]];
     WindmillAdPlugin* instance = [[WindmillAdPlugin alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];
+    _channel = channel;
     // 注册BannerAdView 工厂
     WindmillBannerViewFactory *bannerFactory = [[WindmillBannerViewFactory alloc]
                                                 initWithMessenger:[registrar messenger]];
@@ -188,7 +194,7 @@ NSMutableArray * sdkConfigures;
     }
     
     devInfo.canUseIdfa = [isCanUseIdfa boolValue];
-    if(customIDFA != NULL){
+    if ([WindmillUtil isValidStr:customIDFA]){
         devInfo.customIDFA = customIDFA;
     }
     
@@ -419,6 +425,31 @@ NSMutableArray * sdkConfigures;
     NSNumber *state = call.arguments[@"state"];
     [WindMillAds setPersonalizedAdvertising:state.intValue];
     result(nil);
+}
+
+- (void)setAdNetworkInitListenerMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [WindMillAds setAdNetworkInitListener:self];
+}
+
+#pragma mark - AWMAdNetworkInitDelegate
+- (void)onNetworkInitBeforeWithChannelId:(WindMillAdn)channelId initInstance:(NSObject *)initInstance {
+    [_channel invokeMethod:kWindmillEventonNetworkInitBefore arguments:@{
+        @"networkId":@(channelId)
+    }];
+}
+
+- (void)onNetworkInitSuccessWithChannelId:(WindMillAdn)channelId {
+    [_channel invokeMethod:kWindmillEventonNetworkInitSuccess arguments:@{
+        @"networkId":@(channelId)
+    }];
+}
+
+- (void)onNetworkInitFailedWithChannelId:(WindMillAdn)channelId error:(NSError *)error {
+    [_channel invokeMethod:kWindmillEventonNetworkInitFaileds arguments:@{
+        @"networkId":@(channelId),
+        @"code": @(error.code),
+        @"message": error.localizedDescription
+    }];
 }
 
 @end

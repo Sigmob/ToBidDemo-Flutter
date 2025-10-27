@@ -11,6 +11,7 @@ import static com.windmill.windmill_ad_plugin.WindmillAdPlugin.kWindmillEventAdV
 
 import android.app.Activity;
 
+import com.windmill.sdk.WMAdFilter;
 import com.windmill.sdk.WMConstants;
 import com.windmill.sdk.WindMillAdRequest;
 import com.windmill.sdk.WindMillError;
@@ -23,6 +24,7 @@ import com.windmill.windmill_ad_plugin.core.IWMAdAutoLoad;
 import com.windmill.windmill_ad_plugin.core.IWMAdSourceStatus;
 import com.windmill.windmill_ad_plugin.core.WindmillBaseAd;
 import com.windmill.windmill_ad_plugin.core.WindmillAd;
+import com.windmill.windmill_ad_plugin.utils.WindmillUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,10 +144,24 @@ public class RewardVideoAd extends WindmillBaseAd implements MethodChannel.Metho
         String scene_desc = options.get("AD_SCENE_DESC");
         String scene_id = options.get("AD_SCENE_ID");
         HashMap<String, String> opt = new HashMap<String, String>();
-        opt.put(WMConstants.AD_SCENE_ID, scene_desc);
-        opt.put(WMConstants.AD_SCENE_DESC, scene_id);
-
+        opt.put(WMConstants.AD_SCENE_ID, scene_id);
+        opt.put(WMConstants.AD_SCENE_DESC, scene_desc);
         this.rewardAd.show(this.activity, opt);
+        return null;
+    }
+
+    public Object setCustomGroup(MethodCall call) {
+        HashMap<String, String> customGroup =  call.argument("customGroup");
+        this.rewardAd.setCustomGroup(customGroup);
+        return null;
+    }
+
+    public Object addFilter(MethodCall call) {
+        ArrayList<HashMap<String, Object>> list = call.argument("modelList");
+        WMAdFilter filter = WindmillUtils.getCurrentFilter(list);
+        if (filter != null) {
+            this.rewardAd.setFilter(filter);
+        }
         return null;
     }
 
